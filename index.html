@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Map</title>
+
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+        #map {
+            height: 90%;
+            width: 90%;
+            margin: auto;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<hr />
+
+<div id="app">
+  <p>{{ message }}</p>
+</div>
+
+<script async defer
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBovP7KSrcf6Of-GwJJW4QP74bg3UISroc&callback=initMap">
+</script>
+<script src="app.js"></script>
+<script src="map.js"></script>
+</body>
+</html>
