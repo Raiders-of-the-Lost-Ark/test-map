@@ -320,9 +320,7 @@ function initMap() {
     });
 
 
-
     // Map area restrictions
-
 	var allowedBounds = new google.maps.LatLngBounds(
 	  new google.maps.LatLng(33.3353104, -124.4519655),
 	  new google.maps.LatLng(44.7186249, -64.1323508)
@@ -352,14 +350,10 @@ function initMap() {
 			newLat = center.lat();
 		}
 		map.panTo(new google.maps.LatLng(newLat, newLng));
-	
-});
+	});
 
-
-
-
-
-
+    // Zoom restrictions
+    map.setOptions({ minZoom: 4, maxZoom: 21 });
 
 } // End map init 
 
