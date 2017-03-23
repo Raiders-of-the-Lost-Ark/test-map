@@ -304,20 +304,42 @@ function initMap() {
         ]
     }); // End map styles
 
-    // Create a <script> tag and set the USGS URL as the source.
-    var script = document.createElement('script');
+    //=======================================================================================================================
 
-    // This example uses a local copy of the GeoJSON stored at
-    // http://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojsonp
-    script.src = 'https://developers.google.com/maps/documentation/javascript/examples/json/earthquake_GeoJSONP.js';
-    document.getElementsByTagName('head')[0].appendChild(script);
+    // this section does an async get request and puts circles on the map based off data from
+    // the mongodb database, right now it just has a couple cities with small circles
 
-    map.data.setStyle(function(feature) {
-        var magnitude = feature.getProperty('mag');
-        return {
-            icon: getCircle(magnitude)
-        };
-    });
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "/api/cities", true);
+    xhr.onload = function (e) { 
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var cityData = JSON.parse(xhr.responseText);
+                for (var city in cityData) {
+                    // Add the circle for this city to the map.
+                    var cityCircle = new google.maps.Circle({
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: '#FF0000',
+                    fillOpacity: 0.35,
+                    map: map,
+                    center: {lat: parseFloat(cityData[city].lat), lng: parseFloat(cityData[city].lng)},
+                    radius: 10000
+                    });
+                }
+                //console.log(cityData);
+                } else {
+                console.error(xhr.statusText);
+            }
+        }
+    };
+    xhr.onerror = function (e) {
+        console.error(xhr.statusText);
+    };
+    xhr.send(null);
+    
+    //=======================================================================================================================
 
 
     // Map area restrictions
@@ -358,7 +380,7 @@ function initMap() {
 } // End map init 
 
 // Data example functions
-
+/*
 function getCircle(magnitude) {
     return {
         path: google.maps.SymbolPath.CIRCLE,
@@ -369,7 +391,7 @@ function getCircle(magnitude) {
         strokeWeight: .5
     };
 }
-
+*/
 function eqfeed_callback(results) {
     map.data.addGeoJson(results);
 }
