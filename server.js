@@ -5,7 +5,8 @@
 var City = require('./models/cities');
     
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/testcities');
+mongoose.connect('mongodb://138.197.28.83:27017/testcities');
+
 
 // call the packages we need
 var express    = require('express');        // call express
