@@ -54,9 +54,9 @@ router.route('/cities')
     .post(function(req, res) {
         
         var city = new City();      // create a new instance of the City model (schema)
-        city.name = req.body.name;  // set the city's name (from request)
-        city.lat = req.body.lat;    // set the city's lat (from request)
-        city.lng = req.body.lng;    // set teh city's long (from request)
+        city.name = req.body.cityName;  // set the city's name (from request)
+        city.lat = req.body.Latitude;    // set the city's lat (from request)
+        city.lng = req.body.Longitude;    // set teh city's long (from request)
 
         // save the city and check for errors
         city.save(function(err) {
