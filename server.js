@@ -3,7 +3,7 @@
 // BASE SETUP
 // =============================================================================
 var City = require('./models/cities');
-    
+
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://138.197.28.83:27017/testcities');
 
