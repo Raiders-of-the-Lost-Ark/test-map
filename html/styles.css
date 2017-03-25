@@ -17,6 +17,18 @@
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
 }
+
+.map-container {
+  height: 100%;
+}
+
+.drawer-left {
+  left: 0;
+}
+.drawer-right {
+  left: auto;
+  right: 0;
+}
 .demo-avatar {
   width: 48px;
   height: 48px;
@@ -59,7 +71,11 @@ html, body {
       -ms-flex-pack: end;
           justify-content: flex-end;
   padding: 16px;
-  height: 151px;
+  height: 64px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+    transition-duration: .2s;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-property: max-height,box-shadow;
 }
 .demo-avatar-dropdown {
   display: -webkit-flex;
