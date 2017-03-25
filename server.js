@@ -69,7 +69,6 @@ router.route('/cities')
         city.name = req.body.cityName;  // set the city's name (from request)
         city.lat = req.body.Latitude;    // set the city's lat (from request)
         city.lng = req.body.Longitude;    // set teh city's long (from request)
-        console.log(city.name);
         // save the city and check for errors
         city.save(function(err) {
             if (err)
