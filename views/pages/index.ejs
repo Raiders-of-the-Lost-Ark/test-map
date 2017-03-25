@@ -3,13 +3,14 @@
 
   <head>
 
+    <% var title = "Civil War Battlefields: Map"; %>
     <% include ../head %>
     
   </head>
 
   <body>
 
-    <% include ../nav %>
+    <%- include('../nav', {title: title}); %>
     <% include ../rightbar %>
 
       <main class="mdl-layout__content mdl-color--grey-100 map-container">
