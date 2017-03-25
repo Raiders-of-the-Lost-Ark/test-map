@@ -30,11 +30,18 @@
     <header class="demo-drawer-header">
     </header>
     <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
-        <span class="mdl-layout-title mdl-color-text--grey-300"><center>Civil War Battles</center></span>
+
+        <span class="mdl-layout-title mdl-color-text--grey-300"><center>Test Input</center></span>
         <br>
-        <a class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href=""><i class="mdl-color-text--grey-400 material-icons" role="presentation">map</i>Map</a>
-        <a class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href=""><i class="mdl-color-text--grey-400 material-icons" role="presentation">lock</i>Admin</a>
-        <a class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href=""><i class="mdl-color-text--grey-400 material-icons" role="presentation">person</i>Account</a>
+        <!--Top section dropdown menu
+        -->
+        <form action="/api/cities" method="POST">
+        Enter City Name <input type="text" name="cityName"></input><br>
+        Enter City Latitude<input type="text" name="Latitude"> </input><br>
+        Enter City Longitude<input type="text" name="Longitude"> </input><br>
+        <input type="submit"></input>
+        </form>
+
         <div class="mdl-layout-spacer"></div>
         <button class="mdl-button mdl-js-button mdl-button--icon">
         <i class="material-icons">help-outline</i>
