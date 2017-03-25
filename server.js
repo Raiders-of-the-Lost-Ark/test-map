@@ -69,15 +69,13 @@ router.route('/cities')
         city.name = req.body.cityName;  // set the city's name (from request)
         city.lat = req.body.Latitude;    // set the city's lat (from request)
         city.lng = req.body.Longitude;    // set teh city's long (from request)
-
         // save the city and check for errors
         city.save(function(err) {
             if (err)
                 res.send(err);
-
-            res.json({ message: 'City created!' });
         });
-        
+        //Redirect can be used to send to another webpage after executing the code above it
+        res.redirect('back');
     })
 
     .get(function(req, res) {
