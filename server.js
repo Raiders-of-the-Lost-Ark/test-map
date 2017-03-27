@@ -40,8 +40,12 @@ var admin = router.get('/admin', function(req, res) {
     res.render('pages/admin');
 });
 
-var admin = router.get('/account', function(req, res) {
+var account = router.get('/account', function(req, res) {
     res.render('pages/account');
+});
+
+var login = router.get('/login', function(req, res) {
+    res.render('pages/login');
 });
 
 // ROUTES FOR OUR API
@@ -96,6 +100,7 @@ app.use('/api', router);
 app.use('/', index);
 app.use('/admin', index);
 app.use('/account', index);
+app.use('/login', index);
 
 // START THE SERVER
 // =============================================================================
