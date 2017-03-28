@@ -27,25 +27,24 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 
 var port = process.env.PORT || 8080;        // set our port
-
 var router = express.Router();              // get an instance of the express Router
 
 // PAGE ROUTES
 // =============================================================================
-var index = router.get('/', function(req, res) {
-    res.render('pages/index');
+router.get('/', function(req, res) {
+    res.render('pages/index'); // Render index template
 });
 
-var admin = router.get('/admin', function(req, res) {
-    res.render('pages/admin');
+router.get('/admin', function(req, res) {
+    res.render('pages/admin'); // Render admin template
 });
 
-var account = router.get('/account', function(req, res) {
-    res.render('pages/account');
+router.get('/account', function(req, res) {
+    res.render('pages/account'); // Render account template
 });
 
-var login = router.get('/login', function(req, res) {
-    res.render('pages/login');
+router.get('/login', function(req, res) {
+    res.render('pages/login');   // Render login page template
 });
 
 // ROUTES FOR OUR API
@@ -54,13 +53,6 @@ router.use(function(req, res, next){
     console.log('Something is happening.');
     next();
 })
-
-var admin = router.get('/admin', function(req, res) {
-    res.render('views/pages/index', { });
-    //res.json({ message: 'hooray! welcome to our api!' });   
-});
-
-// more routes for our API will happen here
 
 // on routes that end in /cities
 // ----------------------------------------------------
@@ -92,15 +84,13 @@ router.route('/cities')
             res.json(cities);
         });
     });
+
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
 
-// SET PAGE ROUTES
-app.use('/', index);
-app.use('/admin', index);
-app.use('/account', index);
-app.use('/login', index);
+// Set page routes
+app.use('/', router); 
 
 // START THE SERVER
 // =============================================================================
