@@ -47,7 +47,7 @@ router.get('/login', function(req, res) {
     res.render('pages/login');   // Render login page template
 });
 
-// Partial routes
+// Right sidebar routes
 // ----------------------------------
 router.post('/viewSite', function(req, res) {
     console.log("Received site request: " + req.body.site);
@@ -75,6 +75,29 @@ router.get('/viewSite', function(req, res) {
 
 });
 
+// Info bubble routes
+// ----------------------------------
+router.post('/bubble', function(req, res) {
+    // Go get this site
+    res.redirect("/bubble?siteId=" + req.body.site); 
+});
+
+router.get('/bubble', function(req, res) {
+    var reqSite = req.query.siteId;
+
+    City.find({ name: reqSite }, function(err, city) {
+        if (err) 
+            res.send(err);
+
+        if (city) {
+            // Render bubble html from template
+            res.render('bubble', { layout: false, data: city[0] }, function(err, html) {
+                // Send html to client
+                res.send(html);
+            });
+        }
+    });
+});
 
 
 // ROUTES FOR OUR API
