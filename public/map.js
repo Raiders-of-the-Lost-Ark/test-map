@@ -15,6 +15,10 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 7,
         center: {lat: 38.4956029, lng: -92.4205979},
+        MapTypeControl: true,
+        mapTypeControlOptions: {
+        position: google.maps.ControlPosition.TOP_RIGHT
+    },
         mapTypeId: 'terrain',
         styles: [
             {

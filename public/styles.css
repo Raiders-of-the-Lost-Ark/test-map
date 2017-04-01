@@ -43,6 +43,30 @@ html, body {
 .demo-drawer {
   border: none;
 }
+
+/* left drawer width*/
+.mdl-layout__drawer {
+  z-index: 2;
+  background-color: rgba(55, 71, 79, 0);
+  box-shadow: none !important;
+  width: 125px;
+  left: 250px;
+  border: 0;
+}
+
+.mdl-layout__drawer.is-visible {
+  left: 250;
+}
+
+/* now we have to fix the nav bar and map widths because it's all fucky */
+.mdl-layout--fixed-drawer>.mdl-layout__content {
+    margin-left: 125px;
+}
+.mdl-layout--fixed-drawer.is-upgraded:not(.is-small-screen)>.mdl-layout__header {
+    margin-left: 125px;
+    width: calc(100% - 125px);
+}
+
 /* iOS Safari specific workaround */
 .demo-drawer .mdl-menu__container {
   z-index: -1;
@@ -72,10 +96,10 @@ html, body {
           justify-content: flex-end;
   padding: 16px;
   height: 64px;
-  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  /*box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
     transition-duration: .2s;
     transition-timing-function: cubic-bezier(.4,0,.2,1);
-    transition-property: max-height,box-shadow;
+    transition-property: max-height,box-shadow;*/
 }
 .mdl-layout__drawer-right {
     display: -webkit-box;
@@ -187,9 +211,14 @@ html, body {
   color: #37474F;
 }
 .demo-navigation .mdl-navigation__link .material-icons {
-  font-size: 24px;
-  color: rgba(255, 255, 255, 0.56);
-  margin-right: 32px;
+  font-size: 60px;
+  color: rgba(255, 255, 255, 1);
+  text-shadow: 1px 1px 2px black; 
+}
+
+/* adjusting padding between icons*/
+a.mdl-navigation__link.mdl-button.mdl-js-button.mdl-js-ripple-effect {
+  padding: 25px 35px;
 }
 
 .demo-content {
@@ -306,9 +335,6 @@ _:-ms-input-placeholder, :root .demo-graph {
 /*Sorry Google, removes copyright*/
 .gmnoprint a, .gmnoprint span {
     display:none;
-}
-.gmnoprint div {
-    background:none !important;
 }
 a[href^="http://maps.google.com/maps"]{display:none !important}
 a[href^="https://maps.google.com/maps"]{display:none !important}
