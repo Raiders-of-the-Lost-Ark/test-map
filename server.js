@@ -7,11 +7,22 @@ var User = require('./models/users');
 
 var Hasher = require('./modules/generate-pass.js');
 var CreateUser = require('./modules/add-users.js');
+<<<<<<< HEAD
 
 
 var mongoose = require('mongoose');
 var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
 var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
+=======
+
+
+var mongoose = require('mongoose');
+var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
+var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
+
+var CityModel = cities.model('City', City);
+var UserModel = users.model('Users', User);
+>>>>>>> password-encryption
 
 var CityModel = cities.model('City', City);
 var UserModel = users.model('Users', User);
@@ -54,6 +65,7 @@ router.get('/login', function(req, res) {
     res.render('pages/login');   // Render login page template
 });
 
+<<<<<<< HEAD
 // Partial routes
 // ----------------------------------
 router.post('/viewSite', function(req, res) {
@@ -84,6 +96,16 @@ router.get('/viewSite', function(req, res) {
 
 
 
+=======
+router.get('/create', function(req, res){
+    res.render('pages/create');
+});
+
+router.get('/input', function(req, res){
+    res.render('pages/inputtest');
+});
+
+>>>>>>> password-encryption
 // ROUTES FOR OUR API
 // =============================================================================
 router.use(function(req, res, next){
@@ -92,13 +114,13 @@ router.use(function(req, res, next){
 })
 
 // on routes that end in /cities
-// ----------------------------------------------------
+// -----------------------------------------------3-----
 router.route('/cities')
 
     // create a city (accessed at POST http://localhost:8080/api/city)
     .post(function(req, res) {
         
-        var city = new City();      // create a new instance of the City model (schema)
+        var city = new CityModel();      // create a new instance of the City model (schema)
         city.name = req.body.cityName;  // set the city's name (from request)
         city.lat = req.body.Latitude;    // set the city's lat (from request)
         city.lng = req.body.Longitude;    // set the city's long (from request)
@@ -114,6 +136,7 @@ router.route('/cities')
 
     .get(function(req, res) {
         CityModel.find(function(err, cities) {
+<<<<<<< HEAD
             if (err)
                 res.send(err);
 
@@ -140,6 +163,8 @@ router.route('/cities')
     })
     .get(function(req, res) {
         UserModel.find(function(err, cities) {
+=======
+>>>>>>> password-encryption
             if (err)
                 res.send(err);
 
@@ -147,6 +172,32 @@ router.route('/cities')
         });
     });
 
+
+router.route('/register')
+
+    .post(function(req, res){
+        var user = new UserModel();
+        var temp = Hasher(req.body.password);
+        user.email = req.body.email;
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
+        user.passwordHash = temp.passwordHash;
+        user.salt = temp.salt;
+        user.save(function(err){
+            if(err)
+                res.send(err);
+        });
+        res.redirect('back');
+
+    })
+    .get(function(req, res) {
+        UserModel.find(function(err, cities) {
+            if (err)
+                res.send(err);
+
+            res.json(cities);
+        });
+    });
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
@@ -156,5 +207,7 @@ app.use('/', router);
 
 // START THE SERVER
 // =============================================================================
+
+
 app.listen(port);
 console.log('Web Server Open on port ' + port);
