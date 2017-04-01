@@ -137,7 +137,7 @@ router.route('/register')
         user.firstName = req.body.firstName;
         user.lastName = req.body.lastName;
         user.passwordHash = temp.passwordHash;
-        user.salt = temp.salt;
+        user.passwordSalt = temp.salt;
         user.save(function(err){
             if(err)
                 res.send(err);
