@@ -1,0 +1,136 @@
+@import url(http://zavoloklom.github.io/material-design-iconic-font/css/docs.md-iconic-font.min.css);
+body {
+  background: #64b5f6;
+  text-align: center;
+}
+
+.card {
+  height: 400px;
+  width: 300px;
+  background: #fff;
+  font-family: Roboto;
+  display: block;
+  position: relative;
+      margin: 0 auto;
+      top: 25%;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+}
+
+.fab {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  margin-top: 0;
+  margin-left: 50px;
+  visibility: hidden;
+  background-color: #ffd54f;
+  border-radius: 50%;
+  transform: scale(0);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.22), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: margin-top 0.6s 0.0s ease-in-out, margin-left 0.6s 0.1s ease-in-out, transform 0.6s 0.0s ease-in-out, visibility 0.6s ease-in-out;
+}
+
+.active .fab {
+  margin-top: 50px;
+  margin-left: 120px;
+  transform: scale(12);
+  visibility: visible;
+  background-color: #fff;
+  transition: margin-top 0.5s ease-in-out, margin-left 0.6s ease-in-out, transform 0.4s 0.3s ease-in-out, visibility 0.4s ease-in-out;
+  box-shadow: none;
+}
+
+.avatar {
+  margin-top: 5px;
+  margin-left: -30px;
+  width: 60px;
+  height: 60px;
+  font-size:2em;
+  line-height:60px;
+  color: #37474f;
+  border-radius: 50%;
+  background-color: #ffd54f;
+  position: absolute;
+  transition: 0.6s ease-in-out;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  z-index:2;
+}
+
+.active .avatar {
+  transform: scale(1.1);
+  margin-top: 10px;
+  margin-left: 80px;
+  transition: 0.6s ease-in-out;
+  box-shadow: none;
+}
+
+.fabs {
+  position: absolute;
+  margin-top: -30px;
+  margin-left: 260px;
+  overflow: hidden;
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  transition: 1s ease-in-out;
+  border-radius: 50%;
+}
+
+.active .fabs {
+  margin-top: 0px;
+  margin-left: 0px;
+  width: 300px;
+  height: 400px;
+  transition: 0.4s ease-in-out;
+  border-radius: 0;
+}
+
+.login {
+  position: absolute;
+  width: 280px;
+  height: 380px;
+  margin: 10px;
+  text-align: center;
+  overflow-y: auto;
+  transition: 0.5s 0.3s cubic-bezier(.55, 0, .1, 1);
+}
+
+.active .login {
+  transform: scale(0.2);
+  opacity: 0;
+  transition: 0.2s 0.3s cubic-bezier(.55, 0, .1, 1);
+}
+
+
+.register {
+  position: absolute;
+  width: 280px;
+  height: 200px;
+  margin: 10px;
+  text-align: center;
+  visibility: hidden;
+  transition: 0.5s cubic-bezier(.55, 0, .1, 1);
+}
+
+.active .register {
+  visibility: visible;
+}
+
+.register form{
+  transform: translate(0px, -10px);
+  opacity: 0;
+  transition: 0.2s cubic-bezier(.55, 0, .1, 1);
+}
+
+.active .register form{
+  transform: translate(0px, 0px);
+  opacity: 1;
+  transition: 0.3s 0.5s cubic-bezier(.55, 0, .1, 1);
+}
