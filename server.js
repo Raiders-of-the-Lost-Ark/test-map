@@ -3,11 +3,18 @@
 // BASE SETUP
 // =============================================================================
 var City = require('./models/cities');
+var User = require('./models/users');
+
+var Hasher = require('./modules/generate-pass.js');
+var CreateUser = require('./modules/add-users.js');
+
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://138.197.28.83:27017/testcities');
+var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
+var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
 
-
+var CityModel = cities.model('City', City);
+var UserModel = users.model('Users', User);
 // call the packages we need
 var express    = require('express');        // call express
 var app        = express();                 // define our app using express
@@ -60,7 +67,7 @@ router.get('/viewSite', function(req, res) {
 
     var reqSite = req.query.siteId;
 
-    City.find({ name: reqSite }, function(err, city) {
+    CityModel.find({ name: reqSite }, function(err, city) {
         if (err) {
             res.send(err);
             console.log("ERROR HAPPENED");
@@ -106,7 +113,7 @@ router.route('/cities')
     })
 
     .get(function(req, res) {
-        City.find(function(err, cities) {
+        CityModel.find(function(err, cities) {
             if (err)
                 res.send(err);
 
