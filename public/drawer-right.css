@@ -138,3 +138,14 @@
     background-color: #e0e0e0;
     color: #000
 }
+
+/*right drawer width*/
+.mdl-layout__drawer-right {
+  width: 600px;
+  right: -600px;
+  border: 0;
+}
+
+.mdl-layout__drawer-right.active {
+  right: 0;
+}
