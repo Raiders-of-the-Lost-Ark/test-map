@@ -5,6 +5,7 @@
 var City = require('./models/cities');
 
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://138.197.28.83:27017/testcities');
 
 
@@ -76,15 +77,16 @@ router.route('/cities')
         {
             if (err)
                 return res.status(500).send(err);
-            res.send('file uploaded to' +uploadPath);
+           // res.send('file uploaded to' +uploadPath);
         });
+        city.images=uploadPath;
         // save the city and check for errors
-       // city.save(function(err) {
-        //    if (err)
-       //         res.send(err);
-      //  });
+        city.save(function(err) {
+            if (err)
+                res.send(err);
+        });
         //Redirect can be used to send to another webpage after executing the code above it
-    //    res.redirect('back');
+        res.redirect('back');
     })
 
     .get(function(req, res) {
