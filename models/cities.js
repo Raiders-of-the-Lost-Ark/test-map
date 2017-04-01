@@ -9,4 +9,4 @@ var CitySchema = new Schema({
 });
 
 // this is our predefined schema for a city (location and lat/long)
-module.exports = mongoose.model('Cities', CitySchema);
+module.exports = CitySchema;
