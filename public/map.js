@@ -351,10 +351,9 @@ function initMap() {
                 var cityData = JSON.parse(xhr.responseText);
                 for (var city in cityData) {
                     cityArray.push(new cityConst(cityData[city].name, cityData[city].lat, cityData[city].lng, cityData[city]._id, cityData[city].misc));
-                    
                 }
                     for(var i = 0; i < cityArray.length; i++)
-                    {
+                    {                        
                         //console.log(cityArray[i]);
                         var cityCircle = new google.maps.Circle({
                             strokeColor: '#FF0000',
@@ -367,7 +366,8 @@ function initMap() {
                             center: {lat: parseFloat(cityArray[i].lat), lng: parseFloat(cityArray[i].lng)},
                             radius: 10000,
                             name: cityArray[i].name,
-                            misc: cityArray[i].misc
+                            misc: cityArray[i].misc,
+                            siteId: cityArray[i].id
                         });
                         circlesArr.push(cityCircle);
                         //console.log(circlesArr);
@@ -384,6 +384,18 @@ function initMap() {
                             infowindow.setContent(this.misc);
                             infowindow.setPosition(this.center);
                             infowindow.open(map, this);
+                        
+                            // Send POST request to load data into sidebar
+                            var siteData = {site: this.name};
+                            var xhr2 = new XMLHttpRequest();
+                            
+                            xhr2.onload = function(){
+                                document.querySelector('#siteInfo_div').innerHTML = xhr2.responseText;
+                            };
+                            
+                            xhr2.open("POST", "/viewSite", true);
+                            xhr2.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            xhr2.send(JSON.stringify(siteData)); 
                         });
                     }
                 } else {
