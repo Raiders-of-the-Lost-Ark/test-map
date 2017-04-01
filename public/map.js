@@ -2,12 +2,13 @@
 var map;
 
 var cityArray = [];
-var cityConst = function(name, lat, lng, id)
+var cityConst = function(name, lat, lng, id, misc)
 {
     this.name = name;
     this.lat = lat;
     this.lng = lng;
     this.id = id;
+    this.misc = misc;
 };
 // Init
 function initMap() {
@@ -314,6 +315,28 @@ function initMap() {
 
     //=======================================================================================================================
 
+    // FUSION TABLE
+    var layer = new google.maps.FusionTablesLayer({
+        query: {
+        select: '\'GEO_ID\'',
+        from: '1Yx076g0HFD2aeya8T0jBi_w1UuEYj3b06zaXXA'
+        },
+        styles: [{
+        polygonOptions:{
+            fillColor: '#FFFFFF',
+            fillOpacity: 0.001
+        },
+        polylineOptions:{
+            strokeOpacity: 0.05
+        }
+        }]
+    });
+    layer.setMap(map);
+
+
+
+
+
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
 
@@ -326,7 +349,8 @@ function initMap() {
             if (xhr.status === 200) {
                 var cityData = JSON.parse(xhr.responseText);
                 for (var city in cityData) {
-                    cityArray.push(new cityConst(cityData[city].name, cityData[city].lat, cityData[city].lng, cityData[city]._id));
+                    cityArray.push(new cityConst(cityData[city].name, cityData[city].lat, cityData[city].lng, cityData[city]._id, cityData[city].misc));
+                    
                 }
                     for(var i = 0; i < cityArray.length; i++)
                     {
@@ -341,7 +365,8 @@ function initMap() {
                             clickable: true,
                             center: {lat: parseFloat(cityArray[i].lat), lng: parseFloat(cityArray[i].lng)},
                             radius: 10000,
-                            name: cityArray[i].name
+                            name: cityArray[i].name,
+                            misc: cityArray[i].misc
                         });
                         circlesArr.push(cityCircle);
                         //console.log(circlesArr);
@@ -349,12 +374,13 @@ function initMap() {
                     for(var i = 0; i < circlesArr.length; i++)
                     {
                         infowindow = new google.maps.InfoWindow({
-                            content: "holding..."
+                            content: "holding...",
+                            maxWidth: 300   
                         });
                         var onecircle = circlesArr[i];
                         google.maps.event.addListener(onecircle, 'click', function () {
                         // where I have added .html to the marker object.
-                            infowindow.setContent(this.name);
+                            infowindow.setContent(this.misc);
                             infowindow.setPosition(this.center);
                             infowindow.open(map, this);
                         });

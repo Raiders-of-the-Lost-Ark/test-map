@@ -7,13 +7,15 @@
         <br>
         <!--Top section dropdown menu
         -->
-        <form action="/api/cities" method="POST">
+        <form action="/cities" method="POST" name="form" id="input_form">
         Enter City Name <input type="text" name="cityName"></input><br>
         Enter City Latitude<input type="text" name="Latitude"> </input><br>
         Enter City Longitude<input type="text" name="Longitude"> </input><br>
-        <input type="submit"></input>
+        Upload File<input type="File" name="customFile"><br>
+       
         </form>
-
+         <textarea name="custom" form="input_form">Enter Custom text here...</textarea>
+        <input type="submit" form="input_form">
         <div class="mdl-layout-spacer"></div>
         <button class="mdl-button mdl-js-button mdl-button--icon">
         <i class="material-icons">help-outline</i>
