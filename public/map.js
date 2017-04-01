@@ -384,9 +384,21 @@ function initMap() {
                             infowindow.setContent(this.misc);
                             infowindow.setPosition(this.center);
                             infowindow.open(map, this);
-                        
-                            // Send POST request to load data into sidebar
+
                             var siteData = {site: this.name};
+
+                            // Send POST request to load BUBBLE
+                            var bubble_xhr = new XMLHttpRequest();
+                            
+                            bubble_xhr.onload = function(){
+                                document.querySelector('#bubbleContent').innerHTML = bubble_xhr.responseText;
+                            };
+                            
+                            bubble_xhr.open("POST", "/bubble", true);
+                            bubble_xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            bubble_xhr.send(JSON.stringify(siteData)); 
+
+                            // Send POST request to load data into sidebar
                             var xhr2 = new XMLHttpRequest();
                             
                             xhr2.onload = function(){
