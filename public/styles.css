@@ -311,3 +311,7 @@ _:-ms-input-placeholder, :root .demo-graph {
 }
 a[href^="http://maps.google.com/maps"]{display:none !important}
 a[href^="https://maps.google.com/maps"]{display:none !important}
+
+div[class="gm-style-cc"] {
+    display: none !important;
+}
