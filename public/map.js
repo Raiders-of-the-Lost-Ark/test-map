@@ -1,6 +1,15 @@
 // The Map
 var map;
 
+var cityArray = [];
+var cityConst = function(name, lat, lng, id, misc)
+{
+    this.name = name;
+    this.lat = lat;
+    this.lng = lng;
+    this.id = id;
+    this.misc = misc;
+};
 // Init
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -309,6 +318,8 @@ function initMap() {
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
 
+    var infoWindow = null;
+    var circlesArr = [];
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/api/cities", true);
     xhr.onload = function (e) { 
@@ -316,19 +327,42 @@ function initMap() {
             if (xhr.status === 200) {
                 var cityData = JSON.parse(xhr.responseText);
                 for (var city in cityData) {
-                    // Add the circle for this city to the map.
-                    var cityCircle = new google.maps.Circle({
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: '#FF0000',
-                    fillOpacity: 0.35,
-                    map: map,
-                    center: {lat: parseFloat(cityData[city].lat), lng: parseFloat(cityData[city].lng)},
-                    radius: 10000
-                    });
+                    cityArray.push(new cityConst(cityData[city].name, cityData[city].lat, cityData[city].lng, cityData[city]._id, cityData[city].misc));
+                    
                 }
-                //console.log(cityData);
+                    for(var i = 0; i < cityArray.length; i++)
+                    {
+                        //console.log(cityArray[i]);
+                        var cityCircle = new google.maps.Circle({
+                            strokeColor: '#FF0000',
+                            strokeOpacity: 0.8,
+                            strokeWeight: 2,
+                            fillColor: '#FF0000',
+                            fillOpacity: 0.35,
+                            map: map,
+                            clickable: true,
+                            center: {lat: parseFloat(cityArray[i].lat), lng: parseFloat(cityArray[i].lng)},
+                            radius: 10000,
+                            name: cityArray[i].name,
+                            misc: cityArray[i].misc
+                        });
+                        circlesArr.push(cityCircle);
+                        //console.log(circlesArr);
+                    }
+                    for(var i = 0; i < circlesArr.length; i++)
+                    {
+                        infowindow = new google.maps.InfoWindow({
+                            content: "holding...",
+                            maxWidth: 300   
+                        });
+                        var onecircle = circlesArr[i];
+                        google.maps.event.addListener(onecircle, 'click', function () {
+                        // where I have added .html to the marker object.
+                            infowindow.setContent(this.misc);
+                            infowindow.setPosition(this.center);
+                            infowindow.open(map, this);
+                        });
+                    }
                 } else {
                 console.error(xhr.statusText);
             }
@@ -338,9 +372,11 @@ function initMap() {
         console.error(xhr.statusText);
     };
     xhr.send(null);
-    
     //=======================================================================================================================
 
+    // ADDING CIRCLES AND CLICKABLE CIRCLES
+
+    // END ADDING CIRCLES AND CLICKABLE CIRCLES
 
     // Map area restrictions
 	var allowedBounds = new google.maps.LatLngBounds(
@@ -375,24 +411,12 @@ function initMap() {
 	});
 
     // Zoom restrictions
-    map.setOptions({ minZoom: 4, maxZoom: 21 });
+    map.setOptions({ 
+        minZoom: 4, 
+        maxZoom: 21,    
+        streetViewControl: false
+    });
 
+   
+    
 } // End map init 
-
-// Data example functions
-/*
-function getCircle(magnitude) {
-    return {
-        path: google.maps.SymbolPath.CIRCLE,
-        fillColor: 'red',
-        fillOpacity: .2,
-        scale: Math.pow(2, magnitude) / 2,
-        strokeColor: 'white',
-        strokeWeight: .5
-    };
-}
-*/
-function eqfeed_callback(results) {
-    map.data.addGeoJson(results);
-}
-

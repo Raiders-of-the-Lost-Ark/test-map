@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <% var title="Civil War Battlefields: Admin" ; %>
+    <% include ../head %>
+
+    <link rel="stylesheet" type="text/css" href="login.css">
+    
+
+</head>
+
+<body>
+
+
+<div class="card">
+  <div class="login">
+    <form>
+      <h2>Login</h2>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" id="luser" type="text"/>
+        <label class="mdl-textfield__label" for="luser">Username</label>
+      </div>
+      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+        <input class="mdl-textfield__input" id="lpass" type="password"/>
+        <label class="mdl-textfield__label" for="lpass">Password</label>
+      </div>
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Login</button>
+    </form>
+  </div>
+  <div class="fabs">
+    <div class="fab"></div><i class="avatar zmdi zmdi-account"></i>
+  </div>
+  <div class="register">
+    <form>
+      <h2>Register</h2>
+      <div class="mdl-card__supporting-text">
+    Please contact Missouri's Civil War Heritage Foundation to request privileged access.
+  </div>
+    </form>
+  </div>
+</div>
+
+
+        <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+
+  <script src="login.js"></script>
+
+</body>
+
+</html>
