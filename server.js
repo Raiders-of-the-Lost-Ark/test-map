@@ -10,15 +10,17 @@ mongoose.connect('mongodb://138.197.28.83:27017/testcities');
 
 // call the packages we need
 var express    = require('express');        // call express
+const fileUpload = require('express-fileupload');
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 var http = require('http'),
     fs = require('fs');
-
+const path= require('path');
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(fileUpload());
 
 // view engine setup
 app.set('view engine', 'ejs');
@@ -66,13 +68,23 @@ router.route('/cities')
         city.lat = req.body.Latitude;    // set the city's lat (from request)
         city.lng = req.body.Longitude;    // set the city's long (from request)
         city.misc = req.body.custom;
-        // save the city and check for errors
-        city.save(function(err) {
+        let image =req.files.customFile;
+
+        var fileDir=__dirname+("/public/images");
+        let uploadPath=path.join(fileDir,image.name);
+        image.mv(uploadPath,function(err)
+        {
             if (err)
-                res.send(err);
+                return res.status(500).send(err);
+            res.send('file uploaded to' +uploadPath);
         });
+        // save the city and check for errors
+       // city.save(function(err) {
+        //    if (err)
+       //         res.send(err);
+      //  });
         //Redirect can be used to send to another webpage after executing the code above it
-        res.redirect('back');
+    //    res.redirect('back');
     })
 
     .get(function(req, res) {
