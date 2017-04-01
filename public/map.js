@@ -328,7 +328,8 @@ function initMap() {
         styles: [{
         polygonOptions:{
             fillColor: '#FFFFFF',
-            fillOpacity: 0.0001
+            fillOpacity: 0.0001,
+			strokeOpacity: 0.1
         },
         polylineOptions:{
             strokeOpacity: 0.00001,
