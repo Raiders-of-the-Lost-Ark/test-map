@@ -10,6 +10,7 @@ var CreateUser = require('./modules/add-users.js');
 
 
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
 var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
 
@@ -17,15 +18,17 @@ var CityModel = cities.model('City', City);
 var UserModel = users.model('Users', User);
 // call the packages we need
 var express    = require('express');        // call express
+const fileUpload = require('express-fileupload');
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 var http = require('http'),
     fs = require('fs');
-
+const path= require('path');
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(fileUpload());
 
 // view engine setup
 app.set('view engine', 'ejs');
@@ -109,6 +112,17 @@ router.route('/cities')
         city.lat = req.body.Latitude;    // set the city's lat (from request)
         city.lng = req.body.Longitude;    // set the city's long (from request)
         city.misc = req.body.custom;
+        let image =req.files.customFile;
+
+        var fileDir=__dirname+("/public/images");
+        let uploadPath=path.join(fileDir,image.name);
+        image.mv(uploadPath,function(err)
+        {
+            if (err)
+                return res.status(500).send(err);
+           // res.send('file uploaded to' +uploadPath);
+        });
+        city.images=uploadPath;
         // save the city and check for errors
         city.save(function(err) {
             if (err)
