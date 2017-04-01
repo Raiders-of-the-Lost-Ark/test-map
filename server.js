@@ -67,7 +67,7 @@ router.get('/viewSite', function(req, res) {
         }
         if (city) {
             console.log("Rendering page: " + city[0].name);
-            res.render('siteInfo', { layout: false, data: city[0] }, function(err, html) {
+            res.render('siteinfo', { layout: false, data: city[0] }, function(err, html) {
                 res.send(html);
             });
         }

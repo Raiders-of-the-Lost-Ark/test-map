@@ -315,6 +315,29 @@ function initMap() {
 
     //=======================================================================================================================
 
+    // FUSION TABLE
+    var missouriCounterLayer = new google.maps.FusionTablesLayer({
+        query: {
+        select: '\'GEO_ID\'',
+        from: '1Yx076g0HFD2aeya8T0jBi_w1UuEYj3b06zaXXA'
+        },
+        styles: [{
+        polygonOptions:{
+            fillColor: '#FFFFFF',
+            fillOpacity: 0.0001
+        },
+        polylineOptions:{
+            strokeOpacity: 0.00001,
+            strokeWeight: 100
+        }
+        }]
+    });
+    missouriCounterLayer.setMap(map);
+
+
+
+
+
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
 
