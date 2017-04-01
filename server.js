@@ -95,7 +95,7 @@ router.post('/bubble', function(req, res) {
 router.get('/bubble', function(req, res) {
     var reqSite = req.query.siteId;
 
-    City.find({ name: reqSite }, function(err, city) {
+    CityModel.find({ name: reqSite }, function(err, city) {
         if (err) 
             res.send(err);
 
