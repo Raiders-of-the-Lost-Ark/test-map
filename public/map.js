@@ -316,7 +316,7 @@ function initMap() {
     //=======================================================================================================================
 
     // FUSION TABLE
-    var layer = new google.maps.FusionTablesLayer({
+    var missouriCounterLayer = new google.maps.FusionTablesLayer({
         query: {
         select: '\'GEO_ID\'',
         from: '1Yx076g0HFD2aeya8T0jBi_w1UuEYj3b06zaXXA'
@@ -324,14 +324,15 @@ function initMap() {
         styles: [{
         polygonOptions:{
             fillColor: '#FFFFFF',
-            fillOpacity: 0.001
+            fillOpacity: 0.0001
         },
         polylineOptions:{
-            strokeOpacity: 0.05
+            strokeOpacity: 0.00001,
+            strokeWeight: 100
         }
         }]
     });
-    layer.setMap(map);
+    missouriCounterLayer.setMap(map);
 
 
 
