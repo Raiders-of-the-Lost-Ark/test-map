@@ -121,6 +121,32 @@ router.route('/cities')
         });
     });
 
+    router.route('/register')
+
+    .post(function(req, res){
+        var user = new UserModel();
+        var temp = Hasher(req.body.password);
+        user.email = req.body.email;
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
+        user.passwordHash = temp.passwordHash;
+        user.salt = temp.salt;
+        user.save(function(err){
+            if(err)
+                res.send(err);
+        });
+        res.redirect('back');
+
+    })
+    .get(function(req, res) {
+        UserModel.find(function(err, cities) {
+            if (err)
+                res.send(err);
+
+            res.json(cities);
+        });
+    });
+
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
