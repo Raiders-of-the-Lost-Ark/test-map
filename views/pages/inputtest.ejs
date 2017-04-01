@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <% var title="Civil War Battlefields: Admin" ; %>
+    <% include ../head %>
+    
+
+</head>
+
+<body>
+
+
+        <form action="/cities" method="POST" enctype="multipart/form-data" id="input_form">
+        Enter City Name <input type="text" name="cityName"></input><br>
+        Enter City Latitude<input type="text" name="Latitude"> </input><br>
+        Enter City Longitude<input type="text" name="Longitude"> </input><br>
+        Upload File<input type="File" name="customFile"><br>
+       
+        </form>
+         <textarea name="custom" form="input_form">Enter Custom text here...</textarea>
+        <input type="submit" form="input_form">
+
+</body>
+
+</html>

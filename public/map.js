@@ -15,6 +15,10 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 7,
         center: {lat: 38.4956029, lng: -92.4205979},
+        MapTypeControl: true,
+        mapTypeControlOptions: {
+        position: google.maps.ControlPosition.TOP_RIGHT
+    },
         mapTypeId: 'terrain',
         styles: [
             {
@@ -324,7 +328,7 @@ function initMap() {
         styles: [{
         polygonOptions:{
             fillColor: '#FFFFFF',
-            fillOpacity: 0.0001
+            fillOpacity: 0.005
         },
         polylineOptions:{
             strokeOpacity: 0.00001,
