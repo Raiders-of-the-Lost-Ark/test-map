@@ -47,6 +47,36 @@ router.get('/login', function(req, res) {
     res.render('pages/login');   // Render login page template
 });
 
+// Partial routes
+// ----------------------------------
+router.post('/viewSite', function(req, res) {
+    console.log("Received site request: " + req.body.site);
+    
+    //var newURL = currentURL + "?site="
+    res.redirect("/viewSite?siteId=" + req.body.site); // Render index template
+});
+
+router.get('/viewSite', function(req, res) {
+
+    var reqSite = req.query.siteId;
+
+    City.find({ name: reqSite }, function(err, city) {
+        if (err) {
+            res.send(err);
+            console.log("ERROR HAPPENED");
+        }
+        if (city) {
+            console.log("Rendering page: " + city[0].name);
+            res.render('siteInfo', { layout: false, data: city[0] }, function(err, html) {
+                res.send(html);
+            });
+        }
+    });
+
+});
+
+
+
 // ROUTES FOR OUR API
 // =============================================================================
 router.use(function(req, res, next){
