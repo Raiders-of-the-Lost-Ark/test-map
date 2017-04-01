@@ -29,6 +29,7 @@ const path= require('path');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(fileUpload());
+app.use(express.static('public/images'));
 
 // view engine setup
 app.set('view engine', 'ejs');
