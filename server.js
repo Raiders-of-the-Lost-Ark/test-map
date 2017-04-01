@@ -7,22 +7,11 @@ var User = require('./models/users');
 
 var Hasher = require('./modules/generate-pass.js');
 var CreateUser = require('./modules/add-users.js');
-<<<<<<< HEAD
 
 
 var mongoose = require('mongoose');
 var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
 var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
-=======
-
-
-var mongoose = require('mongoose');
-var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
-var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
-
-var CityModel = cities.model('City', City);
-var UserModel = users.model('Users', User);
->>>>>>> password-encryption
 
 var CityModel = cities.model('City', City);
 var UserModel = users.model('Users', User);
@@ -65,7 +54,6 @@ router.get('/login', function(req, res) {
     res.render('pages/login');   // Render login page template
 });
 
-<<<<<<< HEAD
 // Partial routes
 // ----------------------------------
 router.post('/viewSite', function(req, res) {
@@ -95,8 +83,6 @@ router.get('/viewSite', function(req, res) {
 });
 
 
-
-=======
 router.get('/create', function(req, res){
     res.render('pages/create');
 });
@@ -104,8 +90,6 @@ router.get('/create', function(req, res){
 router.get('/input', function(req, res){
     res.render('pages/inputtest');
 });
-
->>>>>>> password-encryption
 // ROUTES FOR OUR API
 // =============================================================================
 router.use(function(req, res, next){
@@ -136,35 +120,6 @@ router.route('/cities')
 
     .get(function(req, res) {
         CityModel.find(function(err, cities) {
-<<<<<<< HEAD
-            if (err)
-                res.send(err);
-
-            res.json(cities);
-        });
-    });
-
-    router.route('/register')
-
-    .post(function(req, res){
-        var user = new UserModel();
-        var temp = Hasher(req.body.password);
-        user.email = req.body.email;
-        user.firstName = req.body.firstName;
-        user.lastName = req.body.lastName;
-        user.passwordHash = temp.passwordHash;
-        user.salt = temp.salt;
-        user.save(function(err){
-            if(err)
-                res.send(err);
-        });
-        res.redirect('back');
-
-    })
-    .get(function(req, res) {
-        UserModel.find(function(err, cities) {
-=======
->>>>>>> password-encryption
             if (err)
                 res.send(err);
 
@@ -191,11 +146,11 @@ router.route('/register')
 
     })
     .get(function(req, res) {
-        UserModel.find(function(err, cities) {
+        UserModel.find(function(err, users) {
             if (err)
                 res.send(err);
 
-            res.json(cities);
+            res.json(users);
         });
     });
 // REGISTER OUR ROUTES -------------------------------
