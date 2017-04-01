@@ -59,6 +59,10 @@ router.get('/create', function(req, res){
     res.render('pages/create');
 });
 
+router.get('/input', function(req, res){
+    res.render('pages/inputtest');
+});
+
 // ROUTES FOR OUR API
 // =============================================================================
 router.use(function(req, res, next){
@@ -97,7 +101,7 @@ router.route('/cities')
     });
 
 
-router.route('/hasher')
+router.route('/register')
 
     .post(function(req, res){
         var user = new UserModel();
