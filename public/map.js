@@ -381,7 +381,7 @@ function initMap() {
                         var onecircle = circlesArr[i];
                         google.maps.event.addListener(onecircle, 'click', function () {
                         // where I have added .html to the marker object.
-                            infowindow.setContent(this.misc);
+                            infowindow.setContent("<div id='bubbleContent'></div>");
                             infowindow.setPosition(this.center);
                             infowindow.open(map, this);
 
