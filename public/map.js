@@ -376,6 +376,7 @@ function initMap() {
                         circlesArr.push(cityCircle);
                         //console.log(circlesArr);
                     }
+                    var bubbleContainer, bubbleContent, moreLink;
                     for(var i = 0; i < circlesArr.length; i++)
                     {
                         infowindow = new google.maps.InfoWindow({
@@ -385,7 +386,20 @@ function initMap() {
                         var onecircle = circlesArr[i];
                         google.maps.event.addListener(onecircle, 'click', function () {
                         // where I have added .html to the marker object.
-                            infowindow.setContent("<div id='bubbleContent'></div>");
+
+                            // Create bubble content
+                            bubbleContainer = document.createElement('div');
+                            bubbleContent = document.createElement('div');
+                            bubbleContent.setAttribute("class", "bubbleContent");
+                            moreLink = document.createElement('a');
+                            moreLink.setAttribute("href", "#");
+                            moreLink.addEventListener("click", openRightSidebar);
+                            moreLink.innerHTML = "More...";
+                            bubbleContainer.appendChild(bubbleContent);
+                            bubbleContainer.appendChild(moreLink);
+
+                            // Add bubble content to info window
+                            infowindow.setContent(bubbleContainer);
                             infowindow.setPosition(this.center);
                             infowindow.open(map, this);
 
@@ -395,7 +409,7 @@ function initMap() {
                             var bubble_xhr = new XMLHttpRequest();
                             
                             bubble_xhr.onload = function(){
-                                document.querySelector('#bubbleContent').innerHTML = bubble_xhr.responseText;
+                                document.querySelector('.bubbleContent').innerHTML = bubble_xhr.responseText;
                             };
                             
                             bubble_xhr.open("POST", "/bubble", true);
