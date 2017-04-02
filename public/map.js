@@ -15,6 +15,10 @@ function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 7,
         center: {lat: 38.4956029, lng: -92.4205979},
+        MapTypeControl: true,
+        mapTypeControlOptions: {
+        position: google.maps.ControlPosition.TOP_RIGHT
+    },
         mapTypeId: 'terrain',
         styles: [
             {
@@ -324,7 +328,8 @@ function initMap() {
         styles: [{
         polygonOptions:{
             fillColor: '#FFFFFF',
-            fillOpacity: 0.0001
+            fillOpacity: 0.0001,
+			strokeOpacity: 0.1
         },
         polylineOptions:{
             strokeOpacity: 0.00001,
@@ -372,6 +377,7 @@ function initMap() {
                         circlesArr.push(cityCircle);
                         //console.log(circlesArr);
                     }
+                    var bubbleContainer, bubbleContent, moreLink;
                     for(var i = 0; i < circlesArr.length; i++)
                     {
                         infowindow = new google.maps.InfoWindow({
@@ -381,12 +387,37 @@ function initMap() {
                         var onecircle = circlesArr[i];
                         google.maps.event.addListener(onecircle, 'click', function () {
                         // where I have added .html to the marker object.
-                            infowindow.setContent(this.misc);
+
+                            // Create bubble content
+                            bubbleContainer = document.createElement('div');
+                            bubbleContent = document.createElement('div');
+                            bubbleContent.setAttribute("class", "bubbleContent");
+                            moreLink = document.createElement('a');
+                            moreLink.setAttribute("href", "#");
+                            moreLink.addEventListener("click", openRightSidebar);
+                            moreLink.innerHTML = "More...";
+                            bubbleContainer.appendChild(bubbleContent);
+                            bubbleContainer.appendChild(moreLink);
+
+                            // Add bubble content to info window
+                            infowindow.setContent(bubbleContainer);
                             infowindow.setPosition(this.center);
                             infowindow.open(map, this);
-                        
-                            // Send POST request to load data into sidebar
+
                             var siteData = {site: this.name};
+
+                            // Send POST request to load BUBBLE
+                            var bubble_xhr = new XMLHttpRequest();
+                            
+                            bubble_xhr.onload = function(){
+                                document.querySelector('.bubbleContent').innerHTML = bubble_xhr.responseText;
+                            };
+                            
+                            bubble_xhr.open("POST", "/bubble", true);
+                            bubble_xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+                            bubble_xhr.send(JSON.stringify(siteData)); 
+
+                            // Send POST request to load data into sidebar
                             var xhr2 = new XMLHttpRequest();
                             
                             xhr2.onload = function(){
