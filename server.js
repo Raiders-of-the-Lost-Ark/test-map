@@ -6,16 +6,19 @@ var City = require('./models/cities');
 var User = require('./models/users');
 
 var Hasher = require('./modules/generate-pass.js');
-var CreateUser = require('./modules/add-users.js');
+//var CreateUser = require('./modules/add-users.js');
+var TestPass = require('./modules/test-pass.js');
 
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
+
 var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
 var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
 
 var CityModel = cities.model('City', City);
 var UserModel = users.model('Users', User);
+
 // call the packages we need
 var express    = require('express');        // call express
 const fileUpload = require('express-fileupload');
@@ -57,6 +60,10 @@ router.get('/login', function(req, res) {
     res.render('pages/login');   // Render login page template
 });
 
+router.get('/testlogin', function(req, res){
+    res.render('pages/testlogin');
+})
+
 // Right sidebar routes
 // ----------------------------------
 router.post('/viewSite', function(req, res) {
@@ -83,6 +90,22 @@ router.get('/viewSite', function(req, res) {
         }
     });
 
+});
+
+
+// loginPage partial router
+router.post('/testpass', function(req, res){
+    console.log("Received User " + req.body.email);
+    UserModel.find({email: req.body.email}, function(err, user) {
+        if (err)
+            res.send(err);
+
+        if(user) {
+            console.log(user[0].passwordSalt);
+            console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
+        }
+    })
+    res.redirect('back');
 });
 
 // Info bubble routes

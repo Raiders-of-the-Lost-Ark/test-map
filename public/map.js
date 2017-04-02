@@ -328,12 +328,9 @@ function initMap() {
         styles: [{
         polygonOptions:{
             fillColor: '#FFFFFF',
-            fillOpacity: 0.0001,
-			strokeOpacity: 0.1
-        },
-        polylineOptions:{
-            strokeOpacity: 0.00001,
-            strokeWeight: 100
+            fillOpacity: 0.005,
+			strokeOpacity: 0.2,
+            strokeWeight: 1
         }
         }]
     });
@@ -464,7 +461,7 @@ function initMap() {
 
     // Zoom restrictions
     map.setOptions({ 
-        minZoom: 4, 
+        minZoom: 5, 
         maxZoom: 21,    
         streetViewControl: false
     });
