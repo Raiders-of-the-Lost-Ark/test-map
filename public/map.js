@@ -401,29 +401,23 @@ function initMap() {
                             infowindow.setPosition(this.center);
                             infowindow.open(map, this);
 
-                            var siteData = {site: this.name};
-
-                            // Send POST request to load BUBBLE
-                            var bubble_xhr = new XMLHttpRequest();
-                            
-                            bubble_xhr.onload = function(){
-                                document.querySelector('.bubbleContent').innerHTML = bubble_xhr.responseText;
+                            // Send request for bubble info
+                            var bubbleRequest = new XMLHttpRequest(); 
+                            bubbleRequest.open("GET", "/bubble?site=" + this.name, true);
+                            bubbleRequest.onload = function(){
+                                // Populate site bubble 
+                                document.querySelector('.bubbleContent').innerHTML = bubbleRequest.responseText;
                             };
-                            
-                            bubble_xhr.open("POST", "/bubble", true);
-                            bubble_xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                            bubble_xhr.send(JSON.stringify(siteData)); 
+                            bubbleRequest.send(); 
 
-                            // Send POST request to load data into sidebar
-                            var xhr2 = new XMLHttpRequest();
-                            
-                            xhr2.onload = function(){
-                                document.querySelector('#siteInfo_div').innerHTML = xhr2.responseText;
-                            };
-                            
-                            xhr2.open("POST", "/viewSite", true);
-                            xhr2.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                            xhr2.send(JSON.stringify(siteData)); 
+                            // Send request for sidebar info
+                            var infoRequest = new XMLHttpRequest();
+                            infoRequest.open("GET", "/viewSite?site=" + this.name, true);
+                            infoRequest.onload = function(){
+                                // Populate sidebar 
+                                document.querySelector('#siteInfo_div').innerHTML = infoRequest.responseText;
+                            };  
+                            infoRequest.send(); 
                         });
                     }
                 } else {
