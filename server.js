@@ -169,7 +169,7 @@ router.route('/cities')
                 return res.status(500).send(err);
            // res.send('file uploaded to' +uploadPath);
         });
-        city.images=uploadPath;
+        city.images=image.name;
         // save the city and check for errors
         city.save(function(err) {
             if (err)

@@ -1,4 +1,11 @@
 <div id="bubbleContent">
     <h3><%= data.name %></h3>
+
+    <% var imgDir = "images/" %>
+    <% var pic = imgDir + data.images %>
+    <% if (data.images && data.images.length != "") { %>
+        <img src="<%= pic %>" style="width:100%" />
+    <% } %>
+
     <p><%= data.misc %></p>
 </div>
