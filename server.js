@@ -67,30 +67,39 @@ router.get('/testlogin', function(req, res){
 
 // Right sidebar routes
 // ----------------------------------
-router.post('/viewSite', function(req, res) {
-    console.log("Received site request: " + req.body.site);
-    
-    //var newURL = currentURL + "?site="
-    res.redirect("/viewSite?siteId=" + req.body.site); // Render index template
-});
-
 router.get('/viewSite', function(req, res) {
-
-    var reqSite = req.query.siteId;
+    var reqSite = req.query.site;
 
     CityModel.find({ name: reqSite }, function(err, city) {
-        if (err) {
+        if (err)
             res.send(err);
-            console.log("ERROR HAPPENED");
-        }
         if (city) {
-            console.log("Rendering page: " + city[0].name);
+            // Render sidebar html from template
             res.render('siteinfo', { layout: false, data: city[0] }, function(err, html) {
+                // Send html to client
                 res.send(html);
             });
         }
     });
+});
 
+// Info bubble routes
+// ----------------------------------
+router.get('/bubble', function(req, res) {
+    var reqSite = req.query.site;
+
+    CityModel.find({ name: reqSite }, function(err, city) {
+        if (err) 
+            res.send(err);
+
+        if (city) {
+            // Render bubble html from template
+            res.render('bubble', { layout: false, data: city[0] }, function(err, html) {
+                // Send html to client
+                res.send(html);
+            });
+        }
+    });
 });
 
 
@@ -107,30 +116,6 @@ router.post('/testpass', function(req, res){
         }
     })
     res.redirect('back');
-});
-
-// Info bubble routes
-// ----------------------------------
-router.post('/bubble', function(req, res) {
-    // Go get this site
-    res.redirect("/bubble?siteId=" + req.body.site); 
-});
-
-router.get('/bubble', function(req, res) {
-    var reqSite = req.query.siteId;
-
-    CityModel.find({ name: reqSite }, function(err, city) {
-        if (err) 
-            res.send(err);
-
-        if (city) {
-            // Render bubble html from template
-            res.render('bubble', { layout: false, data: city[0] }, function(err, html) {
-                // Send html to client
-                res.send(html);
-            });
-        }
-    });
 });
 
 router.get('/create', function(req, res){
