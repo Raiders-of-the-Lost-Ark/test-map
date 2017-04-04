@@ -1,13 +1,24 @@
-<div class="mdl-layout__drawer-right mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
-    <header class="demo-drawer-header">
-    </header>
-    <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+<!DOCTYPE html>
+<html lang="en">
 
-        <span class="mdl-layout-title mdl-color-text--grey-300"><center>Test Input</center></span>
-        <br>
-        <!--Top section dropdown menu
-        -->
-        <form action="/cities" method="POST" name="form" id="input_form">
+<head>
+
+    <% var title="Civil War Battlefields: Account" ; %>
+    <% include ../head %>
+
+    <link rel="stylesheet" type="text/css" href="admin.css">
+
+</head>
+
+<body>
+
+    <% include ../nav %>
+
+        <main class="mdl-layout__content mdl-color--grey-100 map-container">
+
+            <!-- Page content -->
+
+        <form action="/cities" method="POST" enctype="multipart/form-data" id="input_form">
         Enter City Name <input type="text" name="cityName"></input><br>
         Enter City Latitude<input type="text" name="Latitude"> </input><br>
         Enter City Longitude<input type="text" name="Longitude"> </input><br>
@@ -16,13 +27,13 @@
         </form>
          <textarea name="custom" form="input_form">Enter Custom text here...</textarea>
         <input type="submit" form="input_form">
-        <div class="mdl-layout-spacer"></div>
-        <button class="mdl-button mdl-js-button mdl-button--icon">
-        <i class="material-icons">help-outline</i>
-        <div class="mdl-tooltip" data-mdl-for="tt1">
-            Follow
-        </div>
-        </button>
-    </nav>
-</div>
-<div class="mdl-layout__obfuscator-right"></div>
+
+        </main>
+
+        <% include ../footer %>
+
+        <script src="admin.js"></script>
+
+</body>
+
+</html>
