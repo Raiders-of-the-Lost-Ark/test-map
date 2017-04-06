@@ -319,25 +319,37 @@ function initMap() {
 
     //=======================================================================================================================
 
-    // FUSION TABLE
-    var missouriCounterLayer = new google.maps.FusionTablesLayer({
-        query: {
-        select: '\'GEO_ID\'',
-        from: '1Yx076g0HFD2aeya8T0jBi_w1UuEYj3b06zaXXA'
-        },
-        styles: [{
-        polygonOptions:{
-            fillColor: '#FFFFFF',
-            fillOpacity: 0.005,
-			strokeOpacity: 0.2,
-            strokeWeight: 1
-        }
-        }]
+    // Load local county data
+    var dataReq = new XMLHttpRequest();
+    dataReq.open("GET", 'mo.json', true);
+    dataReq.onload = function() {
+        var counties = JSON.parse(dataReq.responseText);
+        map.data.setStyle({
+          fillColor: '#FFFFFF',
+          fillOpacity: 0.005,
+          strokeWeight: 1,
+          strokeOpacity: 0.2
+        });
+        map.data.addGeoJson(counties);
+    };
+    dataReq.send();
+
+    // County listeners
+    map.data.addListener('mouseover', function(event) {
+        map.data.revertStyle();
+        map.data.overrideStyle(event.feature, {fillOpacity: 0.5});
+        console.log(event.feature.getProperty('NAMELSAD10'));  
     });
-    missouriCounterLayer.setMap(map);
-
-
-
+    map.data.addListener('mouseout', function(event) {
+        map.data.revertStyle();
+    });
+    map.data.addListener('click', function(event) {
+        var currentLat = event.feature.getProperty('INTPTLAT10');
+        var currentLong = event.feature.getProperty('INTPTLON10');
+        var currentPos = new google.maps.LatLng(currentLat, currentLong);
+        map.setZoom(10);
+        map.panTo(currentPos);
+    });
 
 
     // this section does an async get request and puts circles on the map based off data from
