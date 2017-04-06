@@ -377,6 +377,8 @@ function initMap() {
                             fillOpacity: 0.35,
                             map: map,
                             clickable: true,
+                            lat: cityArray[i].lat,
+                            long: cityArray[i].lng,
                             center: {lat: parseFloat(cityArray[i].lat), lng: parseFloat(cityArray[i].lng)},
                             radius: 10000,
                             name: cityArray[i].name,
@@ -396,6 +398,9 @@ function initMap() {
                         var onecircle = circlesArr[i];
                         google.maps.event.addListener(onecircle, 'click', function () {
                         // where I have added .html to the marker object.
+
+                            var panLoc = new google.maps.LatLng(this.lat, this.long);
+                            map.panTo(panLoc);
 
                             // Create bubble content
                             bubbleContainer = document.createElement('div');
