@@ -2,6 +2,10 @@
 var map;
 
 var cityArray = [];
+var circlesArr = [];
+
+var infoWindow = null;
+
 var cityConst = function(name, lat, lng, id, misc)
 {
     this.name = name;
@@ -351,12 +355,15 @@ function initMap() {
         map.panTo(currentPos);
     });
 
+    // Create infowindow for use in all site bubbles
+    infowindow = new google.maps.InfoWindow({
+        content: "Loading...",
+        maxWidth: 300   
+    });
 
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
 
-    var infoWindow = null;
-    var circlesArr = [];
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/api/cities", true);
     xhr.onload = function (e) { 
@@ -383,59 +390,15 @@ function initMap() {
                             radius: 10000,
                             name: cityArray[i].name,
                             misc: cityArray[i].misc,
-                            siteId: cityArray[i].id
+                            siteId: cityArray[i].id,
+                            siteInd: i
                         });
+
+                        google.maps.event.addListener(cityCircle, 'click', function () {
+                            selectMarker(this.siteInd);
+                        });
+
                         circlesArr.push(cityCircle);
-                        //console.log(circlesArr);
-                    }
-                    var bubbleContainer, bubbleContent, moreLink;
-                    for(var i = 0; i < circlesArr.length; i++)
-                    {
-                        infowindow = new google.maps.InfoWindow({
-                            content: "holding...",
-                            maxWidth: 300   
-                        });
-                        var onecircle = circlesArr[i];
-                        google.maps.event.addListener(onecircle, 'click', function () {
-                        // where I have added .html to the marker object.
-
-                            var panLoc = new google.maps.LatLng(this.lat, this.long);
-                            map.panTo(panLoc);
-
-                            // Create bubble content
-                            bubbleContainer = document.createElement('div');
-                            bubbleContent = document.createElement('div');
-                            bubbleContent.setAttribute("class", "bubbleContent");
-                            moreLink = document.createElement('a');
-                            moreLink.setAttribute("href", "#");
-                            moreLink.addEventListener("click", openRightSidebar);
-                            moreLink.innerHTML = "More...";
-                            bubbleContainer.appendChild(bubbleContent);
-                            bubbleContainer.appendChild(moreLink);
-
-                            // Add bubble content to info window
-                            infowindow.setContent(bubbleContainer);
-                            infowindow.setPosition(this.center);
-                            infowindow.open(map, this);
-
-                            // Send request for bubble info
-                            var bubbleRequest = new XMLHttpRequest(); 
-                            bubbleRequest.open("GET", "/bubble?site=" + this.name, true);
-                            bubbleRequest.onload = function(){
-                                // Populate site bubble 
-                                document.querySelector('.bubbleContent').innerHTML = bubbleRequest.responseText;
-                            };
-                            bubbleRequest.send(); 
-
-                            // Send request for sidebar info
-                            var infoRequest = new XMLHttpRequest();
-                            infoRequest.open("GET", "/viewSite?site=" + this.name, true);
-                            infoRequest.onload = function(){
-                                // Populate sidebar 
-                                document.querySelector('#siteInfo_div').innerHTML = infoRequest.responseText;
-                            };  
-                            infoRequest.send(); 
-                        });
                     }
                 } else {
                 console.error(xhr.statusText);
@@ -491,6 +454,50 @@ function initMap() {
         streetViewControl: false
     });
 
-   
+
     
 } // End map init 
+
+
+function selectMarker(index) {
+    // Get site marker from array
+    var marker = circlesArr[index];
+
+    // Pan to the marker
+    map.panTo(new google.maps.LatLng(marker.lat, marker.long));
+
+    // Create bubble content
+    var bubbleContainer, bubbleContent, moreLink;
+    bubbleContainer = document.createElement('div');
+    bubbleContent = document.createElement('div');
+    bubbleContent.setAttribute("class", "bubbleContent");
+    moreLink = document.createElement('a');
+    moreLink.setAttribute("href", "#");
+    moreLink.addEventListener("click", openInfoPanel);
+    moreLink.innerHTML = "More...";
+    bubbleContainer.appendChild(bubbleContent);
+    bubbleContainer.appendChild(moreLink);
+
+    // Add bubble content to info window
+    infowindow.setContent(bubbleContainer);
+    infowindow.setPosition(marker.center);
+    infowindow.open(map, marker);
+
+    // Send request for bubble info
+    var bubbleRequest = new XMLHttpRequest(); 
+    bubbleRequest.open("GET", "/bubble?site=" + marker.name, true);
+    bubbleRequest.onload = function(){
+        // Populate site bubble 
+        document.querySelector('.bubbleContent').innerHTML = bubbleRequest.responseText;
+    };
+    bubbleRequest.send(); 
+
+    // Send request for sidebar info
+    var infoRequest = new XMLHttpRequest();
+    infoRequest.open("GET", "/viewSite?site=" + marker.name, true);
+    infoRequest.onload = function(){
+        // Populate sidebar 
+        document.querySelector('#siteInfo_div').innerHTML = infoRequest.responseText;
+    };  
+    infoRequest.send(); 
+}
