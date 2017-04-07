@@ -3,7 +3,9 @@
     </header>
     <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
 
-        <ul class="listed-sites">
+        <input type="text" id="siteSearch" placeholder="Search battlesites..." title="Type Query Here">
+
+        <ul id="listed-sites">
             <% for (var ind in sites) { %>
                 <li>
                     <a href="#" onClick="selectMarker(<%- ind -%>)">
@@ -24,3 +26,25 @@
     </nav>
 </div>
 <div class="mdl-layout__obfuscator-right"></div>
+
+<script>
+
+var searchBar = document.getElementById("siteSearch");
+var siteList = document.getElementById("listed-sites");
+
+searchBar.addEventListener("keyup", function() {filterList(this, siteList)} );
+
+function filterList(input, list) {
+    var filter = input.value.toUpperCase();
+    var items = list.getElementsByTagName("li");
+
+    for (var i = 0; i < items.length; i++) {
+        if (items[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
+            items[i].style.display = "";
+        } else {
+            items[i].style.display = "none";
+        }
+    }
+}
+
+</script>
