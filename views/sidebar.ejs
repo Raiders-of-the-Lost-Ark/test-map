@@ -5,7 +5,11 @@
 
         <ul class="listed-sites">
             <% for (var ind in sites) { %>
-                <li><%- sites[ind].name -%> </li>
+                <li>
+                    <a href="#" onClick="selectMarker(<%- ind -%>)">
+                        <%- sites[ind].name -%>
+                    </a>
+                </li>
             <% } %>
         </ul>
 
