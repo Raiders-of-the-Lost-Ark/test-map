@@ -46,7 +46,16 @@ var router = express.Router();              // get an instance of the express Ro
 // PAGE ROUTES
 // =============================================================================
 router.get('/', function(req, res) {
-    res.render('pages/index'); // Render index template
+    var sites = {};
+    CityModel.find(function(err, cities) {
+        if (err) {
+            res.send(err);
+        }
+        if (cities) {
+            res.locals.sites = cities;
+            res.render('pages/index'); // Render index template
+        }
+    });
 });
 
 router.get('/admin', function(req, res) {

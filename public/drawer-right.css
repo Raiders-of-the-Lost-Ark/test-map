@@ -140,10 +140,10 @@
 }
 
 /*right drawer width*/
-.mdl-layout__drawer-right {
-  width: 600px;
-  right: -600px;
-  border: 0;
+.mdl-layout__drawer-right.large-drawer {
+    width: 600px;
+    right: -600px;
+    border: 0;
 }
 
 .mdl-layout__drawer-right.active {

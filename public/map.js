@@ -408,7 +408,7 @@ function initMap() {
                             bubbleContent.setAttribute("class", "bubbleContent");
                             moreLink = document.createElement('a');
                             moreLink.setAttribute("href", "#");
-                            moreLink.addEventListener("click", openRightSidebar);
+                            moreLink.addEventListener("click", openInfoPanel);
                             moreLink.innerHTML = "More...";
                             bubbleContainer.appendChild(bubbleContent);
                             bubbleContainer.appendChild(moreLink);

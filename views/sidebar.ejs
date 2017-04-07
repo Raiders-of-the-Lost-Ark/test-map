@@ -1,0 +1,22 @@
+<div id="sidebar" class="mdl-layout__drawer-right mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
+    <header class="demo-drawer-header">
+    </header>
+    <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
+
+        <ul class="listed-sites">
+            <% for (var ind in sites) { %>
+                <li><%- sites[ind].name -%> </li>
+            <% } %>
+        </ul>
+
+        <div class="mdl-layout-spacer"></div>
+
+        <button class="mdl-button mdl-js-button mdl-button--icon">
+        <i class="material-icons">help-outline</i>
+        <div class="mdl-tooltip" data-mdl-for="tt1">
+            Follow
+        </div>
+        </button>
+    </nav>
+</div>
+<div class="mdl-layout__obfuscator-right"></div>
