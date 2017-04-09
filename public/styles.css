@@ -342,3 +342,8 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 div[class="gm-style-cc"] {
     display: none !important;
 }
+
+/* Sidebar */
+#sidebar {
+  z-index: 2;
+}

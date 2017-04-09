@@ -37,20 +37,32 @@ $('.mdl-layout__obfuscator-right').click(function(){
  }
 });
 
-function openSidePanel(e) {
-    e.preventDefault();
-    var drawer = document.querySelector('#sidebar');
-    if (drawer.classList.contains('active')) 
-        drawer.classList.remove('active');
-    else 
-        drawer.classList.add('active');
+// Vanilla JS from here on
+
+function openSidePanel(event) {
+    event.preventDefault();
+    var sidebar = document.querySelector('#sidebar');
+    var info_panel = document.querySelector('#info-panel');
+
+    if (info_panel.classList.contains('active')) 
+        info_panel.classList.remove('active');
+    sidebar.classList.add('active');
 }
 
-function openInfoPanel(e) {
-    e.preventDefault();
-    var drawer = document.querySelector('#info-panel');
-    if (drawer.classList.contains('active')) 
-        drawer.classList.remove('active');
-    else 
-        drawer.classList.add('active');
+function openInfoPanel(event) {
+    event.preventDefault();
+    var info_panel = document.querySelector('#info-panel');
+    var sidebar = document.querySelector('#sidebar');
+
+    if (sidebar.classList.contains('active')) 
+        sidebar.classList.remove('active');
+    info_panel.classList.add('active');
+}
+
+function closeInfoPanel(event) {
+    event.preventDefault();
+    var info_panel = document.querySelector('#info-panel');
+    
+    if (info_panel.classList.contains('active')) 
+        info_panel.classList.remove('active');
 }
