@@ -1,23 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+<% var title = 'Authentication Example' %>
+<% include head %>
 
-<head>
-
-    <% var title="Civil War Battlefields: Admin" ; %>
-    <% include ../head %>
-    
-
-</head>
-
-<body>
-
-
- <form action="/testpass" method="POST" name="form" id="input_form">
-        Enter Email<input type="text" name="email"></input><br>
-        Enter Password<input type="text" name="password"> </input><br>       
+<h1>Login</h1>
+Try accessing <a href="/restricted">/restricted</a>, then authenticate with "tj" and "foobar".
+<form method="post" action="/testpass">
+  <p>
+    <label>Email:</label>
+    <input type="text" name="email">
+  </p>
+  <p>
+    <label>Password:</label>
+    <input type="text" name="password">
+  </p>
+  <p>
+    <input type="submit" value="Login">
+  </p>
 </form>
-<input type="submit" form="input_form">
 
-</body>
-
-</html>
+<% include foot %>

@@ -6,7 +6,6 @@ var City = require('./models/cities');
 var User = require('./models/users');
 
 var Hasher = require('./modules/generate-pass.js');
-//var CreateUser = require('./modules/add-users.js');
 var TestPass = require('./modules/test-pass.js');
 
 
@@ -21,6 +20,8 @@ var UserModel = users.model('Users', User);
 
 // call the packages we need
 var express    = require('express');        // call express
+var session = require('express-session');
+
 const fileUpload = require('express-fileupload');
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
@@ -111,20 +112,57 @@ router.get('/bubble', function(req, res) {
     });
 });
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  secret: 'shhhh, very secret'
+}));
+
+// Session-persisted message middleware
+
+app.use(function(req, res, next){
+  var err = req.session.error;
+  var msg = req.session.success;
+  delete req.session.error;
+  delete req.session.success;
+  res.locals.message = '';
+  if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
+  if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
+  next();
+});
+
 
 // loginPage partial router
 router.post('/testpass', function(req, res){
     console.log("Received User " + req.body.email);
     UserModel.find({email: req.body.email}, function(err, user) {
-        if (err)
-            res.send(err);
-
-        if(user) {
+        if (err){
+            console.log("AM I HERE");
+            res.redirect('back');
+        }
+        if(user[0]) {
+            console.log("OR AM I HERE");
             console.log(user[0].passwordSalt);
             console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
-        }
+            if(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash) == true){
+                req.session.regenerate(function(){
+                // Store the user's primary key
+                // in the session store to be retrieved,
+                // or in this case the entire user object
+                req.session.user = user[0];
+                req.session.success = 'Authenticated as ' + user[0].email
+                + ' click to <a href="/logout">logout</a>. '
+                + ' You may now access <a href="/restricted">/restricted</a>.';
+                console.log("SUCCESSFULL SESSOIN?");
+                res.redirect('back');
+                });
+            }
+            else
+                res.redirect('testlogin');
+        } else
+        res.redirect('testlogin');
     })
-    res.redirect('back');
 });
 
 router.get('/create', function(req, res){
@@ -208,6 +246,27 @@ router.route('/register')
             res.json(users);
         });
     });
+
+
+function restrict(req, res, next) {
+  if (req.session.user) {
+    next();
+  } else {
+    req.session.error = 'Access denied!';
+    res.redirect('/testlogin');
+  }
+}
+
+app.get('/restricted', restrict, function(req, res){
+  res.send('Wahoo! restricted area, click to <a href="/logout">logout</a>');
+});    
+app.get('/logout', function(req, res){
+  // destroy the user's session to log them out
+  // will be re-created next request
+  req.session.destroy(function(){
+    res.redirect('/');
+  });
+});
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
