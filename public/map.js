@@ -6,6 +6,9 @@ var circlesArr = [];
 
 var infoWindow = null;
 
+county_layer = null;
+state_layer = null;
+
 var cityConst = function(name, lat, lng, id, misc)
 {
     this.name = name;
@@ -323,36 +326,84 @@ function initMap() {
 
     //=======================================================================================================================
 
+    // Create data layers for counties and states
+    county_layer = new google.maps.Data;
+    state_layer = new google.maps.Data;
+    
     // Load local county data
     var dataReq = new XMLHttpRequest();
     dataReq.open("GET", 'mo.json', true);
     dataReq.onload = function() {
         var counties = JSON.parse(dataReq.responseText);
-        map.data.setStyle({
+        county_layer.setStyle({
           fillColor: '#FFFFFF',
           fillOpacity: 0.005,
           strokeWeight: 1,
           strokeOpacity: 0.2
         });
-        map.data.addGeoJson(counties);
+        county_layer.addGeoJson(counties);
     };
     dataReq.send();
 
+    // Load local state data
+    var dataReq2 = new XMLHttpRequest();
+    dataReq2.open("GET", 'states.json', true);
+    dataReq2.onload = function() {
+        var states = JSON.parse(dataReq2.responseText);
+        state_layer.setStyle({
+          fillColor: '#FFFFFF',
+          fillOpacity: 0.005,
+          strokeWeight: 1,
+          strokeOpacity: 0.2
+        });
+        state_layer.addGeoJson(states);
+    };
+    dataReq2.send();
+
+    // State listeners
+    state_layer.addListener('mouseover', function(event) {
+        state_layer.revertStyle();
+        state_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
+        console.log(event.feature.getProperty("NAME"));  
+    });
+    state_layer.addListener('mouseout', function(event) {
+        state_layer.revertStyle();
+    });
+    state_layer.addListener('click', function(event) {
+        var currentLat = event.feature.getProperty('INTPTLAT');
+        var currentLong = event.feature.getProperty('INTPTLON');
+        var currentPos = new google.maps.LatLng(currentLat, currentLong);
+        map.setZoom(7);
+        map.panTo(currentPos);
+    });
+
     // County listeners
-    map.data.addListener('mouseover', function(event) {
-        map.data.revertStyle();
-        map.data.overrideStyle(event.feature, {fillOpacity: 0.5});
+    county_layer.addListener('mouseover', function(event) {
+        county_layer.revertStyle();
+        county_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
         console.log(event.feature.getProperty('NAMELSAD10'));  
     });
-    map.data.addListener('mouseout', function(event) {
-        map.data.revertStyle();
+    county_layer.addListener('mouseout', function(event) {
+        county_layer.revertStyle();
     });
-    map.data.addListener('click', function(event) {
+    county_layer.addListener('click', function(event) {
         var currentLat = event.feature.getProperty('INTPTLAT10');
         var currentLong = event.feature.getProperty('INTPTLON10');
         var currentPos = new google.maps.LatLng(currentLat, currentLong);
-        map.setZoom(10);
+        map.setZoom(8);
         map.panTo(currentPos);
+    });
+
+    // Add state and county layers to map
+    //state_layer.setMap(map);             // Maybe not
+    county_layer.setMap(map);
+
+    // Map listeners
+    map.addListener('zoom_changed', function(event) {
+        if ((map.getZoom() > 13) || (map.getZoom() <= 5)) county_layer.setMap(null); 
+        else county_layer.setMap(map);
+        if (map.getZoom() > 5) state_layer.setMap(null); 
+        else state_layer.setMap(map);
     });
 
     // Create infowindow for use in all site bubbles
