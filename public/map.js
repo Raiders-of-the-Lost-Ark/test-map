@@ -1,12 +1,12 @@
 // The Map
 var map;
 
-var cityArray = [];
+var siteArray = [];
 var circlesArr = [];
 
 var infoWindow = null;
 
-var cityConst = function(name, lat, lng, id, misc)
+var siteConst = function(name, lat, lng, id, misc)
 {
     this.name = name;
     this.lat = lat;
@@ -362,21 +362,21 @@ function initMap() {
     });
 
     // this section does an async get request and puts circles on the map based off data from
-    // the mongodb database, right now it just has a couple cities with small circles
+    // the mongodb database, right now it just has a couple sites with small circles
 
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/cities", true);
+    xhr.open("GET", "/api/sites", true);
     xhr.onload = function (e) { 
         if (xhr.readyState === 4) {
             if (xhr.status === 200) {
-                var cityData = JSON.parse(xhr.responseText);
-                for (var city in cityData) {
-                    cityArray.push(new cityConst(cityData[city].name, cityData[city].lat, cityData[city].lng, cityData[city]._id, cityData[city].misc));
+                var siteData = JSON.parse(xhr.responseText);
+                for (var site in siteData) {
+                    siteArray.push(new siteConst(siteData[site].name, siteData[site].lat, siteData[site].lng, siteData[site]._id, siteData[site].misc));
                 }
-                    for(var i = 0; i < cityArray.length; i++)
+                    for(var i = 0; i < siteArray.length; i++)
                     {                        
-                        //console.log(cityArray[i]);
-                        var cityCircle = new google.maps.Circle({
+                        //console.log(siteArray[i]);
+                        var siteCircle = new google.maps.Circle({
                             strokeColor: '#FF0000',
                             strokeOpacity: 0.8,
                             strokeWeight: 2,
@@ -384,21 +384,21 @@ function initMap() {
                             fillOpacity: 0.35,
                             map: map,
                             clickable: true,
-                            lat: cityArray[i].lat,
-                            long: cityArray[i].lng,
-                            center: {lat: parseFloat(cityArray[i].lat), lng: parseFloat(cityArray[i].lng)},
+                            lat: siteArray[i].lat,
+                            long: siteArray[i].lng,
+                            center: {lat: parseFloat(siteArray[i].lat), lng: parseFloat(siteArray[i].lng)},
                             radius: 10000,
-                            name: cityArray[i].name,
-                            misc: cityArray[i].misc,
-                            siteId: cityArray[i].id,
+                            name: siteArray[i].name,
+                            misc: siteArray[i].misc,
+                            siteId: siteArray[i].id,
                             siteInd: i
                         });
 
-                        google.maps.event.addListener(cityCircle, 'click', function () {
+                        google.maps.event.addListener(siteCircle, 'click', function () {
                             selectMarker(this.siteInd);
                         });
 
-                        circlesArr.push(cityCircle);
+                        circlesArr.push(siteCircle);
                     }
                 } else {
                 console.error(xhr.statusText);

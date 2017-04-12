@@ -2,7 +2,7 @@
 
 // BASE SETUP
 // =============================================================================
-var City = require('./models/cities');
+var site = require('./models/sites');
 var User = require('./models/users');
 
 var Hasher = require('./modules/generate-pass.js');
@@ -13,10 +13,10 @@ var TestPass = require('./modules/test-pass.js');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
+var sites = mongoose.createConnection('mongodb://138.197.28.83:27017/testsites');
 var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
 
-var CityModel = cities.model('City', City);
+var siteModel = sites.model('Site', site);
 var UserModel = users.model('Users', User);
 
 // call the packages we need
@@ -47,12 +47,12 @@ var router = express.Router();              // get an instance of the express Ro
 // =============================================================================
 router.get('/', function(req, res) {
     var sites = {};
-    CityModel.find(function(err, cities) {
+    siteModel.find(function(err, sites) {
         if (err) {
             res.send(err);
         }
-        if (cities) {
-            res.locals.sites = cities;
+        if (sites) {
+            res.locals.sites = sites;
             res.render('pages/index'); // Render index template
         }
     });
@@ -79,12 +79,12 @@ router.get('/testlogin', function(req, res){
 router.get('/viewSite', function(req, res) {
     var reqSite = req.query.site;
 
-    CityModel.find({ name: reqSite }, function(err, city) {
+    siteModel.find({ name: reqSite }, function(err, site) {
         if (err)
             res.send(err);
-        if (city) {
+        if (site) {
             // Render sidebar html from template
-            res.render('siteinfo', { layout: false, data: city[0] }, function(err, html) {
+            res.render('siteinfo', { layout: false, data: site[0] }, function(err, html) {
                 // Send html to client
                 res.send(html);
             });
@@ -97,13 +97,13 @@ router.get('/viewSite', function(req, res) {
 router.get('/bubble', function(req, res) {
     var reqSite = req.query.site;
 
-    CityModel.find({ name: reqSite }, function(err, city) {
+    siteModel.find({ name: reqSite }, function(err, site) {
         if (err) 
             res.send(err);
 
-        if (city) {
+        if (site) {
             // Render bubble html from template
-            res.render('bubble', { layout: false, data: city[0] }, function(err, html) {
+            res.render('bubble', { layout: false, data: site[0] }, function(err, html) {
                 // Send html to client
                 res.send(html);
             });
@@ -141,18 +141,18 @@ router.use(function(req, res, next){
     next();
 })
 
-// on routes that end in /cities
+// on routes that end in /sites
 // -----------------------------------------------3-----
-router.route('/cities')
+router.route('/sites')
 
-    // create a city (accessed at POST http://localhost:8080/api/city)
+    // create a site (accessed at POST http://localhost:8080/api/site)
     .post(function(req, res) {
         
-        var city = new CityModel();      // create a new instance of the City model (schema)
-        city.name = req.body.cityName;  // set the city's name (from request)
-        city.lat = req.body.Latitude;    // set the city's lat (from request)
-        city.lng = req.body.Longitude;    // set the city's long (from request)
-        city.misc = req.body.custom;
+        var site = new siteModel();      // create a new instance of the site model (schema)
+        site.name = req.body.siteName;  // set the site's name (from request)
+        site.lat = req.body.Latitude;    // set the site's lat (from request)
+        site.lng = req.body.Longitude;    // set the site's long (from request)
+        site.misc = req.body.custom;
         let image =req.files.customFile;
 
         var fileDir=__dirname+("/public/images");
@@ -163,9 +163,9 @@ router.route('/cities')
                 return res.status(500).send(err);
            // res.send('file uploaded to' +uploadPath);
         });
-        city.images=image.name;
-        // save the city and check for errors
-        city.save(function(err) {
+        site.images=image.name;
+        // save the site and check for errors
+        site.save(function(err) {
             if (err)
                 res.send(err);
         });
@@ -174,11 +174,11 @@ router.route('/cities')
     })
 
     .get(function(req, res) {
-        CityModel.find(function(err, cities) {
+        siteModel.find(function(err, sites) {
             if (err)
                 res.send(err);
 
-            res.json(cities);
+            res.json(sites);
         });
     });
 
