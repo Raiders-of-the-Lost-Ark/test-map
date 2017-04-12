@@ -467,16 +467,23 @@ function selectMarker(index) {
     map.panTo(new google.maps.LatLng(marker.lat, marker.long));
 
     // Create bubble content
-    var bubbleContainer, bubbleContent, moreLink;
+    var bubbleContainer, bubbleContent, moreLink, rippleContainer;
     bubbleContainer = document.createElement('div');
     bubbleContent = document.createElement('div');
     bubbleContent.setAttribute("class", "bubbleContent");
-    moreLink = document.createElement('a');
+    moreLink = document.createElement('button');
     moreLink.setAttribute("href", "#");
+    moreLink.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent bubbleButton");
+    rippleContainer = document.createElement('span');
+    rippleContainer.setAttribute("class", "mdl-button__ripple-container");
+    rippleEffect = document.createElement('span');
+
+
     moreLink.addEventListener("click", openInfoPanel);
     moreLink.innerHTML = "More...";
     bubbleContainer.appendChild(bubbleContent);
     bubbleContainer.appendChild(moreLink);
+    moreLink.appendChild(rippleContainer);
 
     // Add bubble content to info window
     infowindow.setContent(bubbleContainer);
