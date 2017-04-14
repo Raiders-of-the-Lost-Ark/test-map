@@ -60,12 +60,13 @@ function utmToLatLng(zone, easting, northing, northernHemisphere) {
 }
 
 //grab the zone, eating and northing from user, convert into lat and long and spit it into a p tag
-module.exports = function poopyStupidButt(gridNum, utmE, utmN) {
+module.exports = {
+	convert: function(gridNum, utmE, utmN) {
     var northHem = true;
     var coords = utmToLatLng(gridNum, utmE, utmN, northHem);
     return coords;
+	}
 }
-
 
 /*
  test data
