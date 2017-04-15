@@ -6,9 +6,8 @@ var City = require('./models/cities');
 var User = require('./models/users');
 
 var Hasher = require('./modules/generate-pass.js');
-//var CreateUser = require('./modules/add-users.js');
 var TestPass = require('./modules/test-pass.js');
-
+var UTMconvert = require('./modules/UTMconverter.js');
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -21,6 +20,8 @@ var UserModel = users.model('Users', User);
 
 // call the packages we need
 var express    = require('express');        // call express
+var session = require('express-session');
+
 const fileUpload = require('express-fileupload');
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
@@ -58,11 +59,19 @@ router.get('/', function(req, res) {
     });
 });
 
-router.get('/admin', function(req, res) {
-    res.render('pages/admin'); // Render admin template
+router.get('/admin', restrict, function(req, res) {
+    UserModel.find(function(err, users){
+        if(err){
+            res.send(err);
+        }
+        if (users){
+            res.locals.users = users;
+            res.render('pages/admin');
+        }
+    });
 });
 
-router.get('/account', function(req, res) {
+router.get('/account', restrict, function(req, res) {
     res.render('pages/account'); // Render account template
 });
 
@@ -74,8 +83,28 @@ router.get('/testlogin', function(req, res){
     res.render('pages/testlogin');
 })
 
+// LOGOUT FUNCTION
+app.get('/logout', function(req, res){
+    console.log("LOGGING OUT");
+    req.session.destroy();
+    redirect('/');
+});
+
+// Restrict function that checks if someone is logged in
+
+function restrict(req, res, next) {
+  if (req.session.user) {
+    next();
+  } else {
+    req.session.error = 'Access denied!';
+    res.redirect('/login');
+  }
+}
+
+
 // Right sidebar routes
 // ----------------------------------
+
 router.get('/viewSite', function(req, res) {
     var reqSite = req.query.site;
 
@@ -111,36 +140,83 @@ router.get('/bubble', function(req, res) {
     });
 });
 
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  secret: 'shhhh, very secret'
+}));
+
+// Session-persisted message middleware
+
+app.use(function(req, res, next){
+  var err = req.session.error;
+  var msg = req.session.success;
+  delete req.session.error;
+  delete req.session.success;
+  res.locals.message = '';
+  if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
+  if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
+  next();
+});
+
 
 // loginPage partial router
 router.post('/testpass', function(req, res){
     console.log("Received User " + req.body.email);
     UserModel.find({email: req.body.email}, function(err, user) {
-        if (err)
-            res.send(err);
-
-        if(user) {
+        if (err){
+            res.redirect('back');
+        }
+        if(user[0]) {
             console.log(user[0].passwordSalt);
             console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
-        }
+            if(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash) == true){
+                req.session.regenerate(function(){
+                // Store the user's primary key
+                // in the session store to be retrieved,
+                // or in this case the entire user object
+                req.session.user = user[0];
+                req.session.success = 'Authenticated as ' + user[0].email;
+                res.redirect('/admin');
+                });
+            }
+            else
+                res.redirect('back');
+        } else
+            res.redirect('back');
     })
-    res.redirect('back');
 });
+// temporary create site and create account pages
 
-router.get('/create', function(req, res){
+router.get('/create', function(req, res){ // to create an account
     res.render('pages/create');
 });
 
-router.get('/input', function(req, res){
+router.get('/input', function(req, res){ // to create a site
     res.render('pages/inputtest');
 });
+
 // ROUTES FOR OUR API
 // =============================================================================
 router.use(function(req, res, next){
     console.log('Something is happening.');
     next();
 })
-
+function isUTM(zone,easting,northing){
+	if (zone == "" || easting == ""|| northing =="" ||
+		zone == null || easting == null || northing == null)
+		return false;
+	else
+		return true;
+}
+function isLatLong(lati,longi){
+	if (lati == "" || longi =="" ||
+		lati == null || longi == null)
+		return false;
+	else
+		return true;
+}
 // on routes that end in /cities
 // -----------------------------------------------3-----
 router.route('/cities')
@@ -150,11 +226,19 @@ router.route('/cities')
         
         var city = new CityModel();      // create a new instance of the City model (schema)
         city.name = req.body.cityName;  // set the city's name (from request)
-        city.lat = req.body.Latitude;    // set the city's lat (from request)
-        city.lng = req.body.Longitude;    // set the city's long (from request)
+        if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
+			var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
+			city.lat = latLngArray[0];
+			city.lng = latLngArray[1];
+		}
+        else if (isLatLong(req.body.Latitude, req.body.Longitude)){
+			city.lat = req.body.Latitude;    // set the city's lat (from request)
+			city.lng = req.body.Longitude;    // set the city's long (from request)s
+		};
         city.misc = req.body.custom;
         let image =req.files.customFile;
-
+        if (typeof(image) != "undefined")
+        {
         var fileDir=__dirname+("/public/images");
         let uploadPath=path.join(fileDir,image.name);
         image.mv(uploadPath,function(err)
@@ -163,7 +247,9 @@ router.route('/cities')
                 return res.status(500).send(err);
            // res.send('file uploaded to' +uploadPath);
         });
+        
         city.images=image.name;
+        }
         // save the city and check for errors
         city.save(function(err) {
             if (err)
@@ -183,7 +269,7 @@ router.route('/cities')
     });
 
 
-router.route('/register')
+router.route('/register') // post functioon to actually register account
 
     .post(function(req, res){
         var user = new UserModel();
@@ -204,9 +290,9 @@ router.route('/register')
         UserModel.find(function(err, users) {
             if (err)
                 res.send(err);
-
             res.json(users);
         });
+        //res.redirect('/');
     });
 
 router.route('/deletesite')
