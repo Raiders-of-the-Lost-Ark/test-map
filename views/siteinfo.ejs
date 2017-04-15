@@ -5,13 +5,16 @@
         <img src="<%= pic %>" style="width:100%" />
     <% } %>
     <div class="sidebar-content">
-        <h3><%= data.name %></h3>
-        <ul>
-            <li><%= data.misc %></li>
-        </ul>
+    <h3><%= data.name %></h3>
+    <ul>
+        <li><%= data.misc %></li>
+    </ul>
         <div class="mdl-layout-spacer"></div>
-        <form>
+        <form id="deleteForm" action="/deletesite" method="POST">
+            <input hidden="true" name="idkey" value=<%= data._id %> type="text"></input>
             <button class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
         </form>
     </div>
 </div>
+
+
