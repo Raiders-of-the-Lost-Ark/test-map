@@ -46,6 +46,11 @@
   background: #fff;
   border-radius: 2px;
   box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+}
+
+.mdl-data-tabledynamic:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
 }
 
 .mdl-data-tabledynamic__title-text,
