@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+<head>
+
+    <% var title="Civil War Battlefields: Admin" ; %>
+    <% include ../head %>
+    
+
+</head>
+
+<body>
+
+
+        <form action="/cities" method="POST" enctype="multipart/form-data" id="input_form">
+        Enter City Name <input type="text" name="cityName"></input><br><br>
+        Use UTM<input type="radio" name="radio" checked="true" onclick="displayoption('utm','latlong')"><br>
+        Use Lat/Long <input type="radio" name="radio" onclick="displayoption('latlong','utm')"> <br>
+
+        <div id="utm">
+		Enter Zone Number <input type="text" name="zone"></input><br>
+        Enter Easting<input type="text" name="easting"> </input><br>
+        Enter Northing<input type="text" name="northing"> </input><br>
+        </div>
+        <div id="latlong" style="display:none">
+        Enter City Latitude<input type="text" name="Latitude"> </input><br>
+        Enter City Longitude<input type="text" name="Longitude"> </input><br>
+        </div>
+        Upload File<input type="File" name="customFile"><br>
+       
+        </form>
+         <textarea name="custom" form="input_form">Enter Custom text here...</textarea>
+        <input type="submit" form="input_form">
+
+</body>
+
+</html>
+<script>
+function displayoption(showthis,hidethis){
+    document.getElementById(showthis).style.display="inline";
+    document.getElementById(hidethis).style.display="none";
+
+}
+</script>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <% var title = "Civil War Battlefields: Map";%>
+    <% include ../head %>
+    <link rel="stylesheet" href="infowindow.css">
+    
+  </head>
+
+  <body>
+
+    <%- include('../nav', {title: title}); %>
+    <% include ../infopanel %>
+    <% include ../sidebar %>
+
+      <main class="mdl-layout__content mdl-color--grey-100 map-container">
+            <!-- CONTENT AREA -->
+            <div id="map"></div>
+      </main>
+
+    <div id="lightboxes"></div>
+      
+    <% include ../footer %>
+
+  </body>
+
+</html>

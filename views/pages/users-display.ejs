@@ -1,0 +1,8 @@
+<ul id="listed-sites">
+    <% for (var ind in users) { %>
+        <li>
+            <%- users[ind].email, " ---- ", users[ind].firstName, " ", users[ind].lastName -%>
+        </li>
+    <% } %>
+</ul>
+

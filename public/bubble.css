@@ -1,0 +1,24 @@
+.bubbleStyle {
+    max-height: 350px;
+}
+
+.bubbleDate {
+    color: rgba(0,0,0,.54);
+    line-height: 0px;
+}
+
+.gm-style-iw {
+    left: 25px !important;
+}
+
+.bubbleHeader {
+    line-height: 25px;
+}
+
+.bubbleButton {
+    position: fixed;
+}
+
+img.bubbleImage {
+    box-shadow: 2px 2px 2px rgba(0,0,0,.54);
+}
