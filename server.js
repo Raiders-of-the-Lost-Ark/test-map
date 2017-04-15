@@ -60,7 +60,15 @@ router.get('/', function(req, res) {
 });
 
 router.get('/admin', restrict, function(req, res) {
-    res.render('pages/admin'); // Render admin template
+    UserModel.find(function(err, users){
+        if(err){
+            res.send(err);
+        }
+        if (users){
+            res.locals.users = users;
+            res.render('pages/admin');
+        }
+    });
 });
 
 router.get('/account', restrict, function(req, res) {
