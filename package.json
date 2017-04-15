@@ -3,9 +3,10 @@
   "main": "server.js",
   "dependencies": {
     "body-parser": "1.17.1",
+    "ejs": "~2.5.2",
     "express": "4.15.2",
-    "mongoose": "4.9.1",
+    "express-fileupload": "^0.1.2",
     "mongodb": "2.2.19",
-    "ejs": "~2.5.2"
+    "mongoose": "4.9.1"
   }
 }

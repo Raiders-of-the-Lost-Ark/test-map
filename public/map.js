@@ -2,6 +2,13 @@
 var map;
 
 var cityArray = [];
+var circlesArr = [];
+
+var infoWindow = null;
+
+county_layer = null;
+state_layer = null;
+
 var cityConst = function(name, lat, lng, id, misc)
 {
     this.name = name;
@@ -319,34 +326,95 @@ function initMap() {
 
     //=======================================================================================================================
 
-    // FUSION TABLE
-    var missouriCounterLayer = new google.maps.FusionTablesLayer({
-        query: {
-        select: '\'GEO_ID\'',
-        from: '1Yx076g0HFD2aeya8T0jBi_w1UuEYj3b06zaXXA'
-        },
-        styles: [{
-        polygonOptions:{
-            fillColor: '#FFFFFF',
-            fillOpacity: 0.0001
-        },
-        polylineOptions:{
-            strokeOpacity: 0.00001,
-            strokeWeight: 100
-        }
-        }]
+    // Create data layers for counties and states
+    county_layer = new google.maps.Data;
+    state_layer = new google.maps.Data;
+    
+    // Load local county data
+    var dataReq = new XMLHttpRequest();
+    dataReq.open("GET", 'mo.json', true);
+    dataReq.onload = function() {
+        var counties = JSON.parse(dataReq.responseText);
+        county_layer.setStyle({
+          fillColor: '#FFFFFF',
+          fillOpacity: 0.005,
+          strokeWeight: 1,
+          strokeOpacity: 0.2
+        });
+        county_layer.addGeoJson(counties);
+    };
+    dataReq.send();
+
+    // Load local state data
+    var dataReq2 = new XMLHttpRequest();
+    dataReq2.open("GET", 'states.json', true);
+    dataReq2.onload = function() {
+        var states = JSON.parse(dataReq2.responseText);
+        state_layer.setStyle({
+          fillColor: '#FFFFFF',
+          fillOpacity: 0.005,
+          strokeWeight: 1,
+          strokeOpacity: 0.2
+        });
+        state_layer.addGeoJson(states);
+    };
+    dataReq2.send();
+
+    // State listeners
+    state_layer.addListener('mouseover', function(event) {
+        state_layer.revertStyle();
+        state_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
+        console.log(event.feature.getProperty("NAME"));  
     });
-    missouriCounterLayer.setMap(map);
+    state_layer.addListener('mouseout', function(event) {
+        state_layer.revertStyle();
+    });
+    state_layer.addListener('click', function(event) {
+        var currentLat = event.feature.getProperty('INTPTLAT');
+        var currentLong = event.feature.getProperty('INTPTLON');
+        var currentPos = new google.maps.LatLng(currentLat, currentLong);
+        map.setZoom(7);
+        map.panTo(currentPos);
+    });
 
+    // County listeners
+    county_layer.addListener('mouseover', function(event) {
+        county_layer.revertStyle();
+        county_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
+        console.log(event.feature.getProperty('NAMELSAD10'));  
+    });
+    county_layer.addListener('mouseout', function(event) {
+        county_layer.revertStyle();
+    });
+    county_layer.addListener('click', function(event) {
+        var currentLat = event.feature.getProperty('INTPTLAT10');
+        var currentLong = event.feature.getProperty('INTPTLON10');
+        var currentPos = new google.maps.LatLng(currentLat, currentLong);
+        map.setZoom(8);
+        map.panTo(currentPos);
+    });
 
+    // Add state and county layers to map
+    //state_layer.setMap(map);             // Maybe not
+    county_layer.setMap(map);
 
+    // Map listeners
+    map.addListener('zoom_changed', function(event) {
+        if ((map.getZoom() > 13) || (map.getZoom() <= 5)) county_layer.setMap(null); 
+        else county_layer.setMap(map);
+        if (map.getZoom() > 5) state_layer.setMap(null); 
+        else state_layer.setMap(map);
+    });
 
+    // Create infowindow for use in all site bubbles
+    infowindow = new google.maps.InfoWindow({
+        content: "Loading...",
+        maxWidth: 300   
+    });
 
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
 
-    var infoWindow = null;
-    var circlesArr = [];
     var xhr = new XMLHttpRequest();
     xhr.open("GET", "/api/cities", true);
     xhr.onload = function (e) { 
@@ -367,40 +435,21 @@ function initMap() {
                             fillOpacity: 0.35,
                             map: map,
                             clickable: true,
+                            lat: cityArray[i].lat,
+                            long: cityArray[i].lng,
                             center: {lat: parseFloat(cityArray[i].lat), lng: parseFloat(cityArray[i].lng)},
                             radius: 10000,
                             name: cityArray[i].name,
                             misc: cityArray[i].misc,
-                            siteId: cityArray[i].id
+                            siteId: cityArray[i].id,
+                            siteInd: i
                         });
+
+                        google.maps.event.addListener(cityCircle, 'click', function () {
+                            selectMarker(this.siteInd);
+                        });
+
                         circlesArr.push(cityCircle);
-                        //console.log(circlesArr);
-                    }
-                    for(var i = 0; i < circlesArr.length; i++)
-                    {
-                        infowindow = new google.maps.InfoWindow({
-                            content: "holding...",
-                            maxWidth: 300   
-                        });
-                        var onecircle = circlesArr[i];
-                        google.maps.event.addListener(onecircle, 'click', function () {
-                        // where I have added .html to the marker object.
-                            infowindow.setContent(this.misc);
-                            infowindow.setPosition(this.center);
-                            infowindow.open(map, this);
-                        
-                            // Send POST request to load data into sidebar
-                            var siteData = {site: this.name};
-                            var xhr2 = new XMLHttpRequest();
-                            
-                            xhr2.onload = function(){
-                                document.querySelector('#siteInfo_div').innerHTML = xhr2.responseText;
-                            };
-                            
-                            xhr2.open("POST", "/viewSite", true);
-                            xhr2.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-                            xhr2.send(JSON.stringify(siteData)); 
-                        });
                     }
                 } else {
                 console.error(xhr.statusText);
@@ -451,11 +500,62 @@ function initMap() {
 
     // Zoom restrictions
     map.setOptions({ 
-        minZoom: 4, 
+        minZoom: 5, 
         maxZoom: 21,    
         streetViewControl: false
     });
 
-   
+
     
 } // End map init 
+
+
+function selectMarker(index) {
+    // Get site marker from array
+    var marker = circlesArr[index];
+
+    // Pan to the marker
+    map.panTo(new google.maps.LatLng(marker.lat, marker.long));
+
+    // Create bubble content
+    var bubbleContainer, bubbleContent, moreLink, rippleContainer;
+    bubbleContainer = document.createElement('div');
+    bubbleContent = document.createElement('div');
+    bubbleContent.setAttribute("class", "bubbleContent");
+    moreLink = document.createElement('button');
+    moreLink.setAttribute("href", "#");
+    moreLink.setAttribute("class", "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent bubbleButton");
+    rippleContainer = document.createElement('span');
+    rippleContainer.setAttribute("class", "mdl-button__ripple-container");
+    rippleEffect = document.createElement('span');
+
+
+    moreLink.addEventListener("click", openInfoPanel);
+    moreLink.innerHTML = "More...";
+    bubbleContainer.appendChild(bubbleContent);
+    bubbleContainer.appendChild(moreLink);
+    moreLink.appendChild(rippleContainer);
+
+    // Add bubble content to info window
+    infowindow.setContent(bubbleContainer);
+    infowindow.setPosition(marker.center);
+    infowindow.open(map, marker);
+
+    // Send request for bubble info
+    var bubbleRequest = new XMLHttpRequest(); 
+    bubbleRequest.open("GET", "/bubble?site=" + marker.name, true);
+    bubbleRequest.onload = function(){
+        // Populate site bubble 
+        document.querySelector('.bubbleContent').innerHTML = bubbleRequest.responseText;
+    };
+    bubbleRequest.send(); 
+
+    // Send request for sidebar info
+    var infoRequest = new XMLHttpRequest();
+    infoRequest.open("GET", "/viewSite?site=" + marker.name, true);
+    infoRequest.onload = function(){
+        // Populate sidebar 
+        document.querySelector('#siteInfo_div').innerHTML = infoRequest.responseText;
+    };  
+    infoRequest.send(); 
+}

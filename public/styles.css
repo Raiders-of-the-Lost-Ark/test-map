@@ -166,7 +166,7 @@ html, body {
 }
 
 .mdl-layout__drawer-right.active~.mdl-layout__obfuscator-right {
-    background-color: rgba(0,0,0,.5);
+    background-color: transparent !important;
     visibility: visible;
 }
 
@@ -341,4 +341,9 @@ a[href^="https://maps.google.com/maps"]{display:none !important}
 
 div[class="gm-style-cc"] {
     display: none !important;
+}
+
+/* Sidebar */
+#sidebar {
+  z-index: 2;
 }
