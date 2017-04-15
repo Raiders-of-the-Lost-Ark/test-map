@@ -7,7 +7,7 @@ var User = require('./models/users');
 
 var Hasher = require('./modules/generate-pass.js');
 var TestPass = require('./modules/test-pass.js');
-
+var UTMconvert = require('./modules/UTMconverter.js');
 
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
@@ -203,7 +203,20 @@ router.use(function(req, res, next){
     console.log('Something is happening.');
     next();
 })
-
+function isUTM(zone,easting,northing){
+	if (zone == "" || easting == ""|| northing =="" ||
+		zone == null || easting == null || northing == null)
+		return false;
+	else
+		return true;
+}
+function isLatLong(lati,longi){
+	if (lati == "" || longi =="" ||
+		lati == null || longi == null)
+		return false;
+	else
+		return true;
+}
 // on routes that end in /cities
 // -----------------------------------------------3-----
 router.route('/cities')
@@ -213,11 +226,19 @@ router.route('/cities')
         
         var city = new CityModel();      // create a new instance of the City model (schema)
         city.name = req.body.cityName;  // set the city's name (from request)
-        city.lat = req.body.Latitude;    // set the city's lat (from request)
-        city.lng = req.body.Longitude;    // set the city's long (from request)
+        if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
+			var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
+			city.lat = latLngArray[0];
+			city.lng = latLngArray[1];
+		}
+        else if (isLatLong(req.body.Latitude, req.body.Longitude)){
+			city.lat = req.body.Latitude;    // set the city's lat (from request)
+			city.lng = req.body.Longitude;    // set the city's long (from request)s
+		};
         city.misc = req.body.custom;
         let image =req.files.customFile;
-
+        if (typeof(image) != "undefined")
+        {
         var fileDir=__dirname+("/public/images");
         let uploadPath=path.join(fileDir,image.name);
         image.mv(uploadPath,function(err)
@@ -226,7 +247,9 @@ router.route('/cities')
                 return res.status(500).send(err);
            // res.send('file uploaded to' +uploadPath);
         });
+        
         city.images=image.name;
+        }
         // save the city and check for errors
         city.save(function(err) {
             if (err)
