@@ -1,0 +1,7 @@
+<% var imgDir = "images/" %>
+<% var pic = imgDir + data.images %>
+<% if (data.images && data.images.length != "") { %>   
+    <a href="#" onclick="hideLightbox(this)" id="img1" class="lightbox">
+        <img src="<%= pic %>" />
+    </a>
+<% } %>
