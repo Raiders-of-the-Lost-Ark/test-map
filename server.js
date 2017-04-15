@@ -164,16 +164,18 @@ router.route('/cities')
         var city = new CityModel();      // create a new instance of the City model (schema)
         city.name = req.body.cityName;  // set the city's name (from request)
         if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
-			var latLngArray = UTMconvert.convert(req.body.zone, req.body.easting, req.body.northing);
+			var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
 			city.lat = latLngArray[0];
 			city.lng = latLngArray[1];
-		}else if (isLatLong(req.body.Latitude, req.body.Longitude)){
+		}
+        else if (isLatLong(req.body.Latitude, req.body.Longitude)){
 			city.lat = req.body.Latitude;    // set the city's lat (from request)
 			city.lng = req.body.Longitude;    // set the city's long (from request)
 		};
         city.misc = req.body.custom;
         let image =req.files.customFile;
-
+        if (typeof(image) != "undefined")
+        {
         var fileDir=__dirname+("/public/images");
         let uploadPath=path.join(fileDir,image.name);
         image.mv(uploadPath,function(err)
@@ -182,7 +184,9 @@ router.route('/cities')
                 return res.status(500).send(err);
            // res.send('file uploaded to' +uploadPath);
         });
+        
         city.images=image.name;
+        }
         // save the city and check for errors
         city.save(function(err) {
             if (err)
