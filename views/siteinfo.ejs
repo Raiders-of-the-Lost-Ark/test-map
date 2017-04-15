@@ -9,10 +9,10 @@
     <ul>
         <li><%= data.misc %></li>
     </ul>
-
+s
     <ul>
     <form action="/deletesite" method="POST">
-    <input name="idkey" value=<%= data._id %> type="text"></input>
+    <input hidden="true" name="idkey" value=<%= data._id %> type="text"></input>
     <input type="submit" value="Delete"></input>
 
     </form>
