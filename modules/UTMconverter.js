@@ -1,12 +1,14 @@
 
 //export a function that takes utm zone, easting and northing.
 //Math the shit out of the UTM numbers until their latitude and longitude. Return the lat and long in an array.
-module.exports = function utmToLatLng(zone, easting, northing, northernHemisphere) {
-	northernHemisphere = true;
+module.exports = function utmToLatLng(zone, easting, northing) {
+	var northernHemisphere = true;
     if (!northernHemisphere) {
         northing = 10000000 - northing;
     }
-
+    northing= parseFloat(northing);
+    zone=parseFloat(zone);
+    easting=parseFloat(easting);
     var a = 6378137;
     var e = 0.081819191;
     var e1sq = 0.006739497;
@@ -52,7 +54,6 @@ module.exports = function utmToLatLng(zone, easting, northing, northernHemispher
     }
 
     var longitude = ((zone > 0) && (6 * zone - 183.0) || 3.0) - _a3;
-    
     var coords = [latitude, longitude];
 	return coords;
 }

@@ -170,7 +170,7 @@ router.route('/cities')
 		}
         else if (isLatLong(req.body.Latitude, req.body.Longitude)){
 			city.lat = req.body.Latitude;    // set the city's lat (from request)
-			city.lng = req.body.Longitude;    // set the city's long (from request)
+			city.lng = req.body.Longitude;    // set the city's long (from request)s
 		};
         city.misc = req.body.custom;
         let image =req.files.customFile;
