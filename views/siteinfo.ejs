@@ -1,17 +1,24 @@
 <div id="siteInfo_div">
     <% var imgDir = "images/" %>
     <% var pic = imgDir + data.images %>
+    <%= data._id %>
     <% if (data.images && data.images.length != "") { %>
         <img src="<%= pic %>" style="width:100%" />
     <% } %>
     <div class="sidebar-content">
-        <h3><%= data.name %></h3>
-        <ul>
-            <li><%= data.misc %></li>
-        </ul>
+    <h3><%= data.name %></h3>
+    <ul>
+        <li><%= data.misc %></li>
+    </ul>
         <div class="mdl-layout-spacer"></div>
         <form>
             <button class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
         </form>
     </div>
+    <form action="/deletesite" method="POST">
+    <input hidden="true" name="idkey" value=<%= data._id %> type="text"></input>
+    <input type="submit" value="Delete"></input>
+    </form>
 </div>
+
+
