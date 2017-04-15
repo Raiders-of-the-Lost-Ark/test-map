@@ -49,6 +49,7 @@ html, body {
   z-index: 2;
   background-color: rgba(55, 71, 79, 0);
   box-shadow: none !important;
+  height: 325px;
   width: 125px;
   left: 250px;
   border: 0;
