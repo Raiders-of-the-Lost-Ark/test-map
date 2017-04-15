@@ -66,3 +66,8 @@ function closeInfoPanel(event) {
     if (info_panel.classList.contains('active')) 
         info_panel.classList.remove('active');
 }
+
+function deleteItem() {
+    confirm("Are you sure you want to delete this battle site? All information will be lost. All of it. You cannot get it back. \n Are you sure?");
+    
+}
