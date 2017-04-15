@@ -52,18 +52,15 @@
                             </thead>
                             <tbody>
                                 <% for (var ind in users) { %>
-                                <tr>
-                                
-                                    
+                                <tr>                           
                                     <td>
                                         <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="checkbox-1">
-
-                                            <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input">
+                                            <input type="checkbox" id="checkbox-1" class="mdl-checkbox__input" />
                                         </label>
                                     </td>
-                                    <td style="text-align:left;"><span class="mdl-data-table__label add-table-content" title="name"><%- users[ind].firstName, " ", users[ind].lastName -%></span>
+                                    <td style="text-align:left;"><span class="mdl-data-table__label" title="name"><%- users[ind].firstName, " ", users[ind].lastName -%></span>
                                     </td>
-                                    <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label add-table-content" title="email"><%- users[ind].email -%></span>
+                                    <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label" title="email"><%- users[ind].email -%></span>
                                     </td>
                                     <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label add-table-content" title="role">Add role</span>
                                     </td>
@@ -71,8 +68,7 @@
                                     </td>
                                     <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label" title="lastlogin">N/A</span>
                                     </td>
-                                </tr>
-                                
+                                </tr>                                
                                 <% } %>
                             </tbody>
                         </table>
@@ -91,6 +87,11 @@
                     <button type="button" class="mdl-button close">Cancel</button>
                 </div>
             </dialog>
+
+
+
+
+            <!-- Frontend templates (yikes) used by jQuery (YIKES) -->
             <script type="text/template" id="addContentDialogTemplate">
                 <div class="mdl-dialog__addContent mdl-shadow--2dp">
                     <h3 class="mdl-dialog__title">Add {{title}}</h3>
@@ -107,7 +108,6 @@
                     </div>
                 </div>
             </script>
-
             <script type="text/template" id="basketItemTemplate">
                 <tr>
                     <td>
