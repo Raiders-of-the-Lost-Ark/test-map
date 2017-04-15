@@ -1,11 +1,8 @@
 
-
-
-
-
-//math the shit out of those utm numbers
-function utmToLatLng(zone, easting, northing, northernHemisphere) {
-	
+//export a function that takes utm zone, easting and northing.
+//Math the shit out of the UTM numbers until their latitude and longitude. Return the lat and long in an array.
+module.exports = function utmToLatLng(zone, easting, northing, northernHemisphere) {
+	northernHemisphere = true;
     if (!northernHemisphere) {
         northing = 10000000 - northing;
     }
@@ -56,30 +53,6 @@ function utmToLatLng(zone, easting, northing, northernHemisphere) {
 
     var longitude = ((zone > 0) && (6 * zone - 183.0) || 3.0) - _a3;
     
-    return [latitude, longitude];
+    var coords = [latitude, longitude];
+	return coords;
 }
-
-//grab the zone, eating and northing from user, convert into lat and long and spit it into a p tag
-module.exports = {
-	convert: function(gridNum, utmE, utmN) {
-    var northHem = true;
-    var coords = utmToLatLng(gridNum, utmE, utmN, northHem);
-    return coords;
-	}
-}
-
-/*
- test data
-
- St. Louis
-
- Easting        Northing        Zone
- 743798.41      4279107.2       15S    //Letter shouldn't be necessary
-
- Latitude	Longitude
- 38.627 N       90.1994 W
- 
- 
- 
- 
- */
