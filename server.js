@@ -208,6 +208,20 @@ router.route('/register')
             res.json(users);
         });
     });
+
+router.route('/deletesite')
+    .post(function(req,res){
+        var siteId= req.body.idkey;
+        console.log(siteId);
+        CityModel.remove({_id:siteId}, function(err){
+            if(!err){
+                console.log("successfull");
+            } else {
+                console.log(err);
+            }
+        });
+        res.redirect('back');
+    });
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);

@@ -1,6 +1,7 @@
 <div id="siteInfo_div">
     <% var imgDir = "images/" %>
     <% var pic = imgDir + data.images %>
+    <%= data._id %>
     <% if (data.images && data.images.length != "") { %>
         <img src="<%= pic %>" style="width:100%" />
     <% } %>
@@ -8,4 +9,14 @@
     <ul>
         <li><%= data.misc %></li>
     </ul>
+
+    <ul>
+    <form action="/deletesite" method="POST">
+    <input name="idkey" value=<%= data._id %> type="text"></input>
+    <input type="submit" value="Delete"></input>
+
+    </form>
+    </ul>
 </div>
+
+
