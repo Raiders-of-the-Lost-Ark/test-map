@@ -74,6 +74,26 @@ router.get('/testlogin', function(req, res){
     res.render('pages/testlogin');
 })
 
+
+// Lightbox route
+// ----------------------------------
+router.get('/lightbox', function(req, res) {
+    var reqSite = req.query.site;
+
+    CityModel.find({ name: reqSite }, function(err, city) {
+        if (err)
+            res.send(err);
+        if (city) {
+            // Render sidebar html from template
+            res.render('lightbox', { layout: false, data: city[0] }, function(err, html) {
+                // Send html to client
+                res.send(html);
+            });
+        }
+    });
+});
+
+
 // Right sidebar routes
 // ----------------------------------
 router.get('/viewSite', function(req, res) {

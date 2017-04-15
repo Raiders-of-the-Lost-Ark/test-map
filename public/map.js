@@ -558,4 +558,13 @@ function selectMarker(index) {
         document.querySelector('#siteInfo_div').innerHTML = infoRequest.responseText;
     };  
     infoRequest.send(); 
+
+    var lightboxRequest = new XMLHttpRequest();
+    lightboxRequest.open("GET", "/lightbox?site=" + marker.name, true);
+    lightboxRequest.onload = function(){
+        // Populate lightbox container
+        document.querySelector('#lightboxes').innerHTML = lightboxRequest.responseText;
+    };  
+    lightboxRequest.send(); 
+
 }
