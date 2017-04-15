@@ -193,7 +193,10 @@ form.sidebar-form {
     font-size: 20px;
     background-color: rgb(244,67,54);;
     color: rgb(255,255,255);
-    width: 100%;
+    width: 48%;
+    float: right;
+    bottom: 5px;
+    height: 50px;
     box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)
 }
 .deleteButton:hover {
@@ -203,6 +206,27 @@ form.sidebar-form {
 }
 .deleteButton:active {
     background-color: rgb(244,67,54);
+    color: rgb(255,255,255);
+    box-shadow: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.2);
+}
+
+.editButton {
+    font-size: 20px;
+    background-color: rgb(64,196,255);
+    color: rgb(255,255,255);
+    width: 48%;
+    float: left;
+    bottom: 5px;
+    height: 50px;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12)
+}
+.editButton:hover {
+    background-color: rgb(64,196,255);
+    color: rgb(255,255,255);
+    box-shadow: 0 3px 3px 0 rgba(0,0,0,.18), 0 2px 3px -1px rgba(0,0,0,.15), 0 1px 5px 0 rgba(0,0,0,.18)
+}
+.editButton:active {
+    background-color: rgb(64,196,255);
     color: rgb(255,255,255);
     box-shadow: 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12), 0 2px 4px -1px rgba(0,0,0,.2);
 }

@@ -12,11 +12,18 @@
     <ul>
         <li><%= data.misc %></li>
     </ul>
+    <div id="admin-buttons">
+        <div class="mdl-layout-spacer"></div>
+        <form id="editForm" action="/editsite" method="POST">
+            <input hidden="true" name="idkey" value=<%= data._id %> type="text"></input>
+            <button class="mdl-button mdl-js-button mdl-button--raised editButton" onclick="editItem()">EDIT</button>
+        </form>
         <div class="mdl-layout-spacer"></div>
         <form id="deleteForm" action="/deletesite" method="POST">
             <input hidden="true" name="idkey" value=<%= data._id %> type="text"></input>
             <button class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
         </form>
+        </div>
     </div>
 </div>
 
