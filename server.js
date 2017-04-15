@@ -86,7 +86,7 @@ router.get('/testlogin', function(req, res){
 // LOGOUT FUNCTION
 app.get('/logout', function(req, res){
     console.log("LOGGING OUT");
-    req.session.destroy();
+    req.session.user = null;
     redirect('/');
 });
 
