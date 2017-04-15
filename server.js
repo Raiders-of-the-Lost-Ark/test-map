@@ -59,11 +59,11 @@ router.get('/', function(req, res) {
     });
 });
 
-router.get('/admin', function(req, res) {
+router.get('/admin', restrict, function(req, res) {
     res.render('pages/admin'); // Render admin template
 });
 
-router.get('/account', function(req, res) {
+router.get('/account', restrict, function(req, res) {
     res.render('pages/account'); // Render account template
 });
 
@@ -75,8 +75,28 @@ router.get('/testlogin', function(req, res){
     res.render('pages/testlogin');
 })
 
+// LOGOUT FUNCTION
+app.get('/logout', function(req, res){
+    console.log("LOGGING OUT");
+    req.session.destroy();
+    redirect('/');
+});
+
+// Restrict function that checks if someone is logged in
+
+function restrict(req, res, next) {
+  if (req.session.user) {
+    next();
+  } else {
+    req.session.error = 'Access denied!';
+    res.redirect('/login');
+  }
+}
+
+
 // Right sidebar routes
 // ----------------------------------
+
 router.get('/viewSite', function(req, res) {
     var reqSite = req.query.site;
 
@@ -138,11 +158,9 @@ router.post('/testpass', function(req, res){
     console.log("Received User " + req.body.email);
     UserModel.find({email: req.body.email}, function(err, user) {
         if (err){
-            console.log("AM I HERE");
             res.redirect('back');
         }
         if(user[0]) {
-            console.log("OR AM I HERE");
             console.log(user[0].passwordSalt);
             console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
             if(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash) == true){
@@ -151,27 +169,26 @@ router.post('/testpass', function(req, res){
                 // in the session store to be retrieved,
                 // or in this case the entire user object
                 req.session.user = user[0];
-                req.session.success = 'Authenticated as ' + user[0].email
-                + ' click to <a href="/logout">logout</a>. '
-                + ' You may now access <a href="/restricted">/restricted</a>.';
-                console.log("SUCCESSFULL SESSOIN?");
-                res.redirect('back');
+                req.session.success = 'Authenticated as ' + user[0].email;
+                res.redirect('/admin');
                 });
             }
             else
-                res.redirect('testlogin');
+                res.redirect('back');
         } else
-        res.redirect('testlogin');
+            res.redirect('back');
     })
 });
+// temporary create site and create account pages
 
-router.get('/create', function(req, res){
+router.get('/create', function(req, res){ // to create an account
     res.render('pages/create');
 });
 
-router.get('/input', function(req, res){
+router.get('/input', function(req, res){ // to create a site
     res.render('pages/inputtest');
 });
+
 // ROUTES FOR OUR API
 // =============================================================================
 router.use(function(req, res, next){
@@ -221,7 +238,7 @@ router.route('/cities')
     });
 
 
-router.route('/register')
+router.route('/register') // post functioon to actually register account
 
     .post(function(req, res){
         var user = new UserModel();
@@ -242,31 +259,12 @@ router.route('/register')
         UserModel.find(function(err, users) {
             if (err)
                 res.send(err);
-
             res.json(users);
         });
+        //res.redirect('/');
     });
 
 
-function restrict(req, res, next) {
-  if (req.session.user) {
-    next();
-  } else {
-    req.session.error = 'Access denied!';
-    res.redirect('/testlogin');
-  }
-}
-
-app.get('/restricted', restrict, function(req, res){
-  res.send('Wahoo! restricted area, click to <a href="/logout">logout</a>');
-});    
-app.get('/logout', function(req, res){
-  // destroy the user's session to log them out
-  // will be re-created next request
-  req.session.destroy(function(){
-    res.redirect('/');
-  });
-});
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
