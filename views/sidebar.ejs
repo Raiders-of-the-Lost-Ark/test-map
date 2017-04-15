@@ -3,12 +3,25 @@
     </header>
     <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
 
-        <input type="text" id="siteSearch" placeholder="Search battlesites..." title="Type Query Here">
+        <!--<input type="text" id="siteSearch" placeholder="Search battlesites..." title="Type Query Here">
+        -->
+        <!-- Expandable Textfield -->
+            <form action="#" class="sidebar-form" onkeypress="return event.keyCode != 13;">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                <label class="mdl-button mdl-js-button mdl-button--icon" for="sample6">
+                <i class="material-icons">search</i>
+                </label>
+                <div class="mdl-textfield__expandable-holder">
+                <input class="mdl-textfield__input" id="sample6" autocomplete="off" placeholder="Search battlesites..." title="Type Query Here" type="text">
+                <label class="mdl-textfield__label" for="sample-expandable">Expandable Input</label>
+                </div>
+            </div>
+            </form>
 
         <ul id="listed-sites">
             <% for (var ind in sites) { %>
-                <li>
-                    <a href="#" onClick="selectMarker(<%- ind -%>)">
+                <li class="listed">
+                    <a href="#" class="listText" onClick="selectMarker(<%- ind -%>)">
                         <%- sites[ind].name -%>
                     </a>
                 </li>
@@ -28,7 +41,7 @@
 
 <script>
 
-var searchBar = document.getElementById("siteSearch");
+var searchBar = document.getElementById("sample6");
 var siteList = document.getElementById("listed-sites");
 
 searchBar.addEventListener("keyup", function() {filterList(this, siteList)} );
@@ -45,5 +58,6 @@ function filterList(input, list) {
         }
     }
 }
+
 
 </script>
