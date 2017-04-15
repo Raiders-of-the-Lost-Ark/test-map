@@ -69,5 +69,5 @@ function closeInfoPanel(event) {
 
 function deleteItem() {
     confirm("Are you sure you want to delete this battle site? All information will be lost. All of it. You cannot get it back. \n Are you sure?");
-    
+    document.getElementById("#deleteForm").submit();
 }
