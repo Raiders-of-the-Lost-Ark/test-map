@@ -4,7 +4,7 @@
     <% var boxId = "img" + 1 %> 
     <% if (data.images && data.images.length != "") { %>   
         <a href="#" onclick="showLightbox('<%= boxId %>')">
-            <img src="<%= pic %>" style="width:100%" />
+            <img class="sidebar-image" src="<%= pic %>" style="width:100%" />
         </a>
     <% } %>
     <div class="sidebar-content">

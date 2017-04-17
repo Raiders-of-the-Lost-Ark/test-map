@@ -49,7 +49,7 @@ html, body {
   z-index: 2;
   background-color: rgba(55, 71, 79, 0);
   box-shadow: none !important;
-  height: 325px;
+  height: 338px;
   width: 125px;
   left: 250px;
   border: 0;
@@ -344,6 +344,11 @@ div[class="gm-style-cc"] {
     display: none !important;
 }
 
+/* Close Icon For Sidebar*/
+a.info-panel-closer.material-icons {
+  cursor: pointer;
+}
+
 /* Sidebar */
 #sidebar {
   z-index: 2;
@@ -368,6 +373,7 @@ div[class="gm-style-cc"] {
 	max-width: 90%;
 	max-height: 80%;
 	margin-top: 2%;
+  cursor: zoom-out;
 }
 
 .lightbox.active {
@@ -376,4 +382,8 @@ div[class="gm-style-cc"] {
 
 	/** Unhide lightbox **/
 	display: block;
+}
+
+.sidebar-image {
+  cursor: zoom-in;
 }
