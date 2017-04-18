@@ -84,12 +84,18 @@ router.get('/testlogin', function(req, res){
 })
 
 // LOGOUT FUNCTION
-app.get('/logout', function(req, res){
+router.get('/logout', function(req, res){
     console.log("LOGGING OUT");
-    req.session.user = null;
+    //req.session.destroy();
+	req.logout();
     redirect('/');
 });
-
+/*
+function getOut(req, res) {
+	req.logout();
+	res.send(401);
+};
+*/
 // Restrict function that checks if someone is logged in
 
 function restrict(req, res, next) {
@@ -203,6 +209,7 @@ router.use(function(req, res, next){
     console.log('Something is happening.');
     next();
 })
+//Check UTM fields for empty data
 function isUTM(zone,easting,northing){
 	if (zone == "" || easting == ""|| northing =="" ||
 		zone == null || easting == null || northing == null)
@@ -210,6 +217,7 @@ function isUTM(zone,easting,northing){
 	else
 		return true;
 }
+//Check Lat long fields for empty data
 function isLatLong(lati,longi){
 	if (lati == "" || longi =="" ||
 		lati == null || longi == null)
@@ -226,6 +234,7 @@ router.route('/cities')
         
         var city = new CityModel();      // create a new instance of the City model (schema)
         city.name = req.body.cityName;  // set the city's name (from request)
+		//if the utm field was used run the converter...else enter data like normal
         if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
 			var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
 			city.lat = latLngArray[0];
