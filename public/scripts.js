@@ -60,3 +60,34 @@ function hideLightbox(el) {
     if (el.classList.contains('active')) 
         el.classList.remove('active');
 }
+
+
+function toggleSiteEdit(editOn) {
+    // Kill me
+    if (editOn) {
+        startEditMode();
+    }
+    else {
+        endEditMode();
+    }
+}
+
+function startEditMode() {
+    var view = document.getElementsByClassName("view-mode")[0];
+    var edit = document.getElementsByClassName("edit-mode")[0];
+    var btn  = document.getElementById("siteEditButton");
+
+    view.classList.remove("active");
+    edit.classList.add("active");
+    btn.setAttribute("onclick", "toggleSiteEdit(false)");
+}
+
+function endEditMode() {
+    var view = document.getElementsByClassName("view-mode")[0];
+    var edit = document.getElementsByClassName("edit-mode")[0];
+    var btn  = document.getElementById("siteEditButton");
+
+    view.classList.add("active");
+    edit.classList.remove("active");
+    btn.setAttribute("onclick", "toggleSiteEdit(true)");
+}

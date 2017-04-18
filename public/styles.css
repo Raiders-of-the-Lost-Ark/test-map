@@ -377,3 +377,40 @@ div[class="gm-style-cc"] {
 	/** Unhide lightbox **/
 	display: block;
 }
+
+/* Site edit mode */
+
+.edit-mode {
+  display: none;
+}
+
+.edit-mode.active {
+  display: block;
+}
+
+.view-mode {
+  display: none;
+}
+
+.view-mode.active {
+  display: block;
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    float: left;
+}
+
+.image-overlay {
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 100%;
+    color: #FFFFFF;
+    position: absolute;
+    top: 0;
+    border: 5px dashed rgba(255,255,255,0.5);
+    text-align: center;
+    box-sizing: border-box;
+}
