@@ -141,6 +141,22 @@ router.get('/viewSite', function(req, res) {
     });
 });
 
+router.get('/editSite', function(req, res) {
+    var reqSite = req.query.site;
+
+    CityModel.find({ name: reqSite }, function(err, city) {
+        if (err)
+            res.send(err);
+        if (city) {
+            // Render sidebar html from template
+            res.render('siteinfo_edit', { layout: false, data: city[0] }, function(err, html) {
+                // Send html to client
+                res.send(html);
+            });
+        }
+    });
+});
+
 // Info bubble routes
 // ----------------------------------
 router.get('/bubble', function(req, res) {
