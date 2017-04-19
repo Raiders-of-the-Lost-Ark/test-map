@@ -106,8 +106,9 @@ router.get('/lightbox', function(req, res) {
 // LOGOUT FUNCTION
 app.get('/logout', function(req, res){
     console.log("LOGGING OUT");
-    req.session.destroy();
-    redirect('/');
+    req.session.destroy(function() {
+        res.redirect('/');
+    });
 });
 
 // Restrict function that checks if someone is logged in
