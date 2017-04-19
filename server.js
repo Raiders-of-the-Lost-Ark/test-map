@@ -86,16 +86,10 @@ router.get('/testlogin', function(req, res){
 // LOGOUT FUNCTION
 router.get('/logout', function(req, res){
     console.log("LOGGING OUT");
-    //req.session.destroy();
-	req.session.destroy();
-    redirect('/');
+	req.session.destroy();	
+    res.redirect('/');
 });
-/*
-function getOut(req, res) {
-	req.logout();
-	res.send(401);
-};
-*/
+
 // Restrict function that checks if someone is logged in
 
 function restrict(req, res, next) {
