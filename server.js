@@ -106,9 +106,8 @@ router.get('/lightbox', function(req, res) {
 // LOGOUT FUNCTION
 app.get('/logout', function(req, res){
     console.log("LOGGING OUT");
-    req.session.destroy(function() {
-        res.redirect('/');
-    });
+    req.session.destroy();
+    res.redirect('/');
 });
 
 // Restrict function that checks if someone is logged in
@@ -180,6 +179,7 @@ app.use(function(req, res, next){
   if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
   next();
 });
+
 
 
 // loginPage partial router
@@ -329,6 +329,8 @@ router.route('/deletesite')
         });
         res.redirect('back');
     });
+
+
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
