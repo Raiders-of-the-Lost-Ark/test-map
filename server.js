@@ -37,6 +37,8 @@ app.use(express.static('public/images'));
 
 // view engine setup
 app.set('view engine', 'ejs');
+var ejsLayouts = require("express-ejs-layouts");
+//app.use(ejsLayouts);
 
 // Public folder
 app.use(express.static(__dirname + '/public'));
@@ -141,18 +143,41 @@ router.get('/viewSite', function(req, res) {
     });
 });
 
-router.get('/editSite', function(req, res) {
-    var reqSite = req.query.site;
-
-    CityModel.find({ name: reqSite }, function(err, city) {
+router.post('/editSite', function(req, res) {
+    var reqSite = req.body.idkey;
+    console.log("Looking for site " + reqSite);
+    CityModel.find({ "_id": reqSite }, function(err, city) {
+        console.log(city);
         if (err)
             res.send(err);
-        if (city) {
-            // Render sidebar html from template
-            res.render('siteinfo_edit', { layout: false, data: city[0] }, function(err, html) {
-                // Send html to client
-                res.send(html);
-            });
+        if (city && city[0]) {
+
+            CityModel.update(
+                {
+                    "_id": reqSite
+                },
+                { 
+                    "name": req.body.name,
+                    "misc": req.body.misc
+                },
+                {},
+                function(err, result) {
+                    if (err) { 
+                        console.log(err); 
+                        res.send(err); 
+                        return;
+                    }
+                    if (result) {
+                        // Render sidebar html from template
+                        res.render('siteinfo', { layout: false, data: city[0] }, function(err, html) {
+                            // Send html to client
+                            res.send(html);
+                        });
+                    } else {
+                        console.log("No result aaaaaa!");
+                    }
+                }
+            );
         }
     });
 });

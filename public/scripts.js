@@ -75,19 +75,15 @@ function toggleSiteEdit(editOn) {
 function startEditMode() {
     var view = document.getElementsByClassName("view-mode")[0];
     var edit = document.getElementsByClassName("edit-mode")[0];
-    var btn  = document.getElementById("siteEditButton");
 
     view.classList.remove("active");
     edit.classList.add("active");
-    btn.setAttribute("onclick", "toggleSiteEdit(false)");
 }
 
 function endEditMode() {
     var view = document.getElementsByClassName("view-mode")[0];
     var edit = document.getElementsByClassName("edit-mode")[0];
-    var btn  = document.getElementById("siteEditButton");
 
     view.classList.add("active");
     edit.classList.remove("active");
-    btn.setAttribute("onclick", "toggleSiteEdit(true)");
 }
