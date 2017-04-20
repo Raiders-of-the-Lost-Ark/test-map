@@ -152,15 +152,15 @@ router.post('/editSite', function(req, res) {
             res.send(err);
         if (city && city[0]) {
 
-            CityModel.update(
+            CityModel.findOneAndUpdate(
                 {
-                    "_id": reqSite
+                    _id: reqSite
                 },
                 { 
                     "name": req.body.name,
                     "misc": req.body.misc
                 },
-                {},
+                {new: true},
                 function(err, result) {
                     if (err) { 
                         console.log(err); 
@@ -168,8 +168,9 @@ router.post('/editSite', function(req, res) {
                         return;
                     }
                     if (result) {
-                        // Render sidebar html from template
-                        res.render('siteinfo', { layout: false, data: city[0] }, function(err, html) {
+                        console.log("Updated: " + result);
+                        // Render updated site info
+                        res.render('siteinfo', { layout: false, data: result }, function(err, html) {
                             // Send html to client
                             res.send(html);
                         });

@@ -25,7 +25,7 @@
 </div>
 
 <div class="edit-mode <% if (edit) { %> active <% } %> ">
-    <form id="editForm" action="/editSite" method="POST">
+    <form id="editForm" onsubmit="submitEditForm(window.event); return false;">
         <% if (data.images && data.images.length != "") { %>   
             <a class="image-container" href="#" onclick="showLightbox('<%= boxId %>')">
                 <img src="<%= pic %>" style="width:100%" />
@@ -44,10 +44,9 @@
         
         <div id="admin-buttons">
             <div class="mdl-layout-spacer"></div>
-            <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton">
+            <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton" />
             <div class="mdl-layout-spacer"></div>
             <button onclick="toggleSiteEdit(false)" type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton">CANCEL</button>
         </div> 
     </form>       
 </div>
-
