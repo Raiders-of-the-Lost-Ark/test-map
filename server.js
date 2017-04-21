@@ -46,6 +46,10 @@ app.use(express.static(__dirname + '/public'));
 var port = process.env.PORT || 8080;        // set our port
 var router = express.Router();              // get an instance of the express Router
 
+// TESTING THIS AS A GLOBAL
+app.locals.loggedin = false;
+// TESTING THIS AS A GLOBAL
+
 // PAGE ROUTES
 // =============================================================================
 router.get('/', function(req, res) {
@@ -225,14 +229,14 @@ app.use(function(req, res, next){
 
 // loginPage partial router
 router.post('/testpass', function(req, res){
-    console.log("Received User " + req.body.email);
+    //console.log("Received User " + req.body.email);
     UserModel.find({email: req.body.email}, function(err, user) {
         if (err){
             res.redirect('back');
         }
         if(user[0]) {
-            console.log(user[0].passwordSalt);
-            console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
+            //console.log(user[0].passwordSalt);
+            //console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
             if(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash) == true){
                 req.session.regenerate(function(){
                 // Store the user's primary key
@@ -240,6 +244,8 @@ router.post('/testpass', function(req, res){
                 // or in this case the entire user object
                 req.session.user = user[0];
                 req.session.success = 'Authenticated as ' + user[0].email;
+                app.locals.loggedin = true;
+                console.log(app.locals.loggedin);
                 res.redirect('/admin');
                 });
             }

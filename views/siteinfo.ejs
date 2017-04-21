@@ -3,6 +3,10 @@
 <% var pic = imgDir + data.images; %>
 <% var boxId = "img" + 1; %> 
 
+<script>
+    console.log(<%- loggedin %>);
+</script>
+
 <div class="view-mode <% if (!edit) { %> active <% } %>">
     <% if (data.images && data.images.length != "") { %>   
         <a href="#" onclick="showLightbox('<%= boxId %>')">
@@ -13,6 +17,7 @@
         <h3 class="siteInfo_name"><%= data.name %></h3>
         <p class="siteInfo_paragraph"><%= data.misc %></p>
     </div>
+    <% if(loggedin){ %>
     <div id="admin-buttons">
         <div class="mdl-layout-spacer"></div>
         <button id="siteEditButton" onclick="toggleSiteEdit(true)" class="mdl-button mdl-js-button mdl-button--raised editButton">EDIT</button>
@@ -22,6 +27,7 @@
             <button type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
         </form>
     </div>
+    <% } %>
 </div>
 
 <div class="edit-mode <% if (edit) { %> active <% } %> ">
