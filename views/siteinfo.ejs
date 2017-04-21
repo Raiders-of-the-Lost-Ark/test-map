@@ -6,7 +6,7 @@
 <div class="view-mode <% if (!edit) { %> active <% } %>">
     <% if (data.images && data.images.length != "") { %>   
         <a href="#" onclick="showLightbox('<%= boxId %>')">
-            <img src="<%= pic %>" style="width:100%" />
+            <img class="sidebar-image" src="<%= pic %>" style="width:100%" />
         </a>
     <% } %>
     <div class="sidebar-content">
@@ -19,13 +19,13 @@
         <div class="mdl-layout-spacer"></div>
         <form id="deleteForm" action="/deletesite" method="POST">
             <input hidden="true" name="idkey" value=<%= data._id %> type="text"></input>
-            <button class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
         </form>
     </div>
 </div>
 
 <div class="edit-mode <% if (edit) { %> active <% } %> ">
-    <form id="editForm" action="/editSite" method="POST">
+    <form id="editForm" onsubmit="submitEditForm(window.event); return false;">
         <% if (data.images && data.images.length != "") { %>   
             <a class="image-container" href="#" onclick="showLightbox('<%= boxId %>')">
                 <img src="<%= pic %>" style="width:100%" />
@@ -34,9 +34,14 @@
                 </div>
             </a>
         <% } %>
-        <input name="name" value="<%= data.name %>" /> <br />
+        <br />
+        <br />
+        <br />
+        <div class="mdl-textfield mdl-js-textfield">
+            <input name="name" class="mdl-textfield__input" value="<%= data.name %>" style="margin: 10px 25px; font-size:200%" /> 
+        </div>
         <ul>
-            <li><input name="misc" value="<%= data.misc %>" /></li>
+            <li><textarea class="mdl-textfield__input" rows=10 cols=70 name="misc"><%= data.misc %></textarea></li>
         </ul>
         <br />
         
@@ -44,10 +49,9 @@
         
         <div id="admin-buttons">
             <div class="mdl-layout-spacer"></div>
-            <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton">
+            <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton" />
             <div class="mdl-layout-spacer"></div>
             <button onclick="toggleSiteEdit(false)" type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton">CANCEL</button>
         </div> 
     </form>       
 </div>
-

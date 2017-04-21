@@ -12,8 +12,8 @@ var UTMconvert = require('./modules/UTMconverter.js');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
-var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
+var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/democities');
+var users = mongoose.createConnection('mongodb://138.197.28.83:27017/demousers')
 
 var CityModel = cities.model('City', City);
 var UserModel = users.model('Users', User);
@@ -106,10 +106,10 @@ router.get('/lightbox', function(req, res) {
 
 
 // LOGOUT FUNCTION
-app.get('/logout', function(req, res){
+router.get('/logout', function(req, res){
     console.log("LOGGING OUT");
-    req.session.destroy();
-    redirect('/');
+	req.session.destroy();	
+    res.redirect('/');
 });
 
 // Restrict function that checks if someone is logged in
@@ -152,15 +152,15 @@ router.post('/editSite', function(req, res) {
             res.send(err);
         if (city && city[0]) {
 
-            CityModel.update(
+            CityModel.findOneAndUpdate(
                 {
-                    "_id": reqSite
+                    _id: reqSite
                 },
                 { 
                     "name": req.body.name,
                     "misc": req.body.misc
                 },
-                {},
+                {new: true},
                 function(err, result) {
                     if (err) { 
                         console.log(err); 
@@ -168,8 +168,9 @@ router.post('/editSite', function(req, res) {
                         return;
                     }
                     if (result) {
-                        // Render sidebar html from template
-                        res.render('siteinfo', { layout: false, data: city[0] }, function(err, html) {
+                        console.log("Updated: " + result);
+                        // Render updated site info
+                        res.render('siteinfo', { layout: false, data: result }, function(err, html) {
                             // Send html to client
                             res.send(html);
                         });
@@ -264,6 +265,7 @@ router.use(function(req, res, next){
     console.log('Something is happening.');
     next();
 })
+//Check UTM fields for empty data
 function isUTM(zone,easting,northing){
 	if (zone == "" || easting == ""|| northing =="" ||
 		zone == null || easting == null || northing == null)
@@ -271,6 +273,7 @@ function isUTM(zone,easting,northing){
 	else
 		return true;
 }
+//Check Lat long fields for empty data
 function isLatLong(lati,longi){
 	if (lati == "" || longi =="" ||
 		lati == null || longi == null)
@@ -287,6 +290,7 @@ router.route('/cities')
         
         var city = new CityModel();      // create a new instance of the City model (schema)
         city.name = req.body.cityName;  // set the city's name (from request)
+		//if the utm field was used run the converter...else enter data like normal
         if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
 			var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
 			city.lat = latLngArray[0];

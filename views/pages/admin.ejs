@@ -65,8 +65,14 @@
                                     </td>
                                     <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label add-table-content" title="email"><%- users[ind].email -%></span>
                                     </td>
-                                    <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label add-table-content" title="role">Add role</span>
+                                    <!-- DONT MIND THIS GARBAGE -->
+                                    <% if (ind == 0) { %>
+                                    <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label add-table-content" title="role">Admin</span>
                                     </td>
+                                    <% } else { %>
+                                    <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label add-table-content" title="role">Editor</span>
+                                    </td>
+                                    <% } %>
                                     <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label" title="membersince">N/A</span>
                                     </td>
                                     <td class="mdl-data-table__cell--non-numeric"><span class="mdl-data-table__label" title="lastlogin">N/A</span>
