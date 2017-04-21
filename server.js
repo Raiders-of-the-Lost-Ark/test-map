@@ -12,8 +12,8 @@ var UTMconvert = require('./modules/UTMconverter.js');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/democities');
-var users = mongoose.createConnection('mongodb://138.197.28.83:27017/demousers')
+var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
+var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
 
 var CityModel = cities.model('City', City);
 var UserModel = users.model('Users', User);
@@ -114,6 +114,7 @@ router.get('/logout', function(req, res){
     console.log("LOGGING OUT");
 	req.session.destroy();	
     res.redirect('/');
+    app.locals.loggedin = false;
 });
 
 // Restrict function that checks if someone is logged in
