@@ -1,11 +1,13 @@
 <div id="info-panel" class="mdl-layout__drawer-right large-drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
     <header class="demo-drawer-header">
-        <a href="#" class="info-panel-closer material-icons">close</a>
+        <a class="info-panel-closer material-icons">close</a>
     </header>
     <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
 
         <% var data = "init_data"; %>
-        <% include siteinfo %>
+        <div id="siteInfo_div">
+            <% include siteinfo %>
+        </div>
         
     </nav>
 </div>

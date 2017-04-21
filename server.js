@@ -37,12 +37,18 @@ app.use(express.static('public/images'));
 
 // view engine setup
 app.set('view engine', 'ejs');
+var ejsLayouts = require("express-ejs-layouts");
+//app.use(ejsLayouts);
 
 // Public folder
 app.use(express.static(__dirname + '/public'));
 
 var port = process.env.PORT || 8080;        // set our port
 var router = express.Router();              // get an instance of the express Router
+
+// TESTING THIS AS A GLOBAL
+app.locals.loggedin = false;
+// TESTING THIS AS A GLOBAL
 
 // PAGE ROUTES
 // =============================================================================
@@ -104,10 +110,11 @@ router.get('/lightbox', function(req, res) {
 
 
 // LOGOUT FUNCTION
-app.get('/logout', function(req, res){
+router.get('/logout', function(req, res){
     console.log("LOGGING OUT");
-    req.session.destroy();
-    redirect('/');
+	req.session.destroy();	
+    res.redirect('/');
+    app.locals.loggedin = false;
 });
 
 // Restrict function that checks if someone is logged in
@@ -137,6 +144,46 @@ router.get('/viewSite', function(req, res) {
                 // Send html to client
                 res.send(html);
             });
+        }
+    });
+});
+
+router.post('/editSite', function(req, res) {
+    var reqSite = req.body.idkey;
+    console.log("Looking for site " + reqSite);
+    CityModel.find({ "_id": reqSite }, function(err, city) {
+        console.log(city);
+        if (err)
+            res.send(err);
+        if (city && city[0]) {
+
+            CityModel.findOneAndUpdate(
+                {
+                    _id: reqSite
+                },
+                { 
+                    "name": req.body.name,
+                    "misc": req.body.misc
+                },
+                {new: true},
+                function(err, result) {
+                    if (err) { 
+                        console.log(err); 
+                        res.send(err); 
+                        return;
+                    }
+                    if (result) {
+                        console.log("Updated: " + result);
+                        // Render updated site info
+                        res.render('siteinfo', { layout: false, data: result }, function(err, html) {
+                            // Send html to client
+                            res.send(html);
+                        });
+                    } else {
+                        console.log("No result aaaaaa!");
+                    }
+                }
+            );
         }
     });
 });
@@ -183,14 +230,14 @@ app.use(function(req, res, next){
 
 // loginPage partial router
 router.post('/testpass', function(req, res){
-    console.log("Received User " + req.body.email);
+    //console.log("Received User " + req.body.email);
     UserModel.find({email: req.body.email}, function(err, user) {
         if (err){
             res.redirect('back');
         }
         if(user[0]) {
-            console.log(user[0].passwordSalt);
-            console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
+            //console.log(user[0].passwordSalt);
+            //console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
             if(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash) == true){
                 req.session.regenerate(function(){
                 // Store the user's primary key
@@ -198,6 +245,8 @@ router.post('/testpass', function(req, res){
                 // or in this case the entire user object
                 req.session.user = user[0];
                 req.session.success = 'Authenticated as ' + user[0].email;
+                app.locals.loggedin = true;
+                console.log(app.locals.loggedin);
                 res.redirect('/admin');
                 });
             }
@@ -223,6 +272,7 @@ router.use(function(req, res, next){
     console.log('Something is happening.');
     next();
 })
+//Check UTM fields for empty data
 function isUTM(zone,easting,northing){
 	if (zone == "" || easting == ""|| northing =="" ||
 		zone == null || easting == null || northing == null)
@@ -230,6 +280,7 @@ function isUTM(zone,easting,northing){
 	else
 		return true;
 }
+//Check Lat long fields for empty data
 function isLatLong(lati,longi){
 	if (lati == "" || longi =="" ||
 		lati == null || longi == null)
@@ -246,6 +297,7 @@ router.route('/cities')
         
         var city = new CityModel();      // create a new instance of the City model (schema)
         city.name = req.body.cityName;  // set the city's name (from request)
+		//if the utm field was used run the converter...else enter data like normal
         if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
 			var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
 			city.lat = latLngArray[0];

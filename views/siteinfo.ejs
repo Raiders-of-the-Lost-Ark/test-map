@@ -1,23 +1,63 @@
-<div id="siteInfo_div">
-    <% var imgDir = "images/" %>
-    <% var pic = imgDir + data.images %>
-    <% var boxId = "img" + 1 %> 
+<% var edit = false; %>
+<% var imgDir = "images/"; %>
+<% var pic = imgDir + data.images; %>
+<% var boxId = "img" + 1; %> 
+
+<script>
+    console.log(<%- loggedin %>);
+</script>
+
+<div class="view-mode <% if (!edit) { %> active <% } %>">
     <% if (data.images && data.images.length != "") { %>   
         <a href="#" onclick="showLightbox('<%= boxId %>')">
-            <img src="<%= pic %>" style="width:100%" />
+            <img class="sidebar-image" src="<%= pic %>" style="width:100%" />
         </a>
     <% } %>
     <div class="sidebar-content">
-    <h3><%= data.name %></h3>
-    <ul>
-        <li><%= data.misc %></li>
-    </ul>
+        <h3 class="siteInfo_name"><%= data.name %></h3>
+        <p class="siteInfo_paragraph"><%= data.misc %></p>
+    </div>
+    <% if(loggedin){ %>
+    <div id="admin-buttons">
+        <div class="mdl-layout-spacer"></div>
+        <button id="siteEditButton" onclick="toggleSiteEdit(true)" class="mdl-button mdl-js-button mdl-button--raised editButton">EDIT</button>
         <div class="mdl-layout-spacer"></div>
         <form id="deleteForm" action="/deletesite" method="POST">
             <input hidden="true" name="idkey" value=<%= data._id %> type="text"></input>
-            <button class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
         </form>
     </div>
+    <% } %>
 </div>
 
-
+<div class="edit-mode <% if (edit) { %> active <% } %> ">
+    <form id="editForm" onsubmit="submitEditForm(window.event); return false;">
+        <% if (data.images && data.images.length != "") { %>   
+            <a class="image-container" href="#" onclick="showLightbox('<%= boxId %>')">
+                <img src="<%= pic %>" style="width:100%" />
+                <div class="image-overlay">
+                    <h3>Image</h3>
+                </div>
+            </a>
+        <% } %>
+        <br />
+        <br />
+        <br />
+        <div class="mdl-textfield mdl-js-textfield">
+            <input name="name" class="mdl-textfield__input" value="<%= data.name %>" style="margin: 10px 25px; font-size:200%" /> 
+        </div>
+        <ul>
+            <li><textarea class="mdl-textfield__input" rows=10 cols=70 name="misc"><%= data.misc %></textarea></li>
+        </ul>
+        <br />
+        
+        <input hidden="true" name="idkey" value="<%= data._id %>" type="text"></input>
+        
+        <div id="admin-buttons">
+            <div class="mdl-layout-spacer"></div>
+            <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton" />
+            <div class="mdl-layout-spacer"></div>
+            <button onclick="toggleSiteEdit(false)" type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton">CANCEL</button>
+        </div> 
+    </form>       
+</div>

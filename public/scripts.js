@@ -60,3 +60,53 @@ function hideLightbox(el) {
     if (el.classList.contains('active')) 
         el.classList.remove('active');
 }
+
+
+function toggleSiteEdit(editOn) {
+    // Kill me
+    if (editOn) {
+        startEditMode();
+    }
+    else {
+        endEditMode();
+    }
+}
+
+function startEditMode() {
+    var view = document.getElementsByClassName("view-mode")[0];
+    var edit = document.getElementsByClassName("edit-mode")[0];
+
+    view.classList.remove("active");
+    edit.classList.add("active");
+}
+
+function endEditMode() {
+    var view = document.getElementsByClassName("view-mode")[0];
+    var edit = document.getElementsByClassName("edit-mode")[0];
+
+    view.classList.add("active");
+    edit.classList.remove("active");
+}
+
+function submitEditForm(event) {
+    event.preventDefault();
+
+    var form = event.target;
+    var XHR = new XMLHttpRequest();
+    var data = new FormData(form);
+
+    XHR.addEventListener("load", function(e) {
+        // Update sidebar
+        document.querySelector('#siteInfo_div').innerHTML = XHR.responseText;
+        google.maps.event.trigger(map,'resize');
+    });
+
+    XHR.addEventListener("error", function(e) {
+        alert('A great problem has occurred.');
+    });
+
+    XHR.open("POST", "editSite");
+    XHR.send(data);
+
+    return false;
+}

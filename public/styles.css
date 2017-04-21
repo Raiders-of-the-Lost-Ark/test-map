@@ -49,6 +49,7 @@ html, body {
   z-index: 2;
   background-color: rgba(55, 71, 79, 0);
   box-shadow: none !important;
+  height: 338px;
   width: 125px;
   left: 250px;
   border: 0;
@@ -343,6 +344,11 @@ div[class="gm-style-cc"] {
     display: none !important;
 }
 
+/* Close Icon For Sidebar*/
+a.info-panel-closer.material-icons {
+  cursor: pointer;
+}
+
 /* Sidebar */
 #sidebar {
   z-index: 2;
@@ -367,6 +373,7 @@ div[class="gm-style-cc"] {
 	max-width: 90%;
 	max-height: 80%;
 	margin-top: 2%;
+  cursor: zoom-out;
 }
 
 .lightbox.active {
@@ -375,4 +382,45 @@ div[class="gm-style-cc"] {
 
 	/** Unhide lightbox **/
 	display: block;
+}
+
+.sidebar-image {
+  cursor: zoom-in;
+}
+
+/* Site edit mode */
+
+.edit-mode {
+  display: none;
+}
+
+.edit-mode.active {
+  display: block;
+}
+
+.view-mode {
+  display: none;
+}
+
+.view-mode.active {
+  display: block;
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    float: left;
+}
+
+.image-overlay {
+    background-color: rgba(0,0,0,0.5);
+    width: 100%;
+    height: 100%;
+    color: #FFFFFF;
+    position: absolute;
+    top: 0;
+    border: 5px dashed rgba(255,255,255,0.5);
+    text-align: center;
+    box-sizing: border-box;
 }
