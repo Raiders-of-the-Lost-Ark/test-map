@@ -364,7 +364,7 @@ function initMap() {
     state_layer.addListener('mouseover', function(event) {
         state_layer.revertStyle();
         state_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
-        console.log(event.feature.getProperty("NAME"));  
+        //console.log(event.feature.getProperty("NAME"));  
     });
     state_layer.addListener('mouseout', function(event) {
         state_layer.revertStyle();
@@ -381,7 +381,7 @@ function initMap() {
     county_layer.addListener('mouseover', function(event) {
         county_layer.revertStyle();
         county_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
-        console.log(event.feature.getProperty('NAMELSAD10'));  
+        //console.log(event.feature.getProperty('NAMELSAD10'));  
     });
     county_layer.addListener('mouseout', function(event) {
         county_layer.revertStyle();

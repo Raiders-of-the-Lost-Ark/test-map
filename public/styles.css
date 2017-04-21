@@ -388,7 +388,7 @@ a.info-panel-closer.material-icons {
   cursor: zoom-in;
 }
 
-/* Site edit mode */
+/* Site Edit Mode */
 
 .edit-mode {
   display: none;
@@ -398,11 +398,23 @@ a.info-panel-closer.material-icons {
   display: block;
 }
 
+/* Site View Mode */
+
 .view-mode {
   display: none;
 }
 
 .view-mode.active {
+  display: block;
+}
+
+/* Site Create Mode */
+
+.create-mode {
+  display: none;
+}
+
+.create-mode.active {
   display: block;
 }
 

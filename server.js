@@ -28,6 +28,7 @@ var bodyParser = require('body-parser');
 var http = require('http'),
     fs = require('fs');
 const path= require('path');
+
 // configure app to use bodyParser()
 // this will let us get the data from a POST
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -230,14 +231,14 @@ app.use(function(req, res, next){
 
 // loginPage partial router
 router.post('/testpass', function(req, res){
-    //console.log("Received User " + req.body.email);
+    console.log("Received User " + req.body.email);
     UserModel.find({email: req.body.email}, function(err, user) {
         if (err){
             res.redirect('back');
         }
         if(user[0]) {
-            //console.log(user[0].passwordSalt);
-            //console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
+            console.log(user[0].passwordSalt);
+            console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
             if(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash) == true){
                 req.session.regenerate(function(){
                 // Store the user's primary key
