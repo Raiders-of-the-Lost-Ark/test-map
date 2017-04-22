@@ -180,3 +180,11 @@ tr#unsaved.active {
 tr#unsaved .mdl-textfield {
   width: inherit !important;
 }
+
+.user-remover {
+  display: none;
+}
+
+.user-remover.active {
+  display: table-cell;
+}

@@ -6,7 +6,9 @@
     <% var title="Civil War Battlefields: Admin" ; %>
     <% include ../head %>
 
+    <link rel="stylesheet" type="text/css" href="dialog/mdl-modal-dialog.css">
     <link rel="stylesheet" type="text/css" href="admin.css">
+    <script src="dialog/mdl-modal-dialog.js"></script>      
 
 </head>
 
@@ -23,10 +25,10 @@
                     <div class="mdl-data-tabledynamic__title">
                         <h2 class="mdl-data-tabledynamic__title-text">Members</h2>
                         <div class="mdl-data-tabledynamic__actions">
-                            <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect add-row">
+                            <button id="add-row" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
                                 ADD
                             </button>
-                            <button class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect remove-row">
+                            <button id="remove-row" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
                                 REMOVE
                             </button>
                         </div>
@@ -37,11 +39,7 @@
                         <table class="mdl-data-table mdl-data-dynamictable mdl-js-data-table mdl-shadow--2dp mdl-cell--6-col mdl-data-table__row--selectable">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="checkbox-all">
-                                            <input type="checkbox" id="checkbox-all" class="mdl-checkbox__input">
-                                        </label>
-                                    </th>
+                                    <th id="user-remove-mode"><i class="user-remover material-icons">content_cut</i></th>
                                     <th class="mdl-data-table__cell--non-numeric">First Name</th>
                                     <th class="mdl-data-table__cell--non-numeric">Last Name</th>
                                     <th class="mdl-data-table__cell--non-numeric">Email</th>
@@ -50,46 +48,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% for (var ind in users) { %>
-                                <tr> 
-                                    <td>
-                                        <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="<%- ind -%>">
-                                            <input type="checkbox" class="mdl-checkbox__input" id="<%- ind -%>" />
-                                        </label>
-                                    </td>
-                                    <td style="text-align:left;">
-                                        <span class="mdl-data-table__label add-table-content" title="firstname">
-                                            <%= users[ind].firstName %>
-                                        </span>
-                                    </td>
-                                    <td style="text-align:left;">
-                                        <span class="mdl-data-table__label add-table-content" title="lastname">
-                                            <%= users[ind].lastName %>
-                                        </span>
-                                    </td>
-                                    <td class="mdl-data-table__cell--non-numeric">
-                                        <span class="mdl-data-table__label add-table-content" title="email">
-                                            <%= users[ind].email %>
-                                        </span>
-                                    </td>
-                                    <td class="mdl-data-table__cell--non-numeric">
-                                        <span class="mdl-data-table__label add-table-content" title="role">
-                                            Admin
-                                        </span>
-                                    </td>
-                                    <td class="mdl-data-table__cell--non-numeric">
-                                        <span class="mdl-data-table__label" title="membersince">
-                                            N/A
-                                        </span>
-                                    </td>
-                                </tr>
-                                <% } %>
+                                <!-- Add user form -->
                                 <tr id="unsaved" class="">
                                     <form id="userForm" action="/register" onsubmit="return validateNewUser(window.event)" method="POST">
                                         <td>
-                                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="{{id}}">
-                                                <input type="checkbox" id="{{id}}" class="mdl-checkbox__input">
-                                            </label>
+                                            <i class="user-remover material-icons">person_add</i>
                                         </td>
                                         <td style="text-align:left;">
                                             <div class="mdl-textfield mdl-js-textfield">
@@ -124,6 +87,41 @@
                                         </td>
                                     </form>
                                 </tr>
+                                <!-- Generate existing users -->
+                                <% for (var ind in users) { %>
+                                <tr> 
+                                    <td>
+                                        <button class="user-remover mdl-button mdl-js-button mdl-button--icon mdl-button--colored" value="<%= users[ind]._id %>">
+                                            <i class="material-icons">close</i>
+                                        </button>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        <span class="mdl-data-table__label add-table-content" title="firstname">
+                                            <%= users[ind].firstName %>
+                                        </span>
+                                    </td>
+                                    <td style="text-align:left;">
+                                        <span class="mdl-data-table__label add-table-content" title="lastname">
+                                            <%= users[ind].lastName %>
+                                        </span>
+                                    </td>
+                                    <td class="mdl-data-table__cell--non-numeric">
+                                        <span class="mdl-data-table__label add-table-content" title="email">
+                                            <%= users[ind].email %>
+                                        </span>
+                                    </td>
+                                    <td class="mdl-data-table__cell--non-numeric">
+                                        <span class="mdl-data-table__label add-table-content" title="role">
+                                            Admin
+                                        </span>
+                                    </td>
+                                    <td class="mdl-data-table__cell--non-numeric">
+                                        <span class="mdl-data-table__label" title="membersince">
+                                            N/A
+                                        </span>
+                                    </td>
+                                </tr>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>
@@ -144,72 +142,11 @@
                 </div>
             </dialog>
 
-            <!-- Add dialog template -->
-            <script type="text/template" id="addContentDialogTemplate">
-                <div class="mdl-dialog__addContent mdl-shadow--2dp">
-                    <h3 class="mdl-dialog__title">Add {{title}}</h3>
-                    <div class="mdl-dialog__content">
-                        <div class="mdl-textfield mdl-js-textfield">
-                            <input class="mdl-textfield__input" type="text" id="content" {{pattern}}>
-                            <label class="mdl-textfield__label" for="content"></label>
-                            <span class="mdl-textfield__error">{{error}} </span>
-                        </div>
-                    </div>
-                    <div class="mdl-dialog__actions">
-                        <button type="button" class="save mdl-button mdl-button--colored mdl-color-text--red-500">Save</button>
-                        <button type="button" class="close mdl-button mdl-button--colored mdl-color-text--red-500">Cancel</button>
-                    </div>
-                </div>
-            </script>
-
-            <!-- New item template -->
-            <script type="text/template" id="basketItemTemplate">
-                <tr class="unsaved">
-                    <form id="userForm" action="" method="POST">
-                        <td>
-                            <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect mdl-data-table__select" for="{{id}}">
-                                <input type="checkbox" id="{{id}}" class="mdl-checkbox__input">
-                            </label>
-                        </td>
-                        <td style="text-align:left;">
-                            <div class="mdl-textfield mdl-js-textfield">
-                                <input class="mdl-textfield__input" type="text" name="firstName">
-                                <label class="mdl-textfield__label" for="new_firstName">First name</label>
-                            </div>
-                        </td>
-                        <td style="text-align:left;">
-                            <div class="mdl-textfield mdl-js-textfield">
-                                <input class="mdl-textfield__input" type="text" name="lastName">
-                                <label class="mdl-textfield__label" for="new_lastName">Last name</label>
-                            </div>
-                        </td>
-                        <td class="mdl-data-table__cell--non-numeric">
-                            <div class="mdl-textfield mdl-js-textfield">
-                                <input class="mdl-textfield__input" type="text" name="email">
-                                <label class="mdl-textfield__label" for="new_email">E-mail address</label>
-                            </div>
-                        </td>
-                        <td class="mdl-data-table__cell--non-numeric">
-                            <div class="mdl-selectfield mdl-js-selectfield">
-                                <select class="mdl-selectfield__select" name="role">
-                                    <option value="1">Editor</option>
-                                    <option value="2">Admin</option>
-                                </select>
-                                <label class="mdl-selectfield__label" for="role"></label>
-                            </div>
-                        </td>
-                        <td class="mdl-data-table__cell--non-numeric">
-                            <input type="submit" onclick="validateNewUser()" value="Save" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" />
-                        </td>
-                    </form>
-                </tr>
-            </script>
-
         </main>
 
         <% include ../footer %>
 
-        <script src="admin.js"></script>
+        <script src="admin.js"></script>  
 
 </body>
 

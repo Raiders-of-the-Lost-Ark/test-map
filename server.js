@@ -370,10 +370,24 @@ router.route('/register') // post functioon to actually register account
 router.route('/deletesite')
     .post(function(req,res){
         var siteId= req.body.idkey;
-        console.log(siteId);
+        console.log("Deleting site:" + siteId);
         CityModel.remove({_id:siteId}, function(err){
             if(!err){
-                console.log("successfull");
+                console.log("...Successful!");
+            } else {
+                console.log(err);
+            }
+        });
+        res.redirect('back');
+    });
+
+router.route('/deleteuser')
+    .post(function(req,res){
+        var userId= req.body.userId;
+        console.log("Deleting user: " + userId);
+        UserModel.remove({_id:userId}, function(err){
+            if(!err){
+                console.log("...Successful!");
             } else {
                 console.log(err);
             }
