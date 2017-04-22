@@ -60,6 +60,7 @@ router.get('/', function(req, res) {
             res.send(err);
         }
         if (cities) {
+            //console.log(cities);
             res.locals.sites = cities;
             res.render('pages/index'); // Render index template
         }
@@ -330,15 +331,6 @@ router.route('/cities')
         });
         //Redirect can be used to send to another webpage after executing the code above it
         res.redirect('back');
-    })
-
-    .get(function(req, res) {
-        CityModel.find(function(err, cities) {
-            if (err)
-                res.send(err);
-
-            res.json(cities);
-        });
     });
 
 
