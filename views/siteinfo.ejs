@@ -1,10 +1,16 @@
-<% var edit = false; %>
-<% var create = false; %>
-<% var imgDir = "images/"; %>
-<% var pic = imgDir + data.images; %>
-<% var boxId = "img" + 1; %> 
+<% if (newMode) { %>
+    <% var edit = true; %>
+    <% var create = true; %>
+<% } else { %> 
+    <% var edit = false; %>
+    <% var create = false; %>
+    
+    <% var imgDir = "images/"; %>
+    <% var pic = imgDir + data.images; %>
+    <% var boxId = "img" + 1; %> 
+<% } %>
 
-
+<% if (!newMode) { %> 
 <div class="view-mode <% if (!edit && !create) { %> active <% } %>">
     <% if (data.images && data.images.length != "") { %>   
         <a href="#" onclick="showLightbox('<%= boxId %>')">
@@ -18,7 +24,6 @@
     <% if(loggedin){ %>
     <div id="admin-buttons">
         <div class="mdl-layout-spacer"></div>
-        <button id="siteCreateButton" onclick="toggleSiteCreate(true)" class="mdl-button mdl-js-button mdl-button--raised createButton">CREATE</button>
         <div class="mdl-layout-spacer"></div>
         <button id="siteEditButton" onclick="toggleSiteEdit(true)" class="mdl-button mdl-js-button mdl-button--raised editButton">EDIT</button>
         <div class="mdl-layout-spacer"></div>
@@ -29,9 +34,21 @@
     </div>
     <% } %>
 </div>
+<% } %>
+
 
 <div class="edit-mode <% if (edit) { %> active <% } %> ">
+
+    <!-- Create form -->
+    <% if (newMode) { %>
+    <form id="createForm" onsubmit="submitCreateForm(window.event); return false;" enctype="multipart/form-data">
+    
+    <!-- Edit form -->
+    <% } else { %>
     <form id="editForm" onsubmit="submitEditForm(window.event); return false;">
+    <% } %>
+    
+        <!-- Images -->
         <% if (data.images && data.images.length != "") { %>   
             <a class="image-container" href="#" onclick="showLightbox('<%= boxId %>')">
                 <img src="<%= pic %>" style="width:100%" />
@@ -40,52 +57,48 @@
                 </div>
             </a>
         <% } %>
-        <br />
-        <br />
-        <br />
+
+        <!-- Super Ugly Form -->
+        Upload Picture<input type="File" name="customFile"><br>
         <div class="mdl-textfield mdl-js-textfield">
-            <input name="name" class="mdl-textfield__input" value="<%= data.name %>" style="margin: 10px 25px; font-size:200%" /> 
+            <input name="name" placeholder="Battlesite Name" class="mdl-textfield__input" value="<%= data.name %>" style="margin: 10px 25px; font-size:200%" /> 
         </div>
         <ul>
-            <li><textarea class="mdl-textfield__input" rows=10 cols=70 name="misc"><%= data.misc %></textarea></li>
+            <li><textarea placeholder="Enter a description here..." class="mdl-textfield__input" rows=10 cols=70 name="misc"><%= data.misc %></textarea></li>
         </ul>
         <br />
-        
-        <input hidden="true" name="idkey" value="<%= data._id %>" type="text"></input>
+
+        <% if (newMode) { %>
+        Use UTM<input type="radio" name="radio" checked="true" onclick="toggleCoordFormat('utm','latlong')"><br>
+        Use Lat/Long <input type="radio" name="radio" onclick="toggleCoordFormat('latlong','utm')"> <br>
+        <div id="utm">
+		Enter Zone Number <input type="text" name="zone"></input><br>
+        Enter Easting<input type="text" name="easting"> </input><br>
+        Enter Northing<input type="text" name="northing"> </input><br>
+        </div>
+        <div id="latlong" style="display:none">
+        Enter City Latitude<input type="text" name="Latitude"> </input><br>
+        Enter City Longitude<input type="text" name="Longitude"> </input><br>
+        </div>
+        <% } %>
+
+        <!-- Id holder  -->
+        <% if (!newMode) { %>
+        <input hidden="true" name="idkey" value="<%= data._id %>" type="text"></input>        
+        <% } %>
         
         <div id="admin-buttons">
             <div class="mdl-layout-spacer"></div>
+
+            <% if (newMode) { %>
+            <input type="submit" value="SUBMIT" class="mdl-button mdl-js-button mdl-button--raised createButton" />
+            
+            <% } else { %>
             <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton" />
             <div class="mdl-layout-spacer"></div>
             <button onclick="toggleSiteEdit(false)" type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton">CANCEL</button>
+            <% } %>
+
         </div> 
     </form>       
 </div>
-
-<div class="create-mode <% if (create) { %> active <% } %> ">
-    <form id="createForm" action="/cities" method="POST" enctype="multipart/form-data">
-        <div class="mdl-textfield mdl-js-textfield">
-            <input name="cityName" type="text" class="mdl-textfield__input" value="New Site Name" style="margin: 10px 25px; font-size:200%" /> 
-        </div>
-        <div class="mdl-textfield mdl-js-textfield">
-            <input name="Latitude" type="text" class="mdl-textfield__input" value="Latitude" style="margin: 10px 25px; font-size:200%" /> 
-        </div>
-        <div class="mdl-textfield mdl-js-textfield">
-            <input name="Longitude" type="text" class="mdl-textfield__input" value="Longitude" style="margin: 10px 25px; font-size:200%" /> 
-        </div>
-        Upload File<input type="File" name="customFile"><br>
-        <ul>
-            <li><textarea class="mdl-textfield__input" rows=10 cols=70 name="custom">Text Here</textarea></li>
-        </ul>
-        <br />
-        
-        
-        <div id="admin-buttons">
-            <div class="mdl-layout-spacer"></div>
-            <input type="submit" value="SUBMIT" class="mdl-button mdl-js-button mdl-button--raised createButton" />
-            <div class="mdl-layout-spacer"></div>
-            <button onclick="toggleSiteCreate(false)" type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton">CANCEL</button>
-        </div> 
-    </form>
-</div>
-
