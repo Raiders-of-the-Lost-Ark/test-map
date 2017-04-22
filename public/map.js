@@ -1,22 +1,19 @@
 // The Map
 var map;
-
 var cityArray = [];
 var circlesArr = [];
 
 var infoWindow = null;
+var sites = null;
 
 county_layer = null;
 state_layer = null;
+circle_layer = null;
 
-var cityConst = function(name, lat, lng, id, misc)
-{
-    this.name = name;
-    this.lat = lat;
-    this.lng = lng;
-    this.id = id;
-    this.misc = misc;
-};
+function initSites(incomingSites){
+    sites = incomingSites;
+}
+
 // Init
 function initMap() {
     map = new google.maps.Map(document.getElementById('map'), {
@@ -364,7 +361,7 @@ function initMap() {
     state_layer.addListener('mouseover', function(event) {
         state_layer.revertStyle();
         state_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
-        console.log(event.feature.getProperty("NAME"));  
+        //console.log(event.feature.getProperty("NAME"));  
     });
     state_layer.addListener('mouseout', function(event) {
         state_layer.revertStyle();
@@ -381,7 +378,7 @@ function initMap() {
     county_layer.addListener('mouseover', function(event) {
         county_layer.revertStyle();
         county_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
-        console.log(event.feature.getProperty('NAMELSAD10'));  
+        //console.log(event.feature.getProperty('NAMELSAD10'));  
     });
     county_layer.addListener('mouseout', function(event) {
         county_layer.revertStyle();
@@ -415,51 +412,34 @@ function initMap() {
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
 
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "/api/cities", true);
-    xhr.onload = function (e) { 
-        if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-                var cityData = JSON.parse(xhr.responseText);
-                for (var city in cityData) {
-                    cityArray.push(new cityConst(cityData[city].name, cityData[city].lat, cityData[city].lng, cityData[city]._id, cityData[city].misc));
-                }
-                    for(var i = 0; i < cityArray.length; i++)
-                    {                        
-                        //console.log(cityArray[i]);
-                        var cityCircle = new google.maps.Circle({
-                            strokeColor: '#FF0000',
-                            strokeOpacity: 0.8,
-                            strokeWeight: 2,
-                            fillColor: '#FF0000',
-                            fillOpacity: 0.35,
-                            map: map,
-                            clickable: true,
-                            lat: cityArray[i].lat,
-                            long: cityArray[i].lng,
-                            center: {lat: parseFloat(cityArray[i].lat), lng: parseFloat(cityArray[i].lng)},
-                            radius: 10000,
-                            name: cityArray[i].name,
-                            misc: cityArray[i].misc,
-                            siteId: cityArray[i].id,
-                            siteInd: i
-                        });
+    for(var i = 0; i < sites.length; i++)
+    {                        
+        //console.log(cityArray[i]);
+            var siteCircle = new google.maps.Circle({
+            strokeColor: '#FF0000',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#FF0000',
+            fillOpacity: 0.35,
+            map: map,
+            clickable: true,
+            lat: sites[i].lat,
+            long: sites[i].lng,
+            center: {lat: parseFloat(sites[i].lat), lng: parseFloat(sites[i].lng)},
+            radius: 10000,
+            name: sites[i].name,
+            misc: sites[i].misc,
+            siteId: sites[i].id,
+            siteInd: i
+            });
 
-                        google.maps.event.addListener(cityCircle, 'click', function () {
-                            selectMarker(this.siteInd);
-                        });
+        google.maps.event.addListener(siteCircle, 'click', function () {
+            selectMarker(this.siteInd);
+        });
 
-                        circlesArr.push(cityCircle);
-                    }
-                } else {
-                console.error(xhr.statusText);
-            }
-        }
-    };
-    xhr.onerror = function (e) {
-        console.error(xhr.statusText);
-    };
-    xhr.send(null);
+        circlesArr.push(siteCircle);
+    }               
+
     //=======================================================================================================================
 
     // ADDING CIRCLES AND CLICKABLE CIRCLES

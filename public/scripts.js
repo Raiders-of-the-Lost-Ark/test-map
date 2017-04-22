@@ -75,17 +75,21 @@ function toggleSiteEdit(editOn) {
 function startEditMode() {
     var view = document.getElementsByClassName("view-mode")[0];
     var edit = document.getElementsByClassName("edit-mode")[0];
+    var create = document.getElementsByClassName("create-mode")[0];
 
     view.classList.remove("active");
     edit.classList.add("active");
+    create.classList.remove("active");
 }
 
 function endEditMode() {
     var view = document.getElementsByClassName("view-mode")[0];
     var edit = document.getElementsByClassName("edit-mode")[0];
+    var create = document.getElementsByClassName("create-mode")[0];
 
     view.classList.add("active");
     edit.classList.remove("active");
+    create.classList.remove("active");
 }
 
 function submitEditForm(event) {
@@ -106,6 +110,67 @@ function submitEditForm(event) {
     });
 
     XHR.open("POST", "editSite");
+    XHR.send(data);
+
+    return false;
+}
+
+// THIS IS FOR CREATING SITES
+
+function toggleSiteCreate(createOn) {
+    // Kill me (again)
+    if (createOn) {
+        startCreateMode();
+    }
+    else {
+        endCreateMode();
+    }
+}
+
+function startCreateMode() {
+    
+    console.log("HELLO WORLDO");
+    var view = document.getElementsByClassName("view-mode")[0];
+    var create = document.getElementsByClassName("create-mode")[0];
+    var edit = document.getElementsByClassName("edit-mode")[0];
+
+    view.classList.remove("active");
+    edit.classList.remove("active");
+    create.classList.add("active");
+}
+
+function endCreateMode() {
+    console.log("THIS IS BULLCRAP");
+    var view = document.getElementsByClassName("view-mode")[0];
+    var create = document.getElementsByClassName("create-mode")[0];
+    var edit = document.getElementsByClassName("edit-mode")[0];
+
+    view.classList.add("active");
+    create.classList.remove("active");
+    edit.classList.remove("active");
+}
+
+function submitCreateForm(event) {
+    console.log("SUBMITTING FORM");
+    event.preventDefault();
+
+    var form = event.target;
+    var XHR = new XMLHttpRequest();
+    var data = new FormData(form);
+
+    XHR.addEventListener("load", function(e) {
+        // Update sidebar
+        document.querySelector('#siteInfo_div').innerHTML = XHR.responseText;
+        google.maps.event.trigger(map,'resize');
+    });
+
+    XHR.addEventListener("error", function(e) {
+        alert('A great problem has occurred.');
+    });
+
+    console.log(JSON.stringify(data));
+
+    XHR.open("POST", "cities");
     XHR.send(data);
 
     return false;
