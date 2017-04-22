@@ -3,10 +3,18 @@ function initialize() {
     
     // Add listeners
     
-    var info_panel_closer = document.querySelector('.info-panel-closer');
-    info_panel_closer.addEventListener("click", closeInfoPanel);
+    var infoPanelCloser = document.querySelector('.info-panel-closer');
+    infoPanelCloser.addEventListener("click", closeInfoPanel);
+
+    var createButton = document.getElementById("createButton");
+    createButton.addEventListener("click", openCreatePanel);
 }
 
+function toggleCoordFormat(showthis,hidethis){
+    document.getElementById(showthis).style.display="inline";
+    document.getElementById(hidethis).style.display="none";
+
+}
 
 function resetLightboxes() {
     var boxContainer = document.querySelector('#lightboxes');
@@ -92,15 +100,16 @@ function endEditMode() {
     create.classList.remove("active");
 }
 
-function submitEditForm(event) {
-    event.preventDefault();
+function submitEditForm(e) {
+    e.preventDefault();
 
-    var form = event.target;
+    var form = e.target;
     var XHR = new XMLHttpRequest();
     var data = new FormData(form);
 
     XHR.addEventListener("load", function(e) {
         // Update sidebar
+        console.log(XHR.responseText);
         document.querySelector('#siteInfo_div').innerHTML = XHR.responseText;
         google.maps.event.trigger(map,'resize');
     });
@@ -110,6 +119,34 @@ function submitEditForm(event) {
     });
 
     XHR.open("POST", "editSite");
+    XHR.send(data);
+
+    return false;
+}
+
+function submitCreateForm(event) {
+    event.preventDefault();
+
+    var form = event.target;
+
+    // Validation
+    // console.log( form.elements[0].value );
+    // console.log( form.elements[1].value );
+    // [ ... ]
+
+    var XHR = new XMLHttpRequest();
+    var data = new FormData(form);
+
+    XHR.addEventListener("load", function(e) {
+        // Update sidebar
+        location.reload();
+    });
+
+    XHR.addEventListener("error", function(e) {
+        alert('A great problem has occurred.');
+    });
+
+    XHR.open("POST", "cities");
     XHR.send(data);
 
     return false;
@@ -148,30 +185,4 @@ function endCreateMode() {
     view.classList.add("active");
     create.classList.remove("active");
     edit.classList.remove("active");
-}
-
-function submitCreateForm(event) {
-    console.log("SUBMITTING FORM");
-    event.preventDefault();
-
-    var form = event.target;
-    var XHR = new XMLHttpRequest();
-    var data = new FormData(form);
-
-    XHR.addEventListener("load", function(e) {
-        // Update sidebar
-        document.querySelector('#siteInfo_div').innerHTML = XHR.responseText;
-        google.maps.event.trigger(map,'resize');
-    });
-
-    XHR.addEventListener("error", function(e) {
-        alert('A great problem has occurred.');
-    });
-
-    console.log(JSON.stringify(data));
-
-    XHR.open("POST", "cities");
-    XHR.send(data);
-
-    return false;
 }
