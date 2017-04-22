@@ -230,6 +230,59 @@ app.use(function(req, res, next){
 });
 
 
+router.post('/changepass', function(req, res){
+    console.log("Received Password " + req.body.currPass);
+    console.log("Received New Pass 1 " + req.body.newPass1);
+    console.log("Received New Pass 2 " + req.body.newPass2);
+
+    var currentPass = req.body.currPass;
+    var newPass1 = req.body.newPass1;
+    var newPass2 = req.body.newPass2;
+
+    if(TestPass(currentPass, req.session.user.passwordSalt.toString(), req.session.user.passwordHash.toString()))
+    {
+        if(newPass1 == newPass2){
+            var temp = Hasher(newPass1);
+             UserModel.findOneAndUpdate(
+                {
+                    _id: req.session.user._id
+                },
+                { 
+                    "passwordHash": temp.passwordHash,
+                    "passwordSalt": temp.salt
+                },
+                {new: true},
+                function(err, result) {
+                    if (err) { 
+                        console.log(err); 
+                        res.send(err); 
+                        return;
+                    }
+                    if (result) {
+                        console.log("Updated: " + result);
+                        // Render updated site info
+                        res.render('account', { layout: false, data: result }, function(err, html) {
+                            // Send html to client
+                            res.send(html);
+                        });
+                    } else {
+                        console.log("No result aaaaaa!");
+                    }
+                }
+            );
+        } else {
+            console.log("New Passwords Did Not Match");
+            res.redirect('/account');
+        }
+    } else {
+        console.log("This password is incorrect.");
+    }
+
+    //console.log(req.session.user.passwordSalt);
+
+    res.redirect('/account');
+});
+
 // loginPage partial router
 router.post('/testpass', function(req, res){
     console.log("Received User " + req.body.email);

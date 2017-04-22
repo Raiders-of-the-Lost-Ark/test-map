@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
 
     <% var title="Civil War Battlefields: Account" ; %>
@@ -19,12 +20,34 @@
                 <!-- Page content -->
                 <div style="float:right">
                     click to <a href="/logout">logout</a>'
+
+                    <form action="/changepass" method="POST">
+                        Enter Current Password<br>
+                        <input type="password" name="currPass"><br>
+                        New Password<br>
+                        <input type="password" name="newPass1" id="pw1"><br>
+                        Confirm New Password<br>
+                        <input type="password" name="newPass2" id="pw2"><br>
+                        <br>
+                        <input type="submit">
+                    </form> 
                 </div>
             </main>
         <% include ../footer %>
 
-        <script src="admin.js"></script>
 
 </body>
 
 </html>
+
+<script>
+    function compareNewPass(){
+    var pass1 = document.getElementById("pw1").value;
+    var pass2 = document.getElementById("pw2").value;
+
+    if(pass1 == pass2)
+        console.log("THESE ARE THE SAME");
+    else
+        console.log("THESE ARE NOT THE SAME");
+};
+</script>
