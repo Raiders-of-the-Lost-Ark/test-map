@@ -365,36 +365,94 @@ router.route('/cities')
                       if (err)
                      return res.status(500).send(err);
                       });
-                    city.pdf[x]=publicpdf[x].name; 
-                    city.pdf[x].isviewable=true;
+                        city.pdf[x]=publicpdf[x].name; 
+                        city.pdfview[x]=true;
                 }
                 for(var x=0; x<prlength;x++)
                 {
-                    let uploadPath=path.join(fileDir,privatepdf[x].name);
+                    uploadPath=path.join(fileDir,privatepdf[x].name);
                     privatepdf[x].mv(uploadPath,function(err)
                     {
                       if (err)
                      return res.status(500).send(err);
                       });
-                    city.pdf[x+pulength]=privatepdf[x].name;
-                    city.pdf[x].isviewable=false; 
+                    city.pdf[x+pulength]=privatepdf[x].name; 
+                    city.pdfview[x+pulength]=false;
                 }
               }
               else
               {
                 //multi public file, single private
                 console.log("multiple public files, single private");
+                for(var x=0; x<pulength;x++)
+                {
+                    let uploadPath=path.join(fileDir,publicpdf[x].name);
+                    publicpdf[x].mv(uploadPath,function(err)
+                    {
+                      if (err)
+                     return res.status(500).send(err);
+                      });
+                        city.pdf[x]=publicpdf[x].name; 
+                        city.pdfview[x]=true;
+                }
+                uploadPath=path.join(fileDir,privatepdf.name);
+                privatepdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf[pulength]=privatepdf.name; 
+                 city.pdfview[pulength]=false;
+
               }
             else
               if(typeof(prlength) != "undefined")
               {
                 //single public file, multi private
                 console.log("single public files, multiple private");
+                let uploadPath=path.join(fileDir,publicpdf.name);
+                publicpdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf=publicpdf.name; 
+                 city.pdfview=true;
+
+                for(var x=0; x<prlength;x++)
+                {
+                    uploadPath=path.join(fileDir,privatepdf[x].name);
+                    privatepdf[x].mv(uploadPath,function(err)
+                    {
+                      if (err)
+                     return res.status(500).send(err);
+                      });
+                    city.pdf[x+1]=privatepdf[x].name; 
+                    city.pdfview[x+1]=false;
+                }
+
               }
               else
               {
                 //single public, single private
                 console.log("single public files, single private");
+                let uploadPath=path.join(fileDir,publicpdf.name);
+                publicpdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf=publicpdf.name; 
+                 city.pdfview=true;
+
+                uploadPath=path.join(fileDir,privatepdf.name);
+                privatepdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf[1]=privatepdf.name; 
+                 city.pdfview[1]=false;
               }
                 
 
@@ -407,7 +465,7 @@ router.route('/cities')
             var pulength=publicpdf.length;
             if(typeof(pulength) != "undefined")
             {
-                console.log("this should be for an array of pdf")
+                console.log("this should be for an array of public pdf")
                 for(var x=0; x<pulength;x++)
                 {
                 let uploadPath=path.join(fileDir,publicpdf[x].name);
@@ -416,7 +474,7 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf[x]=publicpdf.name[x]; 
+                 city.pdf[x]=publicpdf[x].name; 
                  city.pdf[x].isviewable=true;
              }
             }
@@ -432,13 +490,41 @@ router.route('/cities')
                   });
                  city.pdf=publicpdf.name; 
                  city.pdfview=true;
-                 console.log(city.pdf);
 
             }
             }
             if(typeof(privatepdf) != "undefined")
             {
-            var prlength=privatepdf.length; 
+                console.log("we are in this area here");
+            var prlength=privatepdf.length;
+            if(typeof(prlength) != "undefined")
+            {
+                console.log("this should be for an array of private")
+                for(var x=0; x<prlength;x++)
+                {
+                let uploadPath=path.join(fileDir,privatepdf[x].name);
+                privatepdf[x].mv(uploadPath,function(err){
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf[x]=privatepdf[x].name; 
+                 city.pdf[x].isviewable=false;
+                }
+            }
+            else
+            {
+                console.log("only 1 private file")
+                let uploadPath=path.join(fileDir,privatepdf.name);
+                privatepdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf=privatepdf.name; 
+                 city.pdfview=false;
+
+            }
+
             }
         }
         // save the city and check for errors
