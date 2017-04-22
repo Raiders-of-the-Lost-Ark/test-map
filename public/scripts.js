@@ -100,10 +100,10 @@ function endEditMode() {
     create.classList.remove("active");
 }
 
-function submitEditForm(event) {
-    event.preventDefault();
+function submitEditForm(e) {
+    e.preventDefault();
 
-    var form = event.target;
+    var form = e.target;
     var XHR = new XMLHttpRequest();
     var data = new FormData(form);
 

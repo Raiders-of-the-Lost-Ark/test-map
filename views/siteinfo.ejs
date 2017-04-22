@@ -41,11 +41,11 @@
 
     <!-- Create form -->
     <% if (newMode) { %>
-    <form id="createForm" onsubmit="submitCreateForm(window.event); return false;" enctype="multipart/form-data">
+    <form id="createForm" onsubmit="submitCreateForm(event); return false;" enctype="multipart/form-data">
     
     <!-- Edit form -->
     <% } else { %>
-    <form id="editForm" onsubmit="submitEditForm(window.event); return false;">
+    <form id="editForm" onsubmit="submitEditForm(event); return false;">
     <% } %>
     
         <!-- Images -->
