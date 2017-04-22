@@ -168,3 +168,15 @@ main#ty-container #addCustomerAction {
   min-width: 600px;
   margin-top: 100px;
 }
+
+tr#unsaved {
+  display: none;
+}
+
+tr#unsaved.active {
+  display: table-row;
+}
+
+tr#unsaved .mdl-textfield {
+  width: inherit !important;
+}
