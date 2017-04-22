@@ -344,19 +344,111 @@ router.route('/cities')
 
         let publicpdf =req.files.pdfFilespublic;
         let privatepdf=req.files.pdfFilesprivate;
-        var pulength=publicpdf.length;
-        var prlength=privatepdf.length;
+
+        var fileDir=__dirname+("/public/pdf");
         if ((typeof(publicpdf) != "undefined")&&(typeof(privatepdf) != "undefined"))
         {
+            var pulength=publicpdf.length;
+            var prlength=privatepdf.length;
             if(typeof(pulength) != "undefined")
+              if(typeof(prlength) != "undefined")
+              {
+                //multi file for both
+                //public file first
+                console.log("multiple public files, multiple private");
+                
+                for(var x=0; x<pulength;x++)
+                {
+                    let uploadPath=path.join(fileDir,publicpdf[x].name);
+                    publicpdf[x].mv(uploadPath,function(err)
+                    {
+                      if (err)
+                     return res.status(500).send(err);
+                      });
+                    city.pdf[x]=publicpdf[x].name; 
+                    city.pdf[x].isviewable=true;
+                }
+                for(var x=0; x<prlength;x++)
+                {
+                    let uploadPath=path.join(fileDir,privatepdf[x].name);
+                    privatepdf[x].mv(uploadPath,function(err)
+                    {
+                      if (err)
+                     return res.status(500).send(err);
+                      });
+                    city.pdf[x+pulength]=privatepdf[x].name;
+                    city.pdf[x].isviewable=false; 
+                }
+              }
+              else
+              {
+                //multi public file, single private
+                console.log("multiple public files, single private");
+              }
+            else
+              if(typeof(prlength) != "undefined")
+              {
+                //single public file, multi private
+                console.log("single public files, multiple private");
+              }
+              else
+              {
+                //single public, single private
+                console.log("single public files, single private");
+              }
+                
 
         }
+        else
+        {
+            if(typeof(publicpdf) != "undefined")
+            {
+            console.log("we are here");
+            var pulength=publicpdf.length;
+            if(typeof(pulength) != "undefined")
+            {
+                console.log("this should be for an array of pdf")
+                for(var x=0; x<pulength;x++)
+                {
+                let uploadPath=path.join(fileDir,publicpdf[x].name);
+                publicpdf[x].mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf[x]=publicpdf.name[x]; 
+                 city.pdf[x].isviewable=true;
+             }
+            }
+            
+            else
+            {
+                console.log("only public file")
+                let uploadPath=path.join(fileDir,publicpdf.name);
+                publicpdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf=publicpdf.name; 
+                 city.pdfview=true;
+                 console.log(city.pdf);
+
+            }
+            }
+            if(typeof(privatepdf) != "undefined")
+            {
+            var prlength=privatepdf.length; 
+            }
+        }
         // save the city and check for errors
+        
         city.save(function(err) {
             if (err)
                 res.send(err);
         });
         //Redirect can be used to send to another webpage after executing the code above it
+        
         res.redirect('back');
     })
 
@@ -370,7 +462,7 @@ router.route('/cities')
     });
 
 
-router.route('/register') // post functioon to actually register account
+router.route('/register') // post function to actually register account
 
     .post(function(req, res){
         var user = new UserModel();
@@ -399,7 +491,6 @@ router.route('/register') // post functioon to actually register account
 router.route('/deletesite')
     .post(function(req,res){
         var siteId= req.body.idkey;
-        console.log(siteId);
         CityModel.remove({_id:siteId}, function(err){
             if(!err){
                 console.log("successfull");
