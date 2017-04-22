@@ -309,12 +309,13 @@ router.route('/cities')
 		};
         city.misc = req.body.custom;
         let image =req.files.customFile;
-        console.log("it ran");
+        //checks if a image was uploaded
         if (typeof(image) != "undefined")
         {
         var fileDir=__dirname+("/public/images");
         var size = image.length;
-        console.log(size);
+        //checks if multiple images have been uploaded or only a single image
+        if(typeof(size) != "undefined")
         for(var x=0; x<size;x++)
         {
         let uploadPath=path.join(fileDir,image[x].name);
@@ -327,6 +328,28 @@ router.route('/cities')
         
         city.images[x]=image[x].name;
         }
+        else
+        {
+        let uploadPath=path.join(fileDir,image.name);
+        image.mv(uploadPath,function(err)
+        {
+            if (err)
+                return res.status(500).send(err);
+           // res.send('file uploaded to' +uploadPath);
+        });
+        
+        city.images=image.name;
+        }
+        }
+
+        let publicpdf =req.files.pdfFilespublic;
+        let privatepdf=req.files.pdfFilesprivate;
+        var pulength=publicpdf.length;
+        var prlength=privatepdf.length;
+        if ((typeof(publicpdf) != "undefined")&&(typeof(privatepdf) != "undefined"))
+        {
+            if(typeof(pulength) != "undefined")
+
         }
         // save the city and check for errors
         city.save(function(err) {

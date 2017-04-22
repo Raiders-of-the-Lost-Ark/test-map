@@ -6,7 +6,9 @@ var CitySchema = new Schema({
     lat: String,
     lng: String,
     misc: String,
-    images: [String]
+    images: [String],
+	pdf: [{isviewable: Boolean,
+		  path: String}]
 });
 
 // this is our predefined schema for a city (location and lat/long)
