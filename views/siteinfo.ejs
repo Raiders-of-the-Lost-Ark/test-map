@@ -24,7 +24,7 @@
      if (data.pdf && data.pdf.length != "") {
          for(var n = 0; n < data.pdf.length; n++) {
             console.log(data.pdf[n]); %>
-            <p target="_blank" href="<%= data.pdf[n] %>"> <%= data.pdf[n] %></p>
+            <a href="pdf/<%= data.pdf[n] %>" target="_blank"><p> <%= data.pdf[n] %></p></a>
             <%
          }
      } %>
