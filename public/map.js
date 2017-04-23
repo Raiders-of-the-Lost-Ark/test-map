@@ -1,6 +1,6 @@
 // The Map
 var map;
-var cityArray = [];
+var siteArray = [];
 var circlesArr = [];
 
 var infoWindow = null;
@@ -414,7 +414,7 @@ function initMap() {
 
     for(var i = 0; i < sites.length; i++)
     {                        
-        //console.log(cityArray[i]);
+        //console.log(siteArray[i]);
             var siteCircle = new google.maps.Circle({
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,

@@ -72,7 +72,7 @@ function validateNewUser(event) {
   if (firstName == "") {
     alert("Please enter a first name");
     return false;
-  }
+  } 
   else if (lastName == "") {
     alert("Please enter a last name");
     return false;
