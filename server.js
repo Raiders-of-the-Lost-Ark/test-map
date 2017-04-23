@@ -372,9 +372,27 @@ router.route('/cities')
 		};
         city.misc = req.body.misc;
         let image =req.files.customFile;
+        //checks if a image was uploaded
         if (typeof(image) != "undefined")
         {
         var fileDir=__dirname+("/public/images");
+        var size = image.length;
+        //checks if multiple images have been uploaded or only a single image
+        if(typeof(size) != "undefined")
+        for(var x=0; x<size;x++)
+        {
+        let uploadPath=path.join(fileDir,image[x].name);
+        image[x].mv(uploadPath,function(err)
+        {
+            if (err)
+                return res.status(500).send(err);
+           // res.send('file uploaded to' +uploadPath);
+        });
+        
+        city.images[x]=image[x].name;
+        }
+        else
+        {
         let uploadPath=path.join(fileDir,image.name);
         image.mv(uploadPath,function(err)
         {
@@ -385,17 +403,206 @@ router.route('/cities')
         
         city.images=image.name;
         }
+        }
+
+        let publicpdf =req.files.pdfFilespublic;
+        let privatepdf=req.files.pdfFilesprivate;
+
+        var fileDir=__dirname+("/public/pdf");
+        if ((typeof(publicpdf) != "undefined")&&(typeof(privatepdf) != "undefined"))
+        {
+            var pulength=publicpdf.length;
+            var prlength=privatepdf.length;
+            if(typeof(pulength) != "undefined")
+              if(typeof(prlength) != "undefined")
+              {
+                //multi file for both
+                //public file first
+                console.log("multiple public files, multiple private");
+                
+                for(var x=0; x<pulength;x++)
+                {
+                    let uploadPath=path.join(fileDir,publicpdf[x].name);
+                    publicpdf[x].mv(uploadPath,function(err)
+                    {
+                      if (err)
+                     return res.status(500).send(err);
+                      });
+                        city.pdf[x]=publicpdf[x].name; 
+                        city.pdfview[x]=true;
+                }
+                for(var x=0; x<prlength;x++)
+                {
+                    uploadPath=path.join(fileDir,privatepdf[x].name);
+                    privatepdf[x].mv(uploadPath,function(err)
+                    {
+                      if (err)
+                     return res.status(500).send(err);
+                      });
+                    city.pdf[x+pulength]=privatepdf[x].name; 
+                    city.pdfview[x+pulength]=false;
+                }
+              }
+              else
+              {
+                //multi public file, single private
+                console.log("multiple public files, single private");
+                for(var x=0; x<pulength;x++)
+                {
+                    let uploadPath=path.join(fileDir,publicpdf[x].name);
+                    publicpdf[x].mv(uploadPath,function(err)
+                    {
+                      if (err)
+                     return res.status(500).send(err);
+                      });
+                        city.pdf[x]=publicpdf[x].name; 
+                        city.pdfview[x]=true;
+                }
+                uploadPath=path.join(fileDir,privatepdf.name);
+                privatepdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf[pulength]=privatepdf.name; 
+                 city.pdfview[pulength]=false;
+
+              }
+            else
+              if(typeof(prlength) != "undefined")
+              {
+                //single public file, multi private
+                console.log("single public files, multiple private");
+                let uploadPath=path.join(fileDir,publicpdf.name);
+                publicpdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf=publicpdf.name; 
+                 city.pdfview=true;
+
+                for(var x=0; x<prlength;x++)
+                {
+                    uploadPath=path.join(fileDir,privatepdf[x].name);
+                    privatepdf[x].mv(uploadPath,function(err)
+                    {
+                      if (err)
+                     return res.status(500).send(err);
+                      });
+                    city.pdf[x+1]=privatepdf[x].name; 
+                    city.pdfview[x+1]=false;
+                }
+
+              }
+              else
+              {
+                //single public, single private
+                console.log("single public files, single private");
+                let uploadPath=path.join(fileDir,publicpdf.name);
+                publicpdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf=publicpdf.name; 
+                 city.pdfview=true;
+
+                uploadPath=path.join(fileDir,privatepdf.name);
+                privatepdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf[1]=privatepdf.name; 
+                 city.pdfview[1]=false;
+              }
+                
+
+        }
+        else
+        {
+            if(typeof(publicpdf) != "undefined")
+            {
+            console.log("we are here");
+            var pulength=publicpdf.length;
+            if(typeof(pulength) != "undefined")
+            {
+                console.log("this should be for an array of public pdf")
+                for(var x=0; x<pulength;x++)
+                {
+                let uploadPath=path.join(fileDir,publicpdf[x].name);
+                publicpdf[x].mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf[x]=publicpdf[x].name; 
+                 city.pdf[x].isviewable=true;
+             }
+            }
+            
+            else
+            {
+                console.log("only public file")
+                let uploadPath=path.join(fileDir,publicpdf.name);
+                publicpdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf=publicpdf.name; 
+                 city.pdfview=true;
+
+            }
+            }
+            if(typeof(privatepdf) != "undefined")
+            {
+                console.log("we are in this area here");
+            var prlength=privatepdf.length;
+            if(typeof(prlength) != "undefined")
+            {
+                console.log("this should be for an array of private")
+                for(var x=0; x<prlength;x++)
+                {
+                let uploadPath=path.join(fileDir,privatepdf[x].name);
+                privatepdf[x].mv(uploadPath,function(err){
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf[x]=privatepdf[x].name; 
+                 city.pdf[x].isviewable=false;
+                }
+            }
+            else
+            {
+                console.log("only 1 private file")
+                let uploadPath=path.join(fileDir,privatepdf.name);
+                privatepdf.mv(uploadPath,function(err)
+                {
+                  if (err)
+                 return res.status(500).send(err);
+                  });
+                 city.pdf=privatepdf.name; 
+                 city.pdfview=false;
+
+            }
+
+            }
+        }
         // save the city and check for errors
+        
         city.save(function(err) {
             if (err)
                 res.send(err);
         });
         //Redirect can be used to send to another webpage after executing the code above it
+        
         res.redirect('back');
     });
 
 
-router.route('/register') // post functioon to actually register account
+router.route('/register') // post function to actually register account
 
     .post(function(req, res){
         var user = new UserModel();
