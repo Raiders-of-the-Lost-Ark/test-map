@@ -430,7 +430,8 @@ function initMap() {
             name: sites[i].name,
             misc: sites[i].misc,
             siteId: sites[i].id,
-            siteInd: i
+            siteInd: i,
+            zIndex: 200
             });
 
         google.maps.event.addListener(siteCircle, 'click', function () {
