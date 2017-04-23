@@ -67,7 +67,7 @@ router.get('/', function(req, res) {
     });
 });
 
-router.get('/admin', restrict, function(req, res) {
+router.get('/admin', restrict, adminRestrict, function(req, res) {
     UserModel.find(function(err, users){
         if(err){
             res.send(err);
@@ -128,6 +128,15 @@ function restrict(req, res, next) {
     req.session.error = 'Access denied!';
     res.redirect('/login');
   }
+}
+
+function adminRestrict(req, res, next) {
+    if(req.session.user.isAdmin){
+        next();
+    } else {
+        req.session.error = 'Access Denied!';
+        res.redirect('/');
+    }
 }
 
 
@@ -612,6 +621,14 @@ router.route('/register') // post function to actually register account
         user.lastName = req.body.lastName;
         user.passwordHash = temp.passwordHash;
         user.passwordSalt = temp.salt;
+
+        console.log(req.body.role);
+        if(req.body.role == 1){
+            user.isAdmin = false;
+        } else {
+            user.isAdmin = true;
+        }
+
         user.save(function(err){
             if(err)
                 res.send(err);
