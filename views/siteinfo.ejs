@@ -23,9 +23,10 @@
     <% console.log("Working");
      if (data.pdf && data.pdf.length != "") {
          for(var n = 0; n < data.pdf.length; n++) {
+            if((data.pdfview[n])||(loggedin)){
             console.log(data.pdf[n]); %>
             <a href="pdf/<%= data.pdf[n] %>" target="_blank"><p> <%= data.pdf[n] %></p></a>
-            <%
+            <%}
          }
      } %>
     <% if(loggedin){ %>
