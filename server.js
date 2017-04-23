@@ -361,7 +361,7 @@ function isLatLong(lati,longi){
 		return true;
 }
 // on routes that end in /cities
-// -----------------------------------------------3-----
+// ----------------------------------------------------
 router.route('/cities')
 
     // create a city (accessed at POST http://localhost:8080/api/city)
@@ -380,6 +380,12 @@ router.route('/cities')
 			city.lng = req.body.Longitude;    // set the city's long (from request)s
 		};
         city.misc = req.body.misc;
+
+        // store the user
+        city.userFName = req.session.user.firstName;
+        city.userLName = req.session.user.lastName;
+
+
         let image =req.files.customFile;
         //checks if a image was uploaded
         if (typeof(image) != "undefined")

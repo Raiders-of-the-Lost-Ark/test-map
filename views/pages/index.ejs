@@ -18,8 +18,9 @@
       <main class="mdl-layout__content mdl-color--grey-100 map-container">
             <!-- CONTENT AREA -->
             <div id="map"></div>
-
+            <% if(loggedin) { %>
             <button id="createButton" href="#" style="bottom:10px;left:10px" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent bubbleButton">Create<span class="mdl-button__ripple-container"></span></button>
+            <% } %>
       </main>
 
     <div id="lightboxes"></div>
