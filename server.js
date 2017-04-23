@@ -2,7 +2,7 @@
 
 // BASE SETUP
 // =============================================================================
-var City = require('./models/cities');
+var Site = require('./models/sites');
 var User = require('./models/users');
 
 var Hasher = require('./modules/generate-pass.js');
@@ -12,10 +12,10 @@ var UTMconvert = require('./modules/UTMconverter.js');
 var mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-var cities = mongoose.createConnection('mongodb://138.197.28.83:27017/testcities');
+var sites = mongoose.createConnection('mongodb://138.197.28.83:27017/testsites');
 var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
 
-var CityModel = cities.model('City', City);
+var SiteModel = sites.model('Site', Site);
 var UserModel = users.model('Users', User);
 
 // call the packages we need
@@ -55,13 +55,13 @@ app.locals.loggedin = false;
 // =============================================================================
 router.get('/', function(req, res) {
     var sites = {};
-    CityModel.find(function(err, cities) {
+    SiteModel.find(function(err, sites) {
         if (err) {
             res.send(err);
         }
-        if (cities) {
-            //console.log(cities);
-            res.locals.sites = cities;
+        if (sites) {
+            //console.log(sites);
+            res.locals.sites = sites;
             res.render('pages/index'); // Render index template
         }
     });
@@ -97,12 +97,12 @@ router.get('/testlogin', function(req, res){
 router.get('/lightbox', function(req, res) {
     var reqSite = req.query.site;
 
-    CityModel.find({ name: reqSite }, function(err, city) {
+    SiteModel.find({ name: reqSite }, function(err, Site) {
         if (err)
             res.send(err);
-        if (city) {
+        if (Site) {
             // Render sidebar html from template
-            res.render('lightbox', { layout: false, data: city[0] }, function(err, html) {
+            res.render('lightbox', { layout: false, data: Site[0] }, function(err, html) {
                 // Send html to client
                 res.send(html);
             });
@@ -146,12 +146,12 @@ function adminRestrict(req, res, next) {
 router.get('/viewSite', function(req, res) {
     var reqSite = req.query.site;
 
-    CityModel.find({ name: reqSite }, function(err, city) {
+    SiteModel.find({ name: reqSite }, function(err, Site) {
         if (err)
             res.send(err);
-        if (city) {
+        if (Site) {
             // Render sidebar html from template
-            res.render('siteinfo', { layout: false, data: city[0], newMode: false }, function(err, html) {
+            res.render('siteinfo', { layout: false, data: Site[0], newMode: false }, function(err, html) {
                 // Send html to client
                 res.send(html);
             });
@@ -170,13 +170,13 @@ router.get('/createSiteMode', function(req, res) {
 router.post('/editSite', function(req, res) {
     var reqSite = req.body.idkey;
     console.log("Looking for site " + reqSite);
-    CityModel.find({ "_id": reqSite }, function(err, city) {
-        console.log(city);
+    SiteModel.find({ "_id": reqSite }, function(err, Site) {
+        console.log(Site);
         if (err)
             res.send(err);
-        if (city && city[0]) {
+        if (Site && Site[0]) {
 
-            CityModel.findOneAndUpdate(
+            SiteModel.findOneAndUpdate(
                 {
                     _id: reqSite
                 },
@@ -212,13 +212,13 @@ router.post('/editSite', function(req, res) {
 router.get('/bubble', function(req, res) {
     var reqSite = req.query.site;
 
-    CityModel.find({ name: reqSite }, function(err, city) {
+    SiteModel.find({ name: reqSite }, function(err, Site) {
         if (err) 
             res.send(err);
 
-        if (city) {
+        if (Site) {
             // Render bubble html from template
-            res.render('bubble', { layout: false, data: city[0] }, function(err, html) {
+            res.render('bubble', { layout: false, data: Site[0] }, function(err, html) {
                 // Send html to client
                 res.send(html);
             });
@@ -360,30 +360,30 @@ function isLatLong(lati,longi){
 	else
 		return true;
 }
-// on routes that end in /cities
+// on routes that end in /sites
 // ----------------------------------------------------
-router.route('/cities')
+router.route('/sites')
 
-    // create a city (accessed at POST http://localhost:8080/api/city)
+    // create a Site (accessed at POST http://localhost:8080/api/Site)
     .post(function(req, res) {
         
-        var city = new CityModel();      // create a new instance of the City model (schema)
-        city.name = req.body.name;  // set the city's name (from request)
+        var Site = new SiteModel();      // create a new instance of the Site model (schema)
+        Site.name = req.body.name;  // set the Site's name (from request)
 		//if the utm field was used run the converter...else enter data like normal
         if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
 			var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
-			city.lat = latLngArray[0];
-			city.lng = latLngArray[1];
+			Site.lat = latLngArray[0];
+			Site.lng = latLngArray[1];
 		}
         else if (isLatLong(req.body.Latitude, req.body.Longitude)){
-			city.lat = req.body.Latitude;    // set the city's lat (from request)
-			city.lng = req.body.Longitude;    // set the city's long (from request)s
+			Site.lat = req.body.Latitude;    // set the Site's lat (from request)
+			Site.lng = req.body.Longitude;    // set the Site's long (from request)s
 		};
-        city.misc = req.body.misc;
+        Site.misc = req.body.misc;
 
         // store the user
-        city.userFName = req.session.user.firstName;
-        city.userLName = req.session.user.lastName;
+        Site.userFName = req.session.user.firstName;
+        Site.userLName = req.session.user.lastName;
 
 
         let image =req.files.customFile;
@@ -404,7 +404,7 @@ router.route('/cities')
            // res.send('file uploaded to' +uploadPath);
         });
         
-        city.images[x]=image[x].name;
+        Site.images[x]=image[x].name;
         }
         else
         {
@@ -416,7 +416,7 @@ router.route('/cities')
            // res.send('file uploaded to' +uploadPath);
         });
         
-        city.images=image.name;
+        Site.images=image.name;
         }
         }
 
@@ -443,8 +443,8 @@ router.route('/cities')
                       if (err)
                      return res.status(500).send(err);
                       });
-                        city.pdf[x]=publicpdf[x].name; 
-                        city.pdfview[x]=true;
+                        Site.pdf[x]=publicpdf[x].name; 
+                        Site.pdfview[x]=true;
                 }
                 for(var x=0; x<prlength;x++)
                 {
@@ -454,8 +454,8 @@ router.route('/cities')
                       if (err)
                      return res.status(500).send(err);
                       });
-                    city.pdf[x+pulength]=privatepdf[x].name; 
-                    city.pdfview[x+pulength]=false;
+                    Site.pdf[x+pulength]=privatepdf[x].name; 
+                    Site.pdfview[x+pulength]=false;
                 }
               }
               else
@@ -470,8 +470,8 @@ router.route('/cities')
                       if (err)
                      return res.status(500).send(err);
                       });
-                        city.pdf[x]=publicpdf[x].name; 
-                        city.pdfview[x]=true;
+                        Site.pdf[x]=publicpdf[x].name; 
+                        Site.pdfview[x]=true;
                 }
                 uploadPath=path.join(fileDir,privatepdf.name);
                 privatepdf.mv(uploadPath,function(err)
@@ -479,8 +479,8 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf[pulength]=privatepdf.name; 
-                 city.pdfview[pulength]=false;
+                 Site.pdf[pulength]=privatepdf.name; 
+                 Site.pdfview[pulength]=false;
 
               }
             else
@@ -494,8 +494,8 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf=publicpdf.name; 
-                 city.pdfview=true;
+                 Site.pdf=publicpdf.name; 
+                 Site.pdfview=true;
 
                 for(var x=0; x<prlength;x++)
                 {
@@ -505,8 +505,8 @@ router.route('/cities')
                       if (err)
                      return res.status(500).send(err);
                       });
-                    city.pdf[x+1]=privatepdf[x].name; 
-                    city.pdfview[x+1]=false;
+                    Site.pdf[x+1]=privatepdf[x].name; 
+                    Site.pdfview[x+1]=false;
                 }
 
               }
@@ -520,8 +520,8 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf=publicpdf.name; 
-                 city.pdfview=true;
+                 Site.pdf=publicpdf.name; 
+                 Site.pdfview=true;
 
                 uploadPath=path.join(fileDir,privatepdf.name);
                 privatepdf.mv(uploadPath,function(err)
@@ -529,8 +529,8 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf[1]=privatepdf.name; 
-                 city.pdfview[1]=false;
+                 Site.pdf[1]=privatepdf.name; 
+                 Site.pdfview[1]=false;
               }
                 
 
@@ -552,8 +552,8 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf[x]=publicpdf[x].name; 
-                 city.pdf[x].isviewable=true;
+                 Site.pdf[x]=publicpdf[x].name; 
+                 Site.pdf[x].isviewable=true;
              }
             }
             
@@ -566,8 +566,8 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf=publicpdf.name; 
-                 city.pdfview=true;
+                 Site.pdf=publicpdf.name; 
+                 Site.pdfview=true;
 
             }
             }
@@ -585,8 +585,8 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf[x]=privatepdf[x].name; 
-                 city.pdf[x].isviewable=false;
+                 Site.pdf[x]=privatepdf[x].name; 
+                 Site.pdf[x].isviewable=false;
                 }
             }
             else
@@ -598,16 +598,16 @@ router.route('/cities')
                   if (err)
                  return res.status(500).send(err);
                   });
-                 city.pdf=privatepdf.name; 
-                 city.pdfview=false;
+                 Site.pdf=privatepdf.name; 
+                 Site.pdfview=false;
 
             }
 
             }
         }
-        // save the city and check for errors
+        // save the Site and check for errors
         
-        city.save(function(err) {
+        Site.save(function(err) {
             if (err)
                 res.send(err);
         });
@@ -655,7 +655,7 @@ router.route('/deletesite')
     .post(function(req,res){
         var siteId= req.body.idkey;
         console.log("Deleting site:" + siteId);
-        CityModel.remove({_id:siteId}, function(err){
+        SiteModel.remove({_id:siteId}, function(err){
             if(!err){
                 console.log("...Successful!");
             } else {
