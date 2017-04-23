@@ -111,9 +111,15 @@
                                         </span>
                                     </td>
                                     <td class="mdl-data-table__cell--non-numeric">
+                                        <% if(users[ind].isAdmin) { %>
                                         <span class="mdl-data-table__label add-table-content" title="role">
                                             Admin
                                         </span>
+                                        <% } else { %> 
+                                        <span class="mdl-data-table__label add-table-content" title="role">
+                                            Editor
+                                        </span>          
+                                        <% } %>
                                     </td>
                                     <td class="mdl-data-table__cell--non-numeric">
                                         <span class="mdl-data-table__label" title="membersince">

@@ -6,7 +6,8 @@ var UserSchema = new Schema({
     firstName: String,
     lastName: String,
     passwordHash: String,
-    passwordSalt: String
+    passwordSalt: String,
+    isAdmin: Boolean
 });
 
 module.exports = UserSchema;

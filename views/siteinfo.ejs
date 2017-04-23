@@ -7,20 +7,32 @@
     
     <% var imgDir = "images/"; %>
     <% var pic = imgDir + data.images; %>
-    <% var boxId = "img" + 1; %> 
+    <% var boxId = "img"; %> 
 <% } %>
 
 <% if (!newMode) { %> 
 <div class="view-mode <% if (!edit && !create) { %> active <% } %>">
-    <% if (data.images && data.images.length != "") { %>   
-        <a href="#" onclick="showLightbox('<%= boxId %>')">
-            <img class="sidebar-image" src="<%= pic %>" style="width:100%" />
+    <% if (data.images && data.images.length != "") {
+         for(var n = 0; n < data.images.length; n++) {
+            console.log(data.images[n]);
+         %>  
+        <a href="#" onclick="showLightbox('<%= boxId + n %>')">
+            <img class="sidebar-image" src="<%= data.images[n] %>" style="width:100%" />
         </a>
-    <% } %>
+    <% }} %>
     <div class="sidebar-content">
         <h3 class="siteInfo_name"><%= data.name %></h3>
         <p class="siteInfo_paragraph"><%= data.misc %></p>
     </div>
+    <% console.log("Working");
+     if (data.pdf && data.pdf.length != "") {
+         for(var n = 0; n < data.pdf.length; n++) {
+            if((data.pdfview[n])||(loggedin)){
+            console.log(data.pdf[n]); %>
+            <a href="pdf/<%= data.pdf[n] %>" target="_blank"><p> <%= data.pdf[n] %></p></a>
+            <%}
+         }
+     } %>
     <% if(loggedin){ %>
     <div id="admin-buttons">
         <div class="mdl-layout-spacer"></div>
@@ -49,14 +61,16 @@
     <% } %>
     
         <!-- Images -->
-        <% if (data.images && data.images.length != "") { %>   
-            <a class="image-container" href="#" onclick="showLightbox('<%= boxId %>')">
-                <img src="<%= pic %>" style="width:100%" />
+        <% if (data.images && data.images.length != "") { for(var n = 0; n < data.images.length; n++) {
+            console.log(data.images[n]);
+         %>   
+            <a class="image-container" href="#" onclick="showLightbox('<%= boxId + n %>')">
+                <img src="<%= data.images[n] %>" style="width:100%" />
                 <div class="image-overlay">
                     <h3>Image</h3>
                 </div>
             </a>
-        <% } %>
+        <% }} %>
 
         <!-- Super Ugly Form -->
         Upload Picture<input type="File" name="customFile"><br>

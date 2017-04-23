@@ -7,7 +7,7 @@
         <% var imgDir = "images/" %>
         <% var pic = imgDir + data.images %>
         <% if (data.images && data.images.length != "") { %>
-            <img src="<%= pic %>" class="bubbleImage" style="width:100%" />
+            <img src="<%= data.images[0] %>" class="bubbleImage" style="width:100%" />
         <% } %>
         <p><%= data.misc %></p>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
