@@ -146,7 +146,7 @@ function submitCreateForm(event) {
         alert('A great problem has occurred.');
     });
 
-    XHR.open("POST", "cities");
+    XHR.open("POST", "sites");
     XHR.send(data);
 
     return false;

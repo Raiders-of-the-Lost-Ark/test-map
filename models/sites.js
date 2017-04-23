@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var CitySchema = new Schema({
+var SiteSchema = new Schema({
     name: String,
     lat: String,
     lng: String,
@@ -14,4 +14,4 @@ var CitySchema = new Schema({
 });
 
 // this is our predefined schema for a city (location and lat/long)
-module.exports = CitySchema;
+module.exports = SiteSchema;
