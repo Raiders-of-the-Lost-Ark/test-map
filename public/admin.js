@@ -51,6 +51,7 @@ for (var i = 0; i < deleteButtons.length; i++) {
                 deleteReq.open("POST", "deleteuser");
                 deleteReq.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 deleteReq.addEventListener("load", function() {
+                  document.getElementById("add-row").disabled=false; // Deal with weird Firefox bug
                   location.reload(); 
                 });
                 deleteReq.send(data);
