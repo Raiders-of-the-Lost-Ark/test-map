@@ -169,20 +169,197 @@ router.get('/createSiteMode', function(req, res) {
 
 router.post('/editSite', function(req, res) {
     var reqSite = req.body.idkey;
+
+    // Get lat and long
+    var newLat, newLng;
+    if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
+        var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
+        newLat = latLngArray[0];
+        newLng = latLngArray[1];
+    }
+    else if (isLatLong(req.body.Latitude, req.body.Longitude)){
+        newLat = req.body.Latitude;    
+        newLng = req.body.Longitude;   
+    };
+
+    // Get images
+    var image = req.files.customFile;
+    var newImages = [];
+    if (typeof(image) != "undefined") {
+        var fileDir = __dirname + ("/public/images");
+        var size = image.length;
+        //checks if multiple images have been uploaded or only a single image
+        if (typeof(size) != "undefined")
+            for (var x = 0; x < size; x++) {
+                let uploadPath = path.join(fileDir, image[x].name);
+                image[x].mv(uploadPath, function(err) {
+                    if (err) return res.status(500).send(err);
+                    // res.send('file uploaded to' +uploadPath);
+                });
+                newImages[x] = image[x].name;
+            }
+        else {
+            let uploadPath = path.join(fileDir, image.name);
+            image.mv(uploadPath, function(err) {
+                if (err) return res.status(500).send(err);
+                // res.send('file uploaded to' +uploadPath);
+            });
+            newImages = image.name;
+        }
+    }
+
+    // PDFs... Oh boy here we go...
+    var publicpdf = req.files.pdfFilespublic;
+    var privatepdf = req.files.pdfFilesprivate;
+    var sitePDF = [];
+    var sitePDFView = [];
+    var fileDir = __dirname + ("/public/pdf");
+    if ((typeof(publicpdf) != "undefined") && (typeof(privatepdf) != "undefined")) {
+        var pulength = publicpdf.length;
+        var prlength = privatepdf.length;
+        if (typeof(pulength) != "undefined")
+            if (typeof(prlength) != "undefined") {
+                //multi file for both
+                //public file first
+                console.log("multiple public files, multiple private");
+                for (var x = 0; x < pulength; x++) {
+                    let uploadPath = path.join(fileDir, publicpdf[x].name);
+                    publicpdf[x].mv(uploadPath, function(err) {
+                        if (err) return res.status(500).send(err);
+                    });
+                    sitePDF[x] = publicpdf[x].name;
+                    sitePDFView[x] = true;
+                }
+                for (var x = 0; x < prlength; x++) {
+                    uploadPath = path.join(fileDir, privatepdf[x].name);
+                    privatepdf[x].mv(uploadPath, function(err) {
+                        if (err) return res.status(500).send(err);
+                    });
+                    sitePDF[x + pulength] = privatepdf[x].name;
+                    sitePDFView[x + pulength] = false;
+                }
+            } else {
+                //multi public file, single private
+                console.log("multiple public files, single private");
+                for (var x = 0; x < pulength; x++) {
+                    let uploadPath = path.join(fileDir, publicpdf[x].name);
+                    publicpdf[x].mv(uploadPath, function(err) {
+                        if (err) return res.status(500).send(err);
+                    });
+                    sitePDF[x] = publicpdf[x].name;
+                    sitePDFView[x] = true;
+                }
+                uploadPath = path.join(fileDir, privatepdf.name);
+                privatepdf.mv(uploadPath, function(err) {
+                    if (err) return res.status(500).send(err);
+                });
+                sitePDF[pulength] = privatepdf.name;
+                sitePDFView[pulength] = false;
+            }
+        else
+        if (typeof(prlength) != "undefined") {
+            //single public file, multi private
+            console.log("single public files, multiple private");
+            let uploadPath = path.join(fileDir, publicpdf.name);
+            publicpdf.mv(uploadPath, function(err) {
+                if (err) return res.status(500).send(err);
+            });
+            sitePDF = publicpdf.name;
+            sitePDFView = true;
+            for (var x = 0; x < prlength; x++) {
+                uploadPath = path.join(fileDir, privatepdf[x].name);
+                privatepdf[x].mv(uploadPath, function(err) {
+                    if (err) return res.status(500).send(err);
+                });
+                sitePDF[x + 1] = privatepdf[x].name;
+                sitePDFView[x + 1] = false;
+            }
+        } else {
+            //single public, single private
+            console.log("single public files, single private");
+            let uploadPath = path.join(fileDir, publicpdf.name);
+            publicpdf.mv(uploadPath, function(err) {
+                if (err) return res.status(500).send(err);
+            });
+            sitePDF = publicpdf.name;
+            sitePDFView = true;
+            uploadPath = path.join(fileDir, privatepdf.name);
+            privatepdf.mv(uploadPath, function(err) {
+                if (err) return res.status(500).send(err);
+            });
+            sitePDF[1] = privatepdf.name;
+            sitePDFView[1] = false;
+        }
+    } else {
+        if (typeof(publicpdf) != "undefined") {
+            console.log("we are here");
+            var pulength = publicpdf.length;
+            if (typeof(pulength) != "undefined") {
+                console.log("this should be for an array of public pdf")
+                for (var x = 0; x < pulength; x++) {
+                    let uploadPath = path.join(fileDir, publicpdf[x].name);
+                    publicpdf[x].mv(uploadPath, function(err) {
+                        if (err) return res.status(500).send(err);
+                    });
+                    sitePDF[x] = publicpdf[x].name;
+                    sitePDF[x].isviewable = true;
+                }
+            } else {
+                console.log("only public file")
+                let uploadPath = path.join(fileDir, publicpdf.name);
+                publicpdf.mv(uploadPath, function(err) {
+                    if (err) return res.status(500).send(err);
+                });
+                sitePDF = publicpdf.name;
+                sitePDFView = true;
+            }
+        }
+        if (typeof(privatepdf) != "undefined") {
+            console.log("we are in this area here");
+            var prlength = privatepdf.length;
+            if (typeof(prlength) != "undefined") {
+                console.log("this should be for an array of private")
+                for (var x = 0; x < prlength; x++) {
+                    let uploadPath = path.join(fileDir, privatepdf[x].name);
+                    privatepdf[x].mv(uploadPath, function(err) {
+                        if (err) return res.status(500).send(err);
+                    });
+                    sitePDF[x] = privatepdf[x].name;
+                    sitePDF[x].isviewable = false;
+                }
+            } else {
+                console.log("only 1 private file")
+                let uploadPath = path.join(fileDir, privatepdf.name);
+                privatepdf.mv(uploadPath, function(err) {
+                    if (err) return res.status(500).send(err);
+                });
+                Site.pdf = privatepdf.name;
+                sitePDFView = false;
+            }
+        }
+    }
+    // That was fun.
+
+    // Now let's resume modifying the site
     console.log("Looking for site " + reqSite);
     SiteModel.find({ "_id": reqSite }, function(err, Site) {
         console.log(Site);
         if (err)
             res.send(err);
         if (Site && Site[0]) {
-
+            // Update site data
             SiteModel.findOneAndUpdate(
                 {
                     _id: reqSite
                 },
                 { 
                     "name": req.body.name,
-                    "misc": req.body.misc
+                    "lat": newLat,
+                    "lng": newLng,
+                    "misc": req.body.misc,
+                    "images": newImages,
+                    "pdf": sitePDF,
+                    "pdfview": sitePDFView,
                 },
                 {new: true},
                 function(err, result) {
