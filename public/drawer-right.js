@@ -75,3 +75,29 @@ function deleteItem(deleteform) {
 	}
 	
 }
+
+function openCreatePanel(event) {
+    event.preventDefault();
+
+    // Need to close InfoWindow here
+
+    // Show loading indicator
+    document.querySelector('#siteInfo_div').innerHTML = "Loading...";
+
+    // Open sidebar
+    var info_panel = document.querySelector('#info-panel');
+    var sidebar = document.querySelector('#sidebar');
+
+    if (sidebar.classList.contains('active')) 
+        sidebar.classList.remove('active');
+    info_panel.classList.add('active');
+
+    // Request form
+    var newFormReq = new XMLHttpRequest();
+    newFormReq.open("GET", "/createSiteMode");
+    newFormReq.addEventListener("load", function() {
+        // Populate sidebar when HTML is received
+        document.querySelector('#siteInfo_div').innerHTML = newFormReq.responseText;
+    });
+    newFormReq.send();
+}
