@@ -204,7 +204,7 @@ router.post('/editSite', function(req, res) {
                 if (err) return res.status(500).send(err);
                 // res.send('file uploaded to' +uploadPath);
             });
-            newImages = image.name;
+            newImages.push(image.name);
         }
     }
 
@@ -264,8 +264,8 @@ router.post('/editSite', function(req, res) {
             publicpdf.mv(uploadPath, function(err) {
                 if (err) return res.status(500).send(err);
             });
-            sitePDF = publicpdf.name;
-            sitePDFView = true;
+            sitePDF.push(publicpdf.name);
+            sitePDFView.push(true);
             for (var x = 0; x < prlength; x++) {
                 uploadPath = path.join(fileDir, privatepdf[x].name);
                 privatepdf[x].mv(uploadPath, function(err) {
@@ -281,8 +281,8 @@ router.post('/editSite', function(req, res) {
             publicpdf.mv(uploadPath, function(err) {
                 if (err) return res.status(500).send(err);
             });
-            sitePDF = publicpdf.name;
-            sitePDFView = true;
+            sitePDF.push(publicpdf.name);
+            sitePDFView.push(true);
             uploadPath = path.join(fileDir, privatepdf.name);
             privatepdf.mv(uploadPath, function(err) {
                 if (err) return res.status(500).send(err);
@@ -310,8 +310,8 @@ router.post('/editSite', function(req, res) {
                 publicpdf.mv(uploadPath, function(err) {
                     if (err) return res.status(500).send(err);
                 });
-                sitePDF = publicpdf.name;
-                sitePDFView = true;
+                sitePDF.push(publicpdf.name);
+                sitePDFView.push(true);
             }
         }
         if (typeof(privatepdf) != "undefined") {
@@ -333,20 +333,24 @@ router.post('/editSite', function(req, res) {
                 privatepdf.mv(uploadPath, function(err) {
                     if (err) return res.status(500).send(err);
                 });
-                Site.pdf = privatepdf.name;
-                sitePDFView = false;
+                sitePDF.push(privatepdf.name);
+                sitePDFView.push(false);
             }
         }
     }
     // That was fun.
 
     // Now let's resume modifying the site
-    console.log("Looking for site " + reqSite);
-    SiteModel.find({ "_id": reqSite }, function(err, Site) {
-        console.log(Site);
+    SiteModel.find({ "_id": reqSite }, function(err, siteResult) {
+        var site = siteResult[0];
         if (err)
             res.send(err);
-        if (Site && Site[0]) {
+        if (site) {
+            // Merge old and new arrays
+            newImages = newImages.concat(site.images);
+            sitePDF = site.pdf.concat(sitePDF);
+            sitePDFView = site.pdfview.concat(sitePDFView);
+
             // Update site data
             SiteModel.findOneAndUpdate(
                 {
