@@ -10,30 +10,38 @@
     <% var boxId = "img"; %> 
 <% } %>
 
+<!-- Viewable Mode -->
+
 <% if (!newMode) { %> 
 <div class="view-mode <% if (!edit && !create) { %> active <% } %>">
-    <% if (data.images && data.images.length != "") {
-         for(var n = 0; n < data.images.length; n++) {
-            console.log(data.images[n]);
-         %>  
-        <a href="#" onclick="showLightbox('<%= boxId + n %>')">
-            <img class="sidebar-image" src="<%= data.images[n] %>" style="width:100%" />
-        </a>
-    <% }} %>
+    <% if (data.images && data.images.length != "") { %>
+        <div class="image-container">
+            <% for(var n = 0; n < data.images.length; n++) { %>  
+                <a href="#" onclick="showLightbox('<%= boxId + n %>')">
+                    <img class="sidebar-image" src="<%= data.images[n] %>" style="width:100%" />
+                </a>
+            <% } %> 
+        </div>
+    <% } %>
+
     <div class="sidebar-content">
         <h3 class="siteInfo_name"><%= data.name %></h3>
         <p class="siteInfo_paragraph"><%= data.misc %></p>
-        <h6 class="siteInfo_Creator"><%= data.userFName %></p>
+        <div class="pdf-list">
+            <% if (data.pdf && data.pdf.length != "") { %>
+                <p>Associated files:</p>
+                <ul class="pdf-list">
+                <% for(var n = 0; n < data.pdf.length; n++) { %>
+                    <% if((data.pdfview[n])||(loggedin)){ %>
+                        <li><a href="pdf/<%= data.pdf[n] %>" target="_blank"><%= data.pdf[n] %></a></li>
+                    <% } %>
+                <% } %>
+                </ul>
+            <% } %>
+        </div>
+        <h6 class="siteInfo_Creator">Created by: <span class="content-creator"><%= data.userFName %></span></h6> 
     </div>
-    <% console.log("Working");
-     if (data.pdf && data.pdf.length != "") {
-         for(var n = 0; n < data.pdf.length; n++) {
-            if((data.pdfview[n])||(loggedin)){
-            console.log(data.pdf[n]); %>
-            <a href="pdf/<%= data.pdf[n] %>" target="_blank"><p> <%= data.pdf[n] %></p></a>
-            <%}
-         }
-     } %>
+
     <% if(loggedin){ %>
     <div id="admin-buttons">
         <div class="mdl-layout-spacer"></div>
@@ -50,8 +58,9 @@
 <% } %>
 
 
-<div class="edit-mode <% if (edit) { %> active <% } %> ">
+<!-- Editable Mode -->
 
+<div class="edit-mode <% if (edit) { %> active <% } %> ">
     <!-- Create form -->
     <% if (newMode) { %>
     <form id="createForm" onsubmit="submitCreateForm(event); return false;" enctype="multipart/form-data">
@@ -62,40 +71,61 @@
     <% } %>
     
         <!-- Images -->
-        <% if (data.images && data.images.length != "") { for(var n = 0; n < data.images.length; n++) {
-            console.log(data.images[n]);
-         %>   
-            <a class="image-container" href="#" onclick="showLightbox('<%= boxId + n %>')">
-                <img src="<%= data.images[n] %>" style="width:100%" />
-                <div class="image-overlay">
-                    <h3>Image</h3>
-                </div>
-            </a>
-        <% }} %>
+        <% if (data.images && data.images.length != "") { %> 
+            <% for(var n = 0; n < data.images.length; n++) { %>
+                <a class="image-container" href="#" onclick="showLightbox('<%= boxId + n %>')">
+                    <img src="<%= data.images[n] %>" style="width:100%" />
+                    <div class="image-overlay">
+                        <h3>Image</h3>
+                    </div>
+                </a>
+            <% } %>
+        <% } %>
 
         <!-- Super Ugly Form -->
-        Upload Picture<input type="File" name="customFile"><br>
+        <label>Upload Pictures : </label>
+        <input type="File" name="customFile" multiple />
         <div class="mdl-textfield mdl-js-textfield">
             <input name="name" placeholder="Battlesite Name" class="mdl-textfield__input" value="<%= data.name %>" style="margin: 10px 25px; font-size:200%" /> 
         </div>
-        <ul>
-            <li><textarea placeholder="Enter a description here..." class="mdl-textfield__input" rows=10 cols=70 name="misc"><%= data.misc %></textarea></li>
-        </ul>
-        <br />
-
-        <% if (newMode) { %>
-        Use UTM<input type="radio" name="radio" checked="true" onclick="toggleCoordFormat('utm','latlong')"><br>
-        Use Lat/Long <input type="radio" name="radio" onclick="toggleCoordFormat('latlong','utm')"> <br>
+        <textarea placeholder="Enter a description here..." class="mdl-textfield__input" rows=10 cols=70 name="misc"><%= data.misc %></textarea></li>
+        <hr />
+        <label>Use UTM</label>
+        <input type="radio" name="radio" checked="true" onclick="toggleCoordFormat('utm','latlong')" />
+        <label>Use Lat/Long</label>
+        <input type="radio" name="radio" onclick="toggleCoordFormat('latlong','utm')" />
+        <hr />
         <div id="utm">
-		Enter Zone Number <input type="text" name="zone"></input><br>
-        Enter Easting<input type="text" name="easting"> </input><br>
-        Enter Northing<input type="text" name="northing"> </input><br>
+            <label>Enter Zone Number: </label><input type="text" name="zone" /><br />
+            <label>Enter Easting: </label><input type="text" name="easting" /><br />
+            <label>Enter Northing: </label><input type="text" name="northing" /><br />
         </div>
         <div id="latlong" style="display:none">
-        Enter Site Latitude<input type="text" name="Latitude"> </input><br>
-        Enter Site Longitude<input type="text" name="Longitude"> </input><br>
+            <label>Enter Site Latitude: </label><input type="text" name="Latitude" value="<%= data.lat %>" /><br />
+            <label>Enter Site Longitude: </label><input type="text" name="Longitude" value="<%= data.lng %>" /><br />
         </div>
-        <% } %>
+        <hr />  
+        
+        <div class="pdf-list">
+            <% if (data.pdf && data.pdf.length != "") { %>
+                <p>Associated files:</p>
+                <ul class="pdf-list">
+                <% for(var n = 0; n < data.pdf.length; n++) { %>
+                    <% if((data.pdfview[n])||(loggedin)){ %>
+                        <li>
+                            <a href="pdf/<%= data.pdf[n] %>" target="_blank"><%= data.pdf[n] %></a>
+                            <button class="pdf-remover mdl-button mdl-js-button mdl-button--icon mdl-button--colored" value="<%= data.pdf[n] %>">
+                                <i class="material-icons">close</i>
+                            </button>
+                        </li>
+                    <% } %>
+                <% } %>
+                </ul>
+            <% } %>
+        </div>
+
+        <label>Add Public PDF Files: </label><input type="File" name="pdfFilespublic" multiple /><br />
+        <label>Add Private PDF Files: </label><input type="File" name="pdfFilesprivate" multiple /><br />
 
         <!-- Id holder  -->
         <% if (!newMode) { %>
@@ -113,7 +143,7 @@
             <div class="mdl-layout-spacer"></div>
             <button onclick="toggleSiteEdit(false)" type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton">CANCEL</button>
             <% } %>
-
         </div> 
+
     </form>       
 </div>
