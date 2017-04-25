@@ -2,6 +2,8 @@
 var map;
 var siteArray = [];
 var circlesArr = [];
+var countyPoly;
+
 
 var infoWindow = null;
 var sites = null;
@@ -326,7 +328,9 @@ function initMap() {
     // Create data layers for counties and states
     county_layer = new google.maps.Data;
     state_layer = new google.maps.Data;
-    
+    var points;
+    var countyBorders = [];
+
     // Load local county data
     var dataReq = new XMLHttpRequest();
     dataReq.open("GET", 'mo.json', true);
@@ -339,8 +343,18 @@ function initMap() {
           strokeOpacity: 0.2
         });
         county_layer.addGeoJson(counties);
+        for(var i = 0; i < counties.features.length; i++){
+            //console.log(counties.features[i].properties.NAMELSAD10);
+            points = counties.features[i].geometry;
+            countyBorders.push({poly:points,
+                                name:counties.features[i].properties.NAMELSAD10});
+            // countyPoly.push(points);
+            // countyBorders.push(counties.features[i].geometry.coordinates);
+            //console.log(countyBorders[i]);
+        }        
     };
     dataReq.send();
+
 
     // Load local state data
     var dataReq2 = new XMLHttpRequest();
@@ -356,6 +370,7 @@ function initMap() {
         state_layer.addGeoJson(states);
     };
     dataReq2.send();
+    
 
     // State listeners
     state_layer.addListener('mouseover', function(event) {
@@ -387,9 +402,48 @@ function initMap() {
         var currentLat = event.feature.getProperty('INTPTLAT10');
         var currentLong = event.feature.getProperty('INTPTLON10');
         var currentPos = new google.maps.LatLng(currentLat, currentLong);
+        // console.log(event.feature.getProperty('NAMELSAD10'));  
+
+        var ind = 0;
+        while(ind < countyBorders.length){
+            // console.log(countyBorders[ind].name);
+            if(countyBorders[ind].name == event.feature.getProperty('NAMELSAD10')){
+                console.log("FOUND THE COUNTY: " + countyBorders[ind].name + " AT: " + ind);
+                break;
+            }
+            ind++;
+        }
+
+        var polyPath = [];
+        for(var x = 0; x < countyBorders[ind].poly.coordinates[0].length; x++){
+            // console.log(countyBorders[ind].poly.coordinates[0][x]);
+            var tempPoint = new google.maps.LatLng(countyBorders[ind].poly.coordinates[0][x][1], countyBorders[ind].poly.coordinates[0][x][0]);
+            polyPath.push(tempPoint);
+        }
+
+        for(var i = 0; i < sites.length; i++){
+            var point = new google.maps.LatLng(sites[i].lat, sites[i].lng);
+            // console.log(sites[i].name)
+            // console.log(countyBorders[0].poly.coordinates);
+            //console.log(sites[i].lat);
+            var tempPoly = new google.maps.Polygon({
+                paths: polyPath
+            });
+
+            //console.log(point.lat);
+
+            //console.log(" AM I HERE ?1?1?1/1!?");
+             if(google.maps.geometry.poly.containsLocation(point, tempPoly)){
+                 console.log("FOUND A SITE: " + sites[i].name);
+             }
+        }
+
         map.setZoom(8);
         map.panTo(currentPos);
     });
+
+    
+
 
     // Add state and county layers to map
     //state_layer.setMap(map);             // Maybe not
