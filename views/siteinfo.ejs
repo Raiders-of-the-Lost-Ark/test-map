@@ -42,7 +42,7 @@
                 </ul>
             <% } %>
         </div>
-        <h6 class="site-creator">Created by: <span class="content-creator"><%= data.userFName %></span></h6> 
+        <h6 class="site-creator">Created by: <span class="content-creator"><%= data.userFName + " " + data.userLName %></span></h6> 
     </div>
 
     <% if (loggedin) { %>
@@ -53,7 +53,7 @@
         <div class="mdl-layout-spacer"></div>
         <form id="deleteForm" action="/deletesite" method="POST">
             <input hidden="true" name="idkey" value="<%= data._id %>" type="text"></input>
-            <button type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem()">DELETE</button>
+            <button type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton" onclick="deleteItem(deleteForm)">DELETE</button>
         </form>
     </div>
     <% } %>
