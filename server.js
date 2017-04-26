@@ -860,6 +860,58 @@ router.route('/deleteuser')
         res.redirect('back');
     });
 
+router.route('/deleteimg')
+    .post(function(req,res){
+        var siteId = req.body.siteId;
+        var imgName = req.body.imgName;
+
+        SiteModel.find({ "_id": siteId, "images": imgName }, function(err, result) {
+            if (err) {
+                console.log("Error deleting image: " + err);
+            }
+            else {
+                var site = result[0];
+                var newImgList = [];
+
+                newImgList = site.images;
+
+                var itemInd = newImgList.indexOf(imgName);
+
+                if (itemInd >= 0) { // Bad things happen if this is < 0
+                    // Remove the item
+                    newImgList.splice(itemInd,1);
+                }
+                else {
+                    console.log("Item isn't in the pdf list... Nothing changed.");
+                }
+
+                // Update site data
+                SiteModel.findOneAndUpdate(
+                    {
+                        _id: site._id
+                    },
+                    { 
+                        "images": newImgList,
+                    },
+                    {new: true},
+                    function(err, result) {
+                        if (err) { 
+                            console.log(err); 
+                            res.send(err); 
+                            return;
+                        }
+                        if (result) {
+                            // Nice
+                            res.send("Nice");
+                        } else {
+                            console.log("Didn't get a result...");
+                        }
+                    }
+                );
+            }
+        });
+    });
+
 router.route('/deletepdf')
     .post(function(req,res){
         var siteId = req.body.siteId;
