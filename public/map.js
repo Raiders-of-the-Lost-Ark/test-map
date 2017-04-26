@@ -431,7 +431,7 @@ function initMap() {
             misc: sites[i].misc,
             siteId: sites[i].id,
             siteInd: i,
-            zIndex: 200
+			zIndex: 200
             });
 
         google.maps.event.addListener(siteCircle, 'click', function () {
