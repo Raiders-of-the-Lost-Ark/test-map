@@ -16,6 +16,34 @@ function toggleCoordFormat(showthis,hidethis){
 
 }
 
+function reInitSidebar() {
+    // Add event listeners to sidebar
+
+    // Remove pdf buttons
+    var deleteButtons = document.getElementsByClassName("pdf-remover");
+    for (var i = 0; i < deleteButtons.length; i++) {
+        deleteButtons[i].addEventListener("click", function(event) {
+            event.preventDefault();
+            var li = this.parentNode;
+            var siteId = document.getElementById("currentSite").value;
+            var pdfName = this.value;
+            var confirmed = confirm("Are you sure you want to delete the file \"" + pdfName + "\" ?");
+            if (confirmed) {
+                var deleteReq = new XMLHttpRequest();
+                var data = new FormData();
+                data.append("siteId", siteId);
+                data.append("pdfName", pdfName);
+                deleteReq.open("POST", "deletepdf");
+                deleteReq.addEventListener("load", function() {
+                    // Remove item from the list
+                    li.parentNode.removeChild(li);
+                });
+                deleteReq.send(data);
+            }
+        });
+    }
+}
+
 function resetLightboxes() {
     var boxContainer = document.querySelector('#lightboxes');
     boxContainer.innerHTML = "";
@@ -111,6 +139,7 @@ function submitEditForm(e) {
         // Update sidebar
         console.log(XHR.responseText);
         document.querySelector('#siteInfo_div').innerHTML = XHR.responseText;
+        reInitSidebar();
         google.maps.event.trigger(map,'resize');
     });
 

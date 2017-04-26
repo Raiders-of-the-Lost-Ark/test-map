@@ -859,6 +859,63 @@ router.route('/deleteuser')
         });
         res.redirect('back');
     });
+
+router.route('/deletepdf')
+    .post(function(req,res){
+        var siteId = req.body.siteId;
+        var pdfName = req.body.pdfName;
+
+        SiteModel.find({ "_id": siteId, "pdf": pdfName }, function(err, result) {
+            if (err) {
+                console.log("Error deleting pdf: " + err);
+            }
+            else {
+                var site = result[0];
+                var newPdf = [];
+                var newPdfView = [];
+
+                newPdf = site.pdf;
+                newPdfView = site.pdfview;
+
+                var itemInd = newPdf.indexOf(pdfName);
+
+                if (itemInd >= 0) { // Bad things happen if this is < 0
+                    // Remove the item
+                    newPdf.splice(itemInd,1);
+                    newPdfView.splice(itemInd,1);
+                }
+                else {
+                    console.log("Item isn't in the pdf list... Nothing changed.");
+                }
+
+                // Update site data
+                SiteModel.findOneAndUpdate(
+                    {
+                        _id: site._id
+                    },
+                    { 
+                        "pdf": newPdf,
+                        "pdfview": newPdfView,
+                    },
+                    {new: true},
+                    function(err, result) {
+                        if (err) { 
+                            console.log(err); 
+                            res.send(err); 
+                            return;
+                        }
+                        if (result) {
+                            // Nice
+                            res.send("Nice");
+                        } else {
+                            console.log("Didn't get a result...");
+                        }
+                    }
+                );
+            }
+        });
+    });
+
 // REGISTER OUR ROUTES -------------------------------
 // all of our routes will be prefixed with /api
 app.use('/api', router);
