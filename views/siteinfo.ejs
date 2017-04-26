@@ -64,6 +64,21 @@
 <!-- Editable Mode -->
 
 <div class="edit-mode <% if (edit) { %> active <% } %> ">
+
+    <!-- Images -->
+    <% if (data.images && data.images.length != "") { %> 
+        <% for (var n = 0; n < data.images.length; n++) { %>
+            <div class="image-container">
+                <img src="<%= data.images[n] %>" style="width:100%" />
+                <div class="image-overlay">
+                    <button class="img-remover mdl-button mdl-js-button mdl-button--icon mdl-button--colored" value="<%= data.images[n] %>">
+                        <i class="material-icons">close</i>
+                    </button>
+                </div>
+            </div>
+        <% } %>
+    <% } %>
+
     <!-- Create form -->
     <% if (newMode) { %>
     <form id="createForm" onsubmit="submitCreateForm(event); return false;" enctype="multipart/form-data">
@@ -72,18 +87,6 @@
     <% } else { %>
     <form id="editForm" onsubmit="submitEditForm(event); return false;">
     <% } %>
-    
-        <!-- Images -->
-        <% if (data.images && data.images.length != "") { %> 
-            <% for (var n = 0; n < data.images.length; n++) { %>
-                <a class="image-container" href="#" onclick="showLightbox('<%= boxId + n %>')">
-                    <img src="<%= data.images[n] %>" style="width:100%" />
-                    <div class="image-overlay">
-                        <h3>Image</h3>
-                    </div>
-                </a>
-            <% } %>
-        <% } %>
 
         <!-- Super Ugly Form -->
         <div class="image-uploader">

@@ -19,10 +19,34 @@ function toggleCoordFormat(showthis,hidethis){
 function reInitSidebar() {
     // Add event listeners to sidebar
 
+    // Remove img buttons
+    var deleteImgBtns = document.getElementsByClassName("img-remover");
+    for (var i = 0; i < deleteImgBtns.length; i++) {
+        deleteImgBtns[i].addEventListener("click", function(event) {
+            event.preventDefault();
+            var container = this.parentNode.parentNode;
+            var siteId = document.getElementById("currentSite").value;
+            var imgName = this.value;
+            var confirmed = confirm("Are you sure you want to delete the image \"" + imgName + "\" ?");
+            if (confirmed) {
+                var deleteReq = new XMLHttpRequest();
+                var data = new FormData();
+                data.append("siteId", siteId);
+                data.append("imgName", imgName);
+                deleteReq.open("POST", "deleteimg");
+                deleteReq.addEventListener("load", function() {
+                    // Remove image container from screen
+                    container.parentNode.removeChild(container);
+                });
+                deleteReq.send(data);
+            }
+        });
+    }
+
     // Remove pdf buttons
-    var deleteButtons = document.getElementsByClassName("pdf-remover");
-    for (var i = 0; i < deleteButtons.length; i++) {
-        deleteButtons[i].addEventListener("click", function(event) {
+    var deletePdfBtns = document.getElementsByClassName("pdf-remover");
+    for (var i = 0; i < deletePdfBtns.length; i++) {
+        deletePdfBtns[i].addEventListener("click", function(event) {
             event.preventDefault();
             var li = this.parentNode;
             var siteId = document.getElementById("currentSite").value;
