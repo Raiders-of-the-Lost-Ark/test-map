@@ -7,41 +7,46 @@
     <% var title="Civil War Battlefields: Account" ; %>
     <% include ../head %>
 
-    <link rel="stylesheet" type="text/css" href="admin.css">
-
+    <link rel="stylesheet" type="text/css" href="account.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style >
+        label {
+            color: rgba(0,0,0,.54);
+        }
+        a.mdl-navigation__link.mdl-button.mdl-js-button.mdl-js-ripple-effect{
+            padding: 35px 25px;
+        }
+    </style>
 </head>
 
 <body>
 
     <% include ../nav %>
-        
             <main class="mdl-layout__content mdl-color--grey-100 map-container">
-
+                
                 <!-- Page content -->
                 <div style="float:right">
-                    click to <a href="/logout">logout</a>'
-				</div>
-				
-                <form action="/changepass" method="POST">
-					<table>
-					    <tr>
-						<td>Enter Current Password</td>
-                        <td><input type="password" name="currPass"></td>
-						</tr>
-						<tr>
-						<td>New Password</td>
-						<td><input type="password" name="newPass1" id="pw1"></td>
-						</tr>
-                        <tr>
-						<td>Confirm New Password</td>
-						<td><input type="password" name="newPass2" id="pw2"></td>
-						</tr>
-                        <tr>
-						<td></td>
-						<td><input type="submit"></td>
-						</tr>
-					</table>
-                </form>     
+                    click to <a href="/logout">logout</a>
+				</div> 
+                
+                <div style="width: 80%; margin:auto;">
+				<div style="width:400px; margin:auto; padding: 25px 0px;">
+                    <form class="w3-container w3-card-4" action="/changepass" method="POST">
+                        <h2>Change Password</h2>
+                        <p>
+                        <label><b>Enter Current Password</b></label>
+                        <input class="w3-input w3-border" type="password" name="currPass"></p>
+                        <p>
+                        <label><b>New Password</b></label>
+                        <input class="w3-input w3-border" type="password" name="newPass1" id="pw1"></p>
+                        <p>      
+                        <label><b>Confirm New Password</b></label>
+                        <input class="w3-input w3-border" type="password" name="newPass2" id="pw2"></p>
+                        <p>      
+                        <input style="color: rgb(0,188,212); font-weight: bold;" type="submit"></p>
+                    </form>     
+                </div>
+                </div>
                 
             </main>
         <% include ../footer %>
