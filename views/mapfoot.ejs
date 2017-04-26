@@ -11,9 +11,12 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBovP7KSrcf6Of-GwJJW4QP74b
 <!-- Getting Sites -->
 <script>
   var incSites;
+  var logged;
+  logged = <%- JSON.stringify(loggedin) %>;
   incSites = <%- JSON.stringify(sites) %>;
   //  console.log(incSites);
   initSites(incSites);
+  initLogged(logged);
 </script>
 
 <!-- TEMP!!! (probably not tho) jQuery -->

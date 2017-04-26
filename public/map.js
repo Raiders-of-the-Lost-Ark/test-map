@@ -7,6 +7,7 @@ var countyPoly;
 
 var infoWindow = null;
 var sites = null;
+var loggedIn = null;
 
 county_layer = null;
 state_layer = null;
@@ -14,6 +15,10 @@ circle_layer = null;
 
 function initSites(incomingSites){
     sites = incomingSites;
+}
+
+function initLogged(incLogged){
+    loggedIn = incLogged;
 }
 
 // Init
@@ -434,7 +439,9 @@ function initMap() {
 
             //console.log(" AM I HERE ?1?1?1/1!?");
              if(google.maps.geometry.poly.containsLocation(point, tempPoly)){
-                 console.log("FOUND A SITE: " + sites[i].name);
+                 if(sites[i].isPublic){                
+                    console.log("FOUND A SITE: " + sites[i].name);
+                 }
              }
         }
 
@@ -465,11 +472,12 @@ function initMap() {
 
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
-
+    console.log(loggedIn);
     for(var i = 0; i < sites.length; i++)
     {                        
+        if(sites[i].isPublic == true || loggedIn == true){
         //console.log(siteArray[i]);
-            var siteCircle = new google.maps.Circle({
+            var siteCircle = new google.maps.Circle({   
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -479,8 +487,8 @@ function initMap() {
             clickable: true,
             lat: sites[i].lat,
             long: sites[i].lng,
-            center: {lat: parseFloat(sites[i].lat), lng: parseFloat(sites[i].lng)},
-            radius: 10000,
+            center: {lat: obscureSite(sites[i].lat), lng: obscureSite(sites[i].lng)},
+            radius: 8000,
             name: sites[i].name,
             misc: sites[i].misc,
             siteId: sites[i].id,
@@ -493,7 +501,17 @@ function initMap() {
         });
 
         circlesArr.push(siteCircle);
-    }               
+        }
+    }            
+
+    function obscureSite(point){
+        var newPoint = parseFloat(point);
+        var min = -0.06;
+        var max = 0.06;
+        var newNum = Math.random() * (max - min) + min;
+        newPoint += newNum;
+        return newPoint;
+    }   
 
     //=======================================================================================================================
 

@@ -56,6 +56,11 @@ app.locals.loggedin = false;
 
 // MAIN ROUTE FOR INDEX/Main Page
 router.get('/', function(req, res) {
+    if (req.session.user) {
+    app.locals.loggedin = true;
+    } else {
+        app.locals.loggedin = false;
+    }
     var sites = {};
     SiteModel.find(function(err, sites) {
         if (err) {
@@ -189,6 +194,7 @@ router.post('/editSite', function(req, res) {
         newLat = req.body.Latitude;    
         newLng = req.body.Longitude;   
     };
+
 
     // Get images
     var image = req.files.customFile;
@@ -573,6 +579,14 @@ router.route('/sites')
         // store the user
         Site.userFName = req.session.user.firstName;
         Site.userLName = req.session.user.lastName;
+
+        console.log("THIS IS SOMETHING NEAT:  " + req.body.pubCheck);
+
+        if(req.body.pubCheck == "on"){
+            Site.isPublic = false;
+        } else {
+            Site.isPublic = true;
+        }
 
 
         let image =req.files.customFile;

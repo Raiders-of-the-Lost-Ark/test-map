@@ -19,12 +19,14 @@
             </form>
 
         <ul id="listed-sites">
-            <% for (var ind in sites) { %>
-                <li class="listed">
-                    <a href="#" class="listText" onClick="selectMarker(<%- ind -%>)">
-                        <%- sites[ind].name -%>
-                    </a>
-                </li>
+            <% for (var ind in sites) { %>            
+                <% if(sites[ind].isPublic || loggedin) { %>      
+                    <li class="listed">
+                        <a href="#" class="listText" onClick="selectMarker(<%- ind -%>)">
+                            <%- sites[ind].name -%>
+                        </a>
+                    </li>
+                <% } %>
             <% } %>
         </ul>
 
