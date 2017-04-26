@@ -537,6 +537,7 @@ function selectMarker(index) {
     infoRequest.onload = function(){
         // Populate sidebar 
         document.querySelector('#siteInfo_div').innerHTML = infoRequest.responseText;
+        reInitSidebar();
     };  
     infoRequest.send(); 
 

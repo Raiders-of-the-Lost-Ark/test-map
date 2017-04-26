@@ -98,6 +98,7 @@ function openCreatePanel(event) {
     newFormReq.addEventListener("load", function() {
         // Populate sidebar when HTML is received
         document.querySelector('#siteInfo_div').innerHTML = newFormReq.responseText;
+        reInitSidebar();
     });
     newFormReq.send();
 }
