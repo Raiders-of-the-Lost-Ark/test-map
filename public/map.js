@@ -6,9 +6,11 @@ var circlesArr = [];
 var infoWindow = null;
 var sites = null;
 
-county_layer = null;
-state_layer = null;
-circle_layer = null;
+var state_layer = null;
+var county_layer = null;
+var circle_layer = null;
+
+var stateInfo = new Map;     // Used to look up state data objects by ID
 
 function initSites(incomingSites){
     sites = incomingSites;
@@ -324,83 +326,112 @@ function initMap() {
     //=======================================================================================================================
 
     // Create data layers for counties and states
-    county_layer = new google.maps.Data;
     state_layer = new google.maps.Data;
-    
-    // Load local county data
-    var dataReq = new XMLHttpRequest();
-    dataReq.open("GET", 'mo.json', true);
-    dataReq.onload = function() {
-        var counties = JSON.parse(dataReq.responseText);
-        county_layer.setStyle({
-          fillColor: '#FFFFFF',
-          fillOpacity: 0.005,
-          strokeWeight: 1,
-          strokeOpacity: 0.2
-        });
-        county_layer.addGeoJson(counties);
-    };
-    dataReq.send();
+    state_layer.setStyle({
+        fillColor: '#FFFFFF',
+        fillOpacity: 0.005,
+        strokeWeight: 1,
+        strokeOpacity: 0.2
+    });
+    county_layer = new google.maps.Data;
+    county_layer.setStyle({
+        fillColor: '#FFFFFF',
+        fillOpacity: 0.005,
+        strokeWeight: 1,
+        strokeOpacity: 0.2,
+        zIndex: 1
+    });
 
-    // Load local state data
-    var dataReq2 = new XMLHttpRequest();
-    dataReq2.open("GET", 'states.json', true);
-    dataReq2.onload = function() {
-        var states = JSON.parse(dataReq2.responseText);
-        state_layer.setStyle({
-          fillColor: '#FFFFFF',
-          fillOpacity: 0.005,
-          strokeWeight: 1,
-          strokeOpacity: 0.2
-        });
+    // Create request for state data
+    var stateReq = new XMLHttpRequest();
+    // When state data arrives, build state and county data layers
+    stateReq.onload = function() {
+        var states = JSON.parse(stateReq.responseText);
+
+        // Create request for county data
+        var countyReq = new XMLHttpRequest();
+        countyReq.onload = function() {
+            // When county data arrives, finish building data layers
+            var counties = JSON.parse(countyReq.responseText);
+            setUpCounties(states, counties);
+        };
+        // Send county data request
+        countyReq.open("GET", 'counties.json', true);
+        countyReq.send();
+
+        // Set up state data layer
         state_layer.addGeoJson(states);
+        state_layer.forEach(function(item){
+            item.setProperty("isFocused", false);
+        });
+        // Add state layer to map
+        state_layer.setMap(map);
     };
-    dataReq2.send();
+    // Send state data request
+    stateReq.open("GET", 'states.json', true);
+    stateReq.send();
 
-    // State listeners
+    // Define state listeners
+    // ----------------------
     state_layer.addListener('mouseover', function(event) {
-        state_layer.revertStyle();
         state_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
-        //console.log(event.feature.getProperty("NAME"));  
     });
+
     state_layer.addListener('mouseout', function(event) {
-        state_layer.revertStyle();
+        state_layer.overrideStyle(event.feature, {fillOpacity: 0.005});
     });
+
     state_layer.addListener('click', function(event) {
+        state_layer.revertStyle();
+        state_layer.overrideStyle(event.feature, {strokeWeight: 5});
+        // Get info for clicked state
         var currentLat = event.feature.getProperty('INTPTLAT');
         var currentLong = event.feature.getProperty('INTPTLON');
+        var currentState = event.feature.getProperty('STATEFP');
+        // Get county data for current state
+        var countyObj = stateInfo.get(currentState);
+        // Remove existing county layer and create a new one
+        county_layer.setMap(null);
+        county_layer.forEach(function(item){
+            county_layer.remove(item);
+        });
+        // Add county data to new layer on map
+        county_layer.addGeoJson(countyObj);
+        county_layer.setMap(map);
+        // Pan and zoom to clicked state
         var currentPos = new google.maps.LatLng(currentLat, currentLong);
         map.setZoom(7);
         map.panTo(currentPos);
     });
 
-    // County listeners
+    // Define county listeners
+    // -----------------------
     county_layer.addListener('mouseover', function(event) {
-        county_layer.revertStyle();
         county_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
-        //console.log(event.feature.getProperty('NAMELSAD10'));  
     });
+
     county_layer.addListener('mouseout', function(event) {
         county_layer.revertStyle();
     });
+
     county_layer.addListener('click', function(event) {
+        // Get info for clicked county
         var currentLat = event.feature.getProperty('INTPTLAT10');
         var currentLong = event.feature.getProperty('INTPTLON10');
         var currentPos = new google.maps.LatLng(currentLat, currentLong);
+        // Pan and zoom to clicked county
         map.setZoom(8);
         map.panTo(currentPos);
     });
 
-    // Add state and county layers to map
-    //state_layer.setMap(map);             // Maybe not
-    county_layer.setMap(map);
-
-    // Map listeners
+    // Define map listeners
+    // -----------------------
     map.addListener('zoom_changed', function(event) {
-        if ((map.getZoom() > 13) || (map.getZoom() <= 5)) county_layer.setMap(null); 
-        else county_layer.setMap(map);
-        if (map.getZoom() > 5) state_layer.setMap(null); 
-        else state_layer.setMap(map);
+        // If zoomed out to country view, reset selected states
+        if (map.getZoom() <= 5) {
+            state_layer.revertStyle();
+            county_layer.setMap(null);
+        } 
     });
 
     // Create infowindow for use in all site bubbles
@@ -549,4 +580,46 @@ function selectMarker(index) {
     };  
     lightboxRequest.send(); 
 
+}
+
+function setUpCounties(stateData, countyData) {
+    var stateId;
+    var stateFeatures = [];
+    var stateObj = {};
+    // Iterate through states
+    for (var feature in stateData.features) {
+        var propList = stateData.features[feature].properties;
+        // Find ID of state
+        for (var prop in propList) {
+            if (prop == "STATEFP") {
+                stateId = propList[prop];   
+                stateFeatures = [];        
+                // Populate state features
+                var countyId;
+                var countyObj = {};
+                // Iterate through counties
+                for (var feature in countyData.features) {
+                    var propList = countyData.features[feature].properties;
+                    // Find counties that belong to state
+                    for (var prop in propList) {
+                        if (prop == "STATEFP10") {
+                            countyId = propList[prop];
+                            if (countyId == stateId) {
+                                // Add county data to state features as an object
+                                countyObj = countyData.features[feature];
+                                stateFeatures.push(countyObj);  
+                            }
+                        }
+                    }
+                }
+                // Complete the GeoJSON for this state
+                stateObj = {
+                    type: "FeatureCollection",
+                    features: stateFeatures
+                };
+                // Link state ID to data object
+                stateInfo.set(stateId, stateObj);
+            }
+        }
+    }
 }
