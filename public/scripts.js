@@ -7,7 +7,11 @@ function initialize() {
     infoPanelCloser.addEventListener("click", closeInfoPanel);
 
     var createButton = document.getElementById("createButton");
-    createButton.addEventListener("click", openCreatePanel);
+    if (createButton != null) 
+            createButton.addEventListener("click", openCreatePanel);
+
+    var zoomOutButton = document.getElementById("zoomOutButton");
+    zoomOutButton.addEventListener("click", zoomToCountryView);
 }
 
 function toggleCoordFormat(showthis,hidethis){
@@ -238,4 +242,11 @@ function endCreateMode() {
     view.classList.add("active");
     create.classList.remove("active");
     edit.classList.remove("active");
+}
+
+function zoomToCountryView() {
+    // Pan to center of US and zoom out
+    var center = new google.maps.LatLng(37.3313563, -92.6104017);
+    map.setZoom(5);
+    map.panTo(center); 
 }
