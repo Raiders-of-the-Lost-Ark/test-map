@@ -526,8 +526,8 @@ function selectMarker(index) {
     // Get site marker from array
     var marker = circlesArr[index];
 
-    // Pan to the marker
-    map.panTo(new google.maps.LatLng(marker.lat, marker.long));
+    // Pan to the marker (slighty higher to accommodate bubbles)
+    map.panTo(new google.maps.LatLng(marker.lat, marker.long-.005));
 
     // Create bubble content
     var bubbleContainer, bubbleContent, moreLink, rippleContainer;
