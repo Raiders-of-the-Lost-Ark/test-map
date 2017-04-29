@@ -118,7 +118,11 @@
             </div>
             <div id="publicCheck">
                 Check to Make Private:
+                <% if(data.isPublic) { %>
                 <input id="checkBox" type="checkbox" name="pubCheck">
+                <% } else { %>
+                <input id="checkBox" type="checkbox" name="pubCheck" checked="<%= data.isPublic %>">
+                <% } %>
             </div>
             <hr />  
         </div>   
