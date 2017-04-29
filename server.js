@@ -194,8 +194,11 @@ router.post('/editSite', function(req, res) {
         newLat = req.body.Latitude;    
         newLng = req.body.Longitude;   
     };
-
-
+    if(req.body.pubCheck == "on"){
+      var newIsPublic = false;
+        } else {
+      var newIsPublic = true;
+        }
     // Get images
     var image = req.files.customFile;
     var newImages = [];
@@ -354,6 +357,7 @@ router.post('/editSite', function(req, res) {
     }
     // That was fun.
 
+
     // Now let's resume modifying the site
     SiteModel.find({ "_id": reqSite }, function(err, siteResult) {
         var site = siteResult[0];
@@ -378,6 +382,7 @@ router.post('/editSite', function(req, res) {
                     "images": newImages,
                     "pdf": sitePDF,
                     "pdfview": sitePDFView,
+                    "isPublic": newIsPublic,
                 },
                 {new: true},
                 function(err, result) {
