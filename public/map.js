@@ -10,6 +10,8 @@ var state_layer = null;
 var county_layer = null;
 var circle_layer = null;
 
+var current_state =  null;
+
 var stateInfo = new Map;     // Used to look up state data objects by ID
 
 function initSites(incomingSites){
@@ -382,6 +384,7 @@ function initMap() {
     });
 
     state_layer.addListener('click', function(event) {
+        current_state = event.feature.getProperty('STATEFP');
         state_layer.revertStyle();
         state_layer.overrideStyle(event.feature, {strokeWeight: 5});
         // Get info for clicked state
@@ -420,6 +423,23 @@ function initMap() {
         var currentLong = event.feature.getProperty('INTPTLON10');
         var currentPos = new google.maps.LatLng(currentLat, currentLong);
         // Pan and zoom to clicked county
+
+        var found_counties = null;
+
+        for(var [stateID, stateObj] of stateInfo)
+        {
+            if(stateID == current_state){
+                console.log(stateObj);
+                found_counties = stateObj;
+            }
+        }
+
+        for(var i = 0; i < found_counties; i++){
+            console.log(found_counties.features[i]);
+        }
+
+        console.log(event);
+
         map.setZoom(8);
         map.panTo(currentPos);
     });
