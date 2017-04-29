@@ -426,27 +426,56 @@ function initMap() {
 
         var found_counties = null;
 
+            // search through map object
+            // for the state we are focused on
         for(var [stateID, stateObj] of stateInfo)
         {
             if(stateID == current_state){
-                // console.log("THIS IS THE STATE OBJECT");
-                // console.log(stateObj);
-                // console.log("THIS IS THE STATE OBJECT");
                 found_counties = stateObj;
             }
         }
+
         var county_index;
-        //console.log(event.feature.getProperty('NAMELSAD10'));
-        //console.log(found_counties.features.length);
         for(var i = 0; i < found_counties.features.length; i++){
-            //console.log(found_counties.features[i].properties.NAMELSAD10);
             if(found_counties.features[i].properties.NAMELSAD10 == event.feature.getProperty('NAMELSAD10')){
                 console.log("FOUND COUNTY:  " + found_counties.features[i].properties.NAMELSAD10);
                 county_index = i;
             }
         }
 
-        //console.log(event);
+        //console.log(found_counties.features[county_index].geometry.coordinates);
+
+        var polyPath = [];
+        for(var i = 0; i < found_counties.features[county_index].geometry.coordinates[0].length; i++){
+            //console.log(found_counties.features[county_index].geometry.coordinates[i]);
+            var tempPoint = new google.maps.LatLng(
+                found_counties.features[county_index].geometry.coordinates[0][i][1],
+                found_counties.features[county_index].geometry.coordinates[0][i][0]);
+
+            //console.log(tempPoint);
+            polyPath.push(tempPoint);
+        }
+
+        //console.log(polyPath);
+        console.log(sites.length);
+        var tempPoly = new google.maps.Polygon({
+                paths: polyPath
+            });
+
+        var foundSites = [];
+
+        for(var i = 0; i < sites.length; i++){
+            var point = new google.maps.LatLng(sites[i].lat, sites[i].lng);
+            //console.log(point);
+
+            if(google.maps.geometry.poly.containsLocation(point, tempPoly)){
+                console.log("FOUND A SITE: " + sites[i].name);
+                foundSites.push(sites[i]);
+            }            
+        }
+
+        console.log(foundSites);
+
 
         map.setZoom(8);
         map.panTo(currentPos);
@@ -485,7 +514,7 @@ function initMap() {
             lat: sites[i].lat,
             long: sites[i].lng,
             center: {lat: parseFloat(sites[i].lat), lng: parseFloat(sites[i].lng)},
-            radius: 10000,
+            radius: 7000,
             name: sites[i].name,
             misc: sites[i].misc,
             siteId: sites[i].id,
