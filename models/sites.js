@@ -10,7 +10,8 @@ var SiteSchema = new Schema({
 	pdf: [String],
 	pdfview: [Boolean],
     userFName: String,
-    userLName: String
+    userLName: String,
+    isPublic: Boolean
 });
 
 // this is our predefined schema for a city (location and lat/long)

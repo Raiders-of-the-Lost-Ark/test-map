@@ -71,7 +71,7 @@ function deleteItem(deleteform) {
     var x=confirm("Are you sure you want to delete this battle site? All information will be lost. All of it. You cannot get it back. \n Are you sure?");
 	if(x==true)
 	{
-	deleteform.submit();
+	    deleteform.submit();
 	}
 	
 }
@@ -102,3 +102,4 @@ function openCreatePanel(event) {
     });
     newFormReq.send();
 }
+

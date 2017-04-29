@@ -1,3 +1,6 @@
+<% var countyDisplay = false; %>
+<% var countySiteList = []; %>
+
 <div id="sidebar" class="mdl-layout__drawer-right mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
     <header class="demo-drawer-header">
     </header>
@@ -17,16 +20,29 @@
                 </div>
             </div>
             </form>
-
-        <ul id="listed-sites">
-            <% for (var ind in sites) { %>
-                <li class="listed">
-                    <a href="#" class="listText" onClick="selectMarker(<%- ind -%>)">
-                        <%- sites[ind].name -%>
-                    </a>
-                </li>
+        <% if (countyDisplay == false) { %>
+        <ul id="listed-sites"> 
+            <% for (var ind in sites) { %>         
+                <% if(sites[ind].isPublic || loggedin) { %>      
+                    <li class="listed">
+                        <a href="#" class="listText" onClick="selectMarker(<%- ind -%>)">
+                            <%- sites[ind].name -%>
+                        </a>
+                    </li>
+                <% } %>
             <% } %>
         </ul>
+        <% } else { %><ul id="listed-sites"> 
+            <% for (var ind in sites) { %>         
+                <% if(sites[ind].isPublic || loggedin) { %>      
+                    <li class="listed">
+                        <a href="#" class="listText" onClick="selectMarker(<%- ind -%>)">
+                        </a>
+                    </li>
+                <% } %>
+            <% } %>
+        </ul>
+        <% } %>
 
         <div class="mdl-layout-spacer"></div>
 
@@ -55,9 +71,19 @@ function filterList(input, list) {
             items[i].style.display = "";
         } else {
             items[i].style.display = "none";
-        }
+        }   
     }
 }
 
 
+</script>
+
+
+<script>
+    function openCountySearch(listofsites){
+    //event.preventDefault();
+        for(var i = 0; i < listofsites.length; i++){
+            
+        }
+    }
 </script>

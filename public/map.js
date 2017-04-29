@@ -2,9 +2,12 @@
 var map;
 var siteArray = [];
 var circlesArr = [];
+var countyPoly;
+
 
 var infoWindow = null;
 var sites = null;
+var loggedIn = null;
 
 var state_layer = null;
 var county_layer = null;
@@ -16,6 +19,10 @@ var stateInfo = new Map;     // Used to look up state data objects by ID
 
 function initSites(incomingSites){
     sites = incomingSites;
+}
+
+function initLogged(incLogged){
+    loggedIn = incLogged;
 }
 
 // Init
@@ -499,7 +506,7 @@ function initMap() {
 
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
-
+    // console.log(loggedIn);
     for(var i = 0; i < sites.length; i++)
     {                        
         if(sites[i].isPublic == true || loggedIn == true){
