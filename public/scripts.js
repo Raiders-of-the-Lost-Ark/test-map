@@ -185,12 +185,37 @@ function submitCreateForm(event) {
     event.preventDefault();
 
     var form = event.target;
+     var valid=false;
+     if((form.elements[1].value!="")&&(form.elements[2].value!=""))
+     {
 
-    // Validation
-    // console.log( form.elements[0].value );
-    // console.log( form.elements[1].value );
+        if(form.elements[3].checked)
+        {
+            if((form.elements[5].value!="")&&(form.elements[6].value!="")&&(form.elements[7].value!=""))
+            {
+                valid=true;
+            }
+            else
+            alert("you must input all three parts of UTM to submit");
+        }
+        else
+        {
+            if((form.elements[8].value!="")&&(form.elements[9].value!=""))
+            {
+                valid=true;
+            }
+            else
+            alert("you must input both a latitude and a longitude to submit");
+
+        }
+     }
+     else
+     {
+        alert("You must have a site name and description");
+     }
+     if(valid)
+    {
     // [ ... ]
-
     var XHR = new XMLHttpRequest();
     var data = new FormData(form);
 
@@ -205,7 +230,7 @@ function submitCreateForm(event) {
 
     XHR.open("POST", "sites");
     XHR.send(data);
-
+    }
     return false;
 }
 

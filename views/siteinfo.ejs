@@ -103,12 +103,12 @@
 
         <div class="site-loc-input">
             <label>Use UTM</label>
-            <input type="radio" name="radio" checked="true" onclick="toggleCoordFormat('utm','latlong')" />
+            <input type="radio" name="radio" value="utm" checked="true" onclick="toggleCoordFormat('utm','latlong')" />
             <label>Use Lat/Long</label>
-            <input type="radio" name="radio" onclick="toggleCoordFormat('latlong','utm')" />
+            <input type="radio" name="radio" value="latlong" onclick="toggleCoordFormat('latlong','utm')" />
             <hr />
             <div id="utm">
-                <label>Enter Zone Number: </label><input type="text" name="zone" /><br />
+                <label>Enter Zone: </label><input type="text" name="zone" /><br />
                 <label>Enter Easting: </label><input type="text" name="easting" /><br />
                 <label>Enter Northing: </label><input type="text" name="northing" /><br />
             </div>
