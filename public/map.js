@@ -549,7 +549,7 @@ function initMap() {
 
     // Map area restrictions
 	var allowedBounds = new google.maps.LatLngBounds(
-	  new google.maps.LatLng(33.3353104, -124.4519655),
+	  new google.maps.LatLng(25.3353104, -124.4519655),
 	  new google.maps.LatLng(44.7186249, -64.1323508)
 	);
 	var boundLimits = {
