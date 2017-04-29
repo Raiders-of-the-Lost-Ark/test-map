@@ -566,6 +566,13 @@ router.route('/sites')
         Site.userFName = req.session.user.firstName;
         Site.userLName = req.session.user.lastName;
 
+        if(req.body.pubCheck == "on"){
+            Site.isPublic = false;
+        } else {
+            Site.isPublic = true;
+        }
+
+
 
         let image =req.files.customFile;
         //checks if a image was uploaded

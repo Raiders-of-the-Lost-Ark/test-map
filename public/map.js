@@ -502,8 +502,9 @@ function initMap() {
 
     for(var i = 0; i < sites.length; i++)
     {                        
+        if(sites[i].isPublic == true || loggedIn == true){
         //console.log(siteArray[i]);
-            var siteCircle = new google.maps.Circle({
+            var siteCircle = new google.maps.Circle({   
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -513,20 +514,24 @@ function initMap() {
             clickable: true,
             lat: sites[i].lat,
             long: sites[i].lng,
-            center: {lat: parseFloat(sites[i].lat), lng: parseFloat(sites[i].lng)},
+            center: {lat: obscureSite(sites[i].lat), lng: obscureSite(sites[i].lng)},
             radius: 7000,
             name: sites[i].name,
             misc: sites[i].misc,
             siteId: sites[i].id,
             siteInd: i,
             zIndex: 200
-            });
-
-        google.maps.event.addListener(siteCircle, 'click', function () {
-            selectMarker(this.siteInd);
         });
+        
 
-        circlesArr.push(siteCircle);
+            circlesArr.push(siteCircle);
+
+            google.maps.event.addListener(siteCircle, 'click', function () {
+                selectMarker(this.siteInd);
+            });
+        } else {
+            circlesArr.push(null);
+        }
     }               
 
     //=======================================================================================================================
@@ -638,6 +643,16 @@ function selectMarker(index) {
     lightboxRequest.send(); 
 
 }
+
+function obscureSite(point){
+        var newPoint = parseFloat(point);
+        var min = -0.04;
+        var max = 0.04;
+        var newNum = Math.random() * (max - min) + min;
+        newPoint += newNum;
+        return newPoint;
+}   
+
 
 function setUpCounties(stateData, countyData) {
     var stateId;
