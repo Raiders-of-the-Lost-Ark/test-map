@@ -12,10 +12,7 @@ ARCHFILE=$BASEDIR/$ARCHIVE
 DATE=$(date +"%Y%m%d%H%M")
 DUMPNAME=mongodump-$DBNAME-$DATE
 
-# Remove old archive
-echo `rm -f $ARCHFILE`
-
-echo `date '+%Y-%m-%d %H:%M:%S'` Dumping database >> $LOG
+echo `date '+%Y-%m-%d %H:%M:%S'` Restoring database >> $LOG
 
 # Create archived dump
-mongodump --gzip --db $DBNAME --collection $COLLECTION --archive=$ARCHFILE >> $LOG
+mongorestore --gzip --archive=$ARCHFILE --db $DBNAME >> $LOG
