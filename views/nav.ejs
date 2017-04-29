@@ -13,15 +13,13 @@
     <header class="demo-drawer-header">
     </header>
     <nav class="demo-navigation mdl-navigation">
-        <a class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href="/"><i class="material-icons" role="presentation">map</i></a>
-        <a class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href="/admin"><i class="material-icons" role="presentation">lock</i></a>
-        <a class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href="/account"><i class="material-icons" role="presentation">person</i></a>
-        <div class="mdl-layout-spacer"></div>
-        <button class="mdl-button mdl-js-button mdl-button--icon">
-        <i class="material-icons">help-outline</i>
-        <div class="mdl-tooltip" data-mdl-for="tt1">
-            Follow
-        </div>
-        </button>
+        <a id="tt1" class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href="/"><i class="material-icons" role="presentation">map</i></a>
+        <div class="mdl-tooltip mdl-tooltip--large" for="tt1">Map</div>
+        
+        <a id="tt2" class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href="/admin"><i class="material-icons" role="presentation">lock</i></a>
+        <div class="mdl-tooltip mdl-tooltip--large" for="tt2">Admin</div>
+
+        <a id="tt3" class="mdl-navigation__link mdl-button  mdl-js-button mdl-js-ripple-effect" href="/account"><i class="material-icons" role="presentation">person</i></a>
+        <div class="mdl-tooltip mdl-tooltip--large" for="tt3">Account</div>
     </nav>
 </div>
