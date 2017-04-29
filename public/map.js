@@ -429,15 +429,22 @@ function initMap() {
         for(var [stateID, stateObj] of stateInfo)
         {
             if(stateID == current_state){
-                console.log("THIS IS THE STATE OBJECT");
-                console.log(stateObj);
-                console.log("THIS IS THE STATE OBJECT");
+                // console.log("THIS IS THE STATE OBJECT");
+                // console.log(stateObj);
+                // console.log("THIS IS THE STATE OBJECT");
                 found_counties = stateObj;
             }
         }
-
-        console.log(event.feature.getProperty(''));
-        console.log(found_counties.features);
+        var county_index;
+        //console.log(event.feature.getProperty('NAMELSAD10'));
+        //console.log(found_counties.features.length);
+        for(var i = 0; i < found_counties.features.length; i++){
+            //console.log(found_counties.features[i].properties.NAMELSAD10);
+            if(found_counties.features[i].properties.NAMELSAD10 == event.feature.getProperty('NAMELSAD10')){
+                console.log("FOUND COUNTY:  " + found_counties.features[i].properties.NAMELSAD10);
+                county_index = i;
+            }
+        }
 
         //console.log(event);
 
