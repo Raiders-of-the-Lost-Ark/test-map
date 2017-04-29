@@ -429,16 +429,17 @@ function initMap() {
         for(var [stateID, stateObj] of stateInfo)
         {
             if(stateID == current_state){
+                console.log("THIS IS THE STATE OBJECT");
                 console.log(stateObj);
+                console.log("THIS IS THE STATE OBJECT");
                 found_counties = stateObj;
             }
         }
 
-        for(var i = 0; i < found_counties; i++){
-            console.log(found_counties.features[i]);
-        }
+        console.log(event.feature.getProperty(''));
+        console.log(found_counties.features);
 
-        console.log(event);
+        //console.log(event);
 
         map.setZoom(8);
         map.panTo(currentPos);
