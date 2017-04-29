@@ -155,8 +155,8 @@
   height: 30px;
   line-height: 18px;
   list-style: none;
-  margin-bottom: 10px;
-  padding: 20px 10px;
+  margin: 3px 3px;
+  padding: 5px 10px;
   text-align: center;
   -webkit-transform: translateZ(0);
           transform: translateZ(0);
@@ -167,6 +167,7 @@
 .listed:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   color: rgba(0,0,0,1);
+  background-color: #ccc;
   text-decoration:none;
   cursor:pointer;  
 }
