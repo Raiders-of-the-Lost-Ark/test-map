@@ -2,18 +2,27 @@
 var map;
 var siteArray = [];
 var circlesArr = [];
+var countyPoly;
+
 
 var infoWindow = null;
 var sites = null;
+var loggedIn = null;
 
 var state_layer = null;
 var county_layer = null;
 var circle_layer = null;
 
+var current_state =  null;
+
 var stateInfo = new Map;     // Used to look up state data objects by ID
 
 function initSites(incomingSites){
     sites = incomingSites;
+}
+
+function initLogged(incLogged){
+    loggedIn = incLogged;
 }
 
 // Init
@@ -382,6 +391,7 @@ function initMap() {
     });
 
     state_layer.addListener('click', function(event) {
+        current_state = event.feature.getProperty('STATEFP');
         state_layer.revertStyle();
         state_layer.overrideStyle(event.feature, {strokeWeight: 5});
         // Get info for clicked state
@@ -420,6 +430,60 @@ function initMap() {
         var currentLong = event.feature.getProperty('INTPTLON10');
         var currentPos = new google.maps.LatLng(currentLat, currentLong);
         // Pan and zoom to clicked county
+
+        var found_counties = null;
+
+            // search through map object
+            // for the state we are focused on
+        for(var [stateID, stateObj] of stateInfo)
+        {
+            if(stateID == current_state){
+                found_counties = stateObj;
+            }
+        }
+
+        var county_index;
+        for(var i = 0; i < found_counties.features.length; i++){
+            if(found_counties.features[i].properties.NAMELSAD10 == event.feature.getProperty('NAMELSAD10')){
+                console.log("FOUND COUNTY:  " + found_counties.features[i].properties.NAMELSAD10);
+                county_index = i;
+            }
+        }
+
+        //console.log(found_counties.features[county_index].geometry.coordinates);
+
+        var polyPath = [];
+        for(var i = 0; i < found_counties.features[county_index].geometry.coordinates[0].length; i++){
+            //console.log(found_counties.features[county_index].geometry.coordinates[i]);
+            var tempPoint = new google.maps.LatLng(
+                found_counties.features[county_index].geometry.coordinates[0][i][1],
+                found_counties.features[county_index].geometry.coordinates[0][i][0]);
+
+            //console.log(tempPoint);
+            polyPath.push(tempPoint);
+        }
+
+        //console.log(polyPath);
+        console.log(sites.length);
+        var tempPoly = new google.maps.Polygon({
+                paths: polyPath
+            });
+
+        var foundSites = [];
+
+        for(var i = 0; i < sites.length; i++){
+            var point = new google.maps.LatLng(sites[i].lat, sites[i].lng);
+            //console.log(point);
+
+            if(google.maps.geometry.poly.containsLocation(point, tempPoly)){
+                console.log("FOUND A SITE: " + sites[i].name);
+                foundSites.push(sites[i]);
+            }            
+        }
+
+        console.log(foundSites);
+
+
         map.setZoom(8);
         map.panTo(currentPos);
     });
@@ -442,11 +506,12 @@ function initMap() {
 
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
-
+    // console.log(loggedIn);
     for(var i = 0; i < sites.length; i++)
     {                        
+        if(sites[i].isPublic == true || loggedIn == true){
         //console.log(siteArray[i]);
-            var siteCircle = new google.maps.Circle({
+            var siteCircle = new google.maps.Circle({   
             strokeColor: '#FF0000',
             strokeOpacity: 0.8,
             strokeWeight: 2,
@@ -456,20 +521,24 @@ function initMap() {
             clickable: true,
             lat: sites[i].lat,
             long: sites[i].lng,
-            center: {lat: parseFloat(sites[i].lat), lng: parseFloat(sites[i].lng)},
-            radius: 10000,
+            center: {lat: obscureSite(sites[i].lat), lng: obscureSite(sites[i].lng)},
+            radius: 7000,
             name: sites[i].name,
             misc: sites[i].misc,
             siteId: sites[i].id,
             siteInd: i,
-			zIndex: 200
-            });
-
-        google.maps.event.addListener(siteCircle, 'click', function () {
-            selectMarker(this.siteInd);
+            zIndex: 200
         });
+        
 
-        circlesArr.push(siteCircle);
+            circlesArr.push(siteCircle);
+
+            google.maps.event.addListener(siteCircle, 'click', function () {
+                selectMarker(this.siteInd);
+            });
+        } else {
+            circlesArr.push(null);
+        }
     }               
 
     //=======================================================================================================================
@@ -581,6 +650,16 @@ function selectMarker(index) {
     lightboxRequest.send(); 
 
 }
+
+function obscureSite(point){
+        var newPoint = parseFloat(point);
+        var min = -0.04;
+        var max = 0.04;
+        var newNum = Math.random() * (max - min) + min;
+        newPoint += newNum;
+        return newPoint;
+}   
+
 
 function setUpCounties(stateData, countyData) {
     var stateId;

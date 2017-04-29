@@ -20,7 +20,7 @@ var UserModel = users.model('Users', User);
 
 // call the packages we need
 var express    = require('express');        // call express
-var session = require('express-session');
+var session    = require('express-session');
 
 const fileUpload = require('express-fileupload');
 var app        = express();                 // define our app using express
@@ -53,7 +53,14 @@ app.locals.loggedin = false;
 
 // PAGE ROUTES
 // =============================================================================
+
+// MAIN ROUTE FOR INDEX/Main Page
 router.get('/', function(req, res) {
+    if (req.session.user) {
+    app.locals.loggedin = true;
+    } else {
+        app.locals.loggedin = false;
+    }
     var sites = {};
     SiteModel.find(function(err, sites) {
         if (err) {
@@ -67,6 +74,7 @@ router.get('/', function(req, res) {
     });
 });
 
+// ROUTE FOR ADMIN PAGE, RESTRICTED TO LOGGED IN ADMINS
 router.get('/admin', restrict, adminRestrict, function(req, res) {
     UserModel.find(function(err, users){
         if(err){
@@ -79,14 +87,17 @@ router.get('/admin', restrict, adminRestrict, function(req, res) {
     });
 });
 
+// ROUTE FOR ACCOUNT PAGE, RESTRICTED TO LOGGED IN USERS
 router.get('/account', restrict, function(req, res) {
     res.render('pages/account'); // Render account template
 });
 
+// ROUTE FOR LOGIN PAGE
 router.get('/login', function(req, res) {
     res.render('pages/login');   // Render login page template
 });
 
+// ROUTE FOR TESTING LOGIN, NOT USED I BELIEVE
 router.get('/testlogin', function(req, res){
     res.render('pages/testlogin');
 })
@@ -130,6 +141,8 @@ function restrict(req, res, next) {
   }
 }
 
+
+// Second restrict function, used to check if a logged in user is an admin or not
 function adminRestrict(req, res, next) {
     if(req.session.user.isAdmin){
         next();
@@ -181,6 +194,7 @@ router.post('/editSite', function(req, res) {
         newLat = req.body.Latitude;    
         newLng = req.body.Longitude;   
     };
+
 
     // Get images
     var image = req.files.customFile;
@@ -565,6 +579,13 @@ router.route('/sites')
         // store the user
         Site.userFName = req.session.user.firstName;
         Site.userLName = req.session.user.lastName;
+
+        if(req.body.pubCheck == "on"){
+            Site.isPublic = false;
+        } else {
+            Site.isPublic = true;
+        }
+
 
 
         let image =req.files.customFile;
