@@ -153,6 +153,45 @@ function adminRestrict(req, res, next) {
 }
 
 
+router.get('/backup', function(req, res) {
+    var execFile = require('child_process').execFile;
+    var script = __dirname + ("/public/backup/createbackup.sh");
+    var mime = require('mime');
+    var filename = "cwbattlefields.archive";
+    var file = __dirname + ("/public/backup/" + filename);
+
+    console.log("file: " + file);
+
+    var success = false;
+
+    execFile(script, [], {}, function(error, stdout, stderr) {
+        if (stdout) {
+            return res.download(file, filename, function(err){
+                if (err) {
+                    console.log("Download error: " + err);
+                }
+            });
+        } else if (stderr) {
+            console.log(stderr);
+            return res.send();
+        } else if (error) {
+            console.log(error);
+            return res.send();   
+        }
+    });
+});
+
+router.get('/dlbackup', function(req, res) {
+    var execFile = require('child_process').execFile;
+    var script = __dirname + ("/public/backup/createbackup.sh");
+    var mime = require('mime');
+    var filename = "cwbattlefields.archive";
+    var file = __dirname + ("/public/backup/" + filename);
+
+
+});
+
+
 // Right sidebar routes
 // ----------------------------------
 
