@@ -436,14 +436,16 @@ function initMap() {
             });
 
             //console.log(point.lat);
-
+            var foundSites = [];
             //console.log(" AM I HERE ?1?1?1/1!?");
              if(google.maps.geometry.poly.containsLocation(point, tempPoly)){
                  if(sites[i].isPublic){                
                     console.log("FOUND A SITE: " + sites[i].name);
+                    foundSites.push(sites[i]);
                  }
              }
         }
+        openCountySearch(foundSites);
 
         map.setZoom(8);
         map.panTo(currentPos);
@@ -472,7 +474,7 @@ function initMap() {
 
     // this section does an async get request and puts circles on the map based off data from
     // the mongodb database, right now it just has a couple cities with small circles
-    console.log(loggedIn);
+    // console.log(loggedIn);
     for(var i = 0; i < sites.length; i++)
     {                        
         if(sites[i].isPublic == true || loggedIn == true){
@@ -488,26 +490,29 @@ function initMap() {
             lat: sites[i].lat,
             long: sites[i].lng,
             center: {lat: obscureSite(sites[i].lat), lng: obscureSite(sites[i].lng)},
-            radius: 8000,
+            radius: 7000,
             name: sites[i].name,
             misc: sites[i].misc,
             siteId: sites[i].id,
             siteInd: i,
             zIndex: 200
-            });
-
-        google.maps.event.addListener(siteCircle, 'click', function () {
-            selectMarker(this.siteInd);
         });
+        
 
-        circlesArr.push(siteCircle);
+            circlesArr.push(siteCircle);
+
+            google.maps.event.addListener(siteCircle, 'click', function () {
+                selectMarker(this.siteInd);
+            });
+        } else {
+            circlesArr.push(null);
         }
     }            
 
     function obscureSite(point){
         var newPoint = parseFloat(point);
-        var min = -0.06;
-        var max = 0.06;
+        var min = -0.04;
+        var max = 0.04;
         var newNum = Math.random() * (max - min) + min;
         newPoint += newNum;
         return newPoint;
