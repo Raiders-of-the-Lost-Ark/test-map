@@ -200,9 +200,9 @@ router.post('/restore', function(req, res) {
                         // Execute restore script
                         execFile(restoreScript, [], {}, function(error, stdout, stderr) {
                             if (stdout) {
-                                // When finished, 
+                                // When finished, display success message
                                 console.log("IT WORKED AAAAA");
-                                return res.send();
+                                return res.send("Restore complete!");
                             } else if (stderr) {
                                 console.log(stderr);
                                 return res.send();
