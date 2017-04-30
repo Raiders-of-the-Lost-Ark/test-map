@@ -10,6 +10,13 @@
     <% var boxId = "img"; %> 
 <% } %>
 
+<style>
+    .editText:hover{
+        border-style: solid;
+        border-color: gray gray blue gray;
+    }
+</style>
+
 <!-- Viewable Mode -->
 
 <% if (!newMode) { %> 
@@ -88,40 +95,92 @@
     <form id="editForm" onsubmit="submitEditForm(event); return false;">
     <% } %>
 
-        <!-- Super Ugly Form -->
-        <div class="image-uploader">
-            <label>Upload Pictures : </label>
-            <input type="File" name="customFile" multiple />
-        </div>
-
         <div class="site-name-input mdl-textfield mdl-js-textfield">
-            <input name="name" placeholder="Battlesite Name" class="mdl-textfield__input" value="<%= data.name %>" style="margin: 10px 25px; font-size:200%" /> 
+            <input name="name" placeholder="Battlesite Name" class="mdl-textfield__input editText" value="<%= data.name %>" style="margin: 10px 25px; font-size:200%" /> 
         </div>
 
-        <textarea class="site-descript-input mdl-textfield__input" placeholder="Enter a description here..." rows=10 cols=70 name="misc"><%= data.misc %></textarea>
+        <textarea class="site-descript-input mdl-textfield__input editText" placeholder="Enter a description here..." rows=10 cols=70 name="misc" style="width:90%; margin: 25px; "><%= data.misc %></textarea>
         <hr />
-
         <div class="site-loc-input">
-            <label>Use UTM</label>
-            <input type="radio" name="radio" checked="true" onclick="toggleCoordFormat('utm','latlong')" />
-            <label>Use Lat/Long</label>
-            <input type="radio" name="radio" onclick="toggleCoordFormat('latlong','utm')" />
+            <table class="mdl-data-table mdl-js-data-table" style="width:300px; margin: 0px 25px; background-color: lightgray;" >
+              <tbody style="color:black;">
+                <tr>
+                  <td class="mdl-data-table__cell--non-numeric">
+                    <input type="radio" name="radio" checked="true" onclick="toggleCoordFormat('utm','latlong')" />
+                  </td>
+                  <td class="mdl-data-table__cell--non-numeric">
+                    <label>Use UTM</label>
+                    </td>
+                </tr>
+                <tr>
+                  <td class="mdl-data-table__cell--non-numeric">
+                    <input type="radio" name="radio" onclick="toggleCoordFormat('latlong','utm')" />
+                  </td>
+                  <td class="mdl-data-table__cell--non-numeric">
+                    <label>Use Lat/Long</label>
+                  </td>
+                </tr>
+              </tbody>
+            </table>      
             <hr />
             <div id="utm">
-                <label>Enter Zone Number: </label><input type="text" name="zone" /><br />
-                <label>Enter Easting: </label><input type="text" name="easting" /><br />
-                <label>Enter Northing: </label><input type="text" name="northing" /><br />
+                <table class="mdl-data-table mdl-js-data-table" style="width:300px; margin: 0px 25px; background-color: lightgray;">
+                  <tbody style="color:black;">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <label>Enter Zone Number: </label>
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <input type="text" name="zone" />
+                        </td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <label>Enter Easting: </label>
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <input type="text" name="easting" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <label>Enter Northing: </label>
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <input type="text" name="northing" /><br />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>      
             </div>
             <div id="latlong" style="display:none">
-                <label>Enter Site Latitude: </label><input type="text" name="Latitude" value="<%= data.lat %>" /><br />
-                <label>Enter Site Longitude: </label><input type="text" name="Longitude" value="<%= data.lng %>" /><br />
+                <table class="mdl-data-table mdl-js-data-table" style="width:300px; margin: 0px 25px; background-color: lightgray;">
+                  <tbody style="color:black;">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <label>Enter Site Latitude: </label>
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <input type="text" name="Latitude" value="<%= data.lat %>" />
+                        </td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <label>Enter Site Longitude: </label>
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <input type="text" name="Longitude" value="<%= data.lng %>" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>      
             </div>
-            <div id="publicCheck">
+            <div id="publicCheck" style="margin: 0px 25px;">
                 Check to Make Private:
                 <input id="checkBox" type="checkbox" name="pubCheck">
             </div>
             <hr />  
-        </div>   
+        </div>
 
         <div class="pdf-list">
             <% if (data.pdf && data.pdf.length != "") { %>
@@ -143,16 +202,43 @@
         </div>
 
         <div class="file-uploaders">
-            <label>Add Public PDF Files: </label><input type="File" name="pdfFilespublic" multiple /><br />
-            <label>Add Private PDF Files: </label><input type="File" name="pdfFilesprivate" multiple /><br />
+            <table class="mdl-data-table mdl-js-data-table" style="width:300px; margin: 0px 25px; background-color: lightgray;">
+                <tbody style="color:black;">
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <label>Add Public PDF Files: </label>
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <input type="File" name="pdfFilespublic" multiple />
+                        </td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <label>Add Private PDF Files: </label>
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <input type="File" name="pdfFilesprivate" multiple />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <label>Upload Pictures : </label>
+                      </td>
+                      <td class="mdl-data-table__cell--non-numeric">
+                        <input type="File" name="customFile" multiple />
+                      </td>
+                    </tr>
+                </tbody>
+            </table>      
+            
         </div>
-
+        <hr /> 
         <% if (!newMode) { %>
         <input id="currentSite" hidden="true" name="idkey" value="<%= data._id %>" type="text"></input>        
         <% } %>
         
-        <div id="admin-buttons">
-            <div class="mdl-layout-spacer"></div>
+        <div id="admin-buttons" style="margin: 25px;">
+            <div class="mdl-layout-spacer" ></div>
 
             <% if (newMode) { %>
             <input type="submit" value="SUBMIT" class="mdl-button mdl-js-button mdl-button--raised createButton" />
