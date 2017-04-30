@@ -26,8 +26,8 @@ const fileUpload = require('express-fileupload');
 var app        = express();                 // define our app using express
 var bodyParser = require('body-parser');
 var http = require('http'),
-    fs = require('fs');
-const path= require('path');
+      fs = require('fs');
+const path = require('path');
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -51,11 +51,15 @@ var router = express.Router();              // get an instance of the express Ro
 app.locals.loggedin = false;
 // TESTING THIS AS A GLOBAL
 
+app.locals.countySites = null;
+app.locals.countyView = false;
+
 // PAGE ROUTES
 // =============================================================================
 
 // MAIN ROUTE FOR INDEX/Main Page
 router.get('/', function(req, res) {
+    app.locals.countyView = false;
     if (req.session.user) {
     app.locals.loggedin = true;
     } else {
@@ -536,6 +540,18 @@ router.get('/create', function(req, res){ // to create an account
 
 router.get('/input', function(req, res){ // to create a site
     res.render('pages/inputtest');
+});
+
+router.post('/countySites', function(req, res){
+    var temp = req.body.siteList;
+    var objs = JSON.parse(temp);
+    for(var i = 0; i < objs.length; i++){
+        console.log(objs[i].name);
+    }
+
+    app.locals.countySites = objs;
+    app.locals.countyView = true;
+    res.render('sidebar')
 });
 
 // ROUTES FOR OUR API

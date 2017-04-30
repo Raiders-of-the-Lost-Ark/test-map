@@ -247,8 +247,6 @@ function toggleSiteCreate(createOn) {
 }
 
 function startCreateMode() {
-    
-    console.log("HELLO WORLDO");
     var view = document.getElementsByClassName("view-mode")[0];
     var create = document.getElementsByClassName("create-mode")[0];
     var edit = document.getElementsByClassName("edit-mode")[0];
@@ -259,7 +257,6 @@ function startCreateMode() {
 }
 
 function endCreateMode() {
-    console.log("THIS IS BULLCRAP");
     var view = document.getElementsByClassName("view-mode")[0];
     var create = document.getElementsByClassName("create-mode")[0];
     var edit = document.getElementsByClassName("edit-mode")[0];
@@ -271,7 +268,22 @@ function endCreateMode() {
 
 function zoomToCountryView() {
     // Pan to center of US and zoom out
+    resetDisplayList();
     var center = new google.maps.LatLng(37.3313563, -92.6104017);
     map.setZoom(5);
     map.panTo(center); 
+}
+
+
+function postSitesInCounty(foundSites) {
+    var XHR = new XMLHttpRequest();
+    var jsonData = JSON.stringify(foundSites);
+
+    var data = new FormData();
+    data.append("siteList", jsonData);
+
+
+    XHR.open("POST", "countySites");
+    XHR.send(data);
+    return false;
 }
