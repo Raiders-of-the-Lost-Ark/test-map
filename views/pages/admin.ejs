@@ -19,8 +19,10 @@
         <main class="mdl-layout__content mdl-color--grey-100 map-container">
 
             <!-- Page content -->
-
-            <div class="mdl-grid members-section" style="margin-top:100px;">
+            <center>
+                <h3>User Manager</h3>
+            </center>
+            <div class="mdl-grid members-section">
                 <div id="members" class="mdl-data-tabledynamic mdl-shadow--2dp">
                     <div class="mdl-data-tabledynamic__title">
                         <h2 class="mdl-data-tabledynamic__title-text">Members</h2>
@@ -146,6 +148,26 @@
                     <button type="button" class="mdl-button close">Cancel</button>
                 </div>
             </dialog>
+
+
+
+
+
+        <!-- Restore Form -->
+        <br />
+        <br />
+        <hr />
+        <center>
+            <h3>Backup / Restore</h3>
+            <p>If you need to save a backup of existing battlefield sites, <a class="backup-dl" href="/backup">click here</a>.</p>
+            <p>If you need to restore a previously-saved backup file, upload a file using the form below.</p>
+            <form action="/restore" method="POST" enctype="multipart/form-data" id="input_form">
+                <input type="submit" form="input_form">
+                <input type="File" name="backupFile" multiple>
+            </form>
+            <br />
+            <br />
+        </center>
 
         </main>
         <% include ../footer %>

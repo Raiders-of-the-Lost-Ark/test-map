@@ -4,14 +4,16 @@ function initialize() {
     // Add listeners
     
     var infoPanelCloser = document.querySelector('.info-panel-closer');
-    infoPanelCloser.addEventListener("click", closeInfoPanel);
+    if (infoPanelCloser != null)
+        infoPanelCloser.addEventListener("click", closeInfoPanel);
 
     var createButton = document.getElementById("createButton");
     if (createButton != null) 
             createButton.addEventListener("click", openCreatePanel);
 
     var zoomOutButton = document.getElementById("zoomOutButton");
-    zoomOutButton.addEventListener("click", zoomToCountryView);
+    if (zoomOutButton != null)
+        zoomOutButton.addEventListener("click", zoomToCountryView);
 }
 
 function toggleCoordFormat(showthis,hidethis){

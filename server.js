@@ -157,6 +157,79 @@ function adminRestrict(req, res, next) {
 }
 
 
+router.get('/backup', function(req, res) {
+    var execFile = require('child_process').execFile;
+    var script = __dirname + ("/public/backup/createbackup.sh");
+    var filename = "cwbattlefields.archive";
+    var file = __dirname + ("/public/backup/" + filename);
+
+    execFile(script, [], {}, function(error, stdout, stderr) {
+        if (stdout) {
+            return res.download(file, filename, function(err){
+                if (err) {
+                    console.log("Download error: " + err);
+                }
+            });
+        } else if (stderr) {
+            console.log(stderr);
+            return res.send();
+        } else if (error) {
+            console.log(error);
+            return res.send();   
+        }
+    });
+});
+
+router.post('/restore', function(req, res) {
+    var execFile = require('child_process').execFile;
+    var refreshScript = __dirname + ("/public/backup/refresh.sh");
+    var restoreScript = __dirname + ("/public/backup/restore.sh");
+    var filename = "cwbattlefields.archive";
+
+    // Execute script to prepare backup directory for restore
+    execFile(refreshScript, [], {}, function(error, stdout, stderr) {
+        if (stdout) {
+            // Once backup directory is ready, add new backup file
+            var file = req.files.backupFile;
+            if (typeof(file) != "undefined") {
+                var fileDir = __dirname + ("/public/backup");
+                var uploadPath=path.join(fileDir, filename);
+                // Move uploaded file to backup folder
+                file.mv(uploadPath,function(err) {
+                    // Handle upload error
+                    if (err) {
+                        return res.status(500).send(err);
+                    // If successful, continue restore
+                    } else {
+                        // Execute restore script
+                        execFile(restoreScript, [], {}, function(error, stdout, stderr) {
+                            if (stdout) {
+                                // When finished, display success message
+                                console.log("IT WORKED AAAAA");
+                                return res.send("Restore complete!");
+                            } else if (stderr) {
+                                console.log(stderr);
+                                return res.send();
+                            } else if (error) {
+                                console.log(stderr);
+                                return res.send();
+                            }
+                        });
+                    }
+                });
+            }
+        } else if (stderr) {
+            console.log(stderr);
+            return res.send();
+        } else if (error) {
+            console.log(error);
+            return res.send();   
+        }
+    });
+
+});
+
+
 // Right sidebar routes
 // ----------------------------------
 
