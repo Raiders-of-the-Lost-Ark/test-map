@@ -456,3 +456,148 @@ dialog {
 dialog:not([open]) {
   display: none;
 }
+
+/* Site Info */
+.site-name-input input {
+    font-size: 200%;
+}
+
+.site-paragraph {
+    box-sizing: border-box;
+    padding: 1em;
+    background-color: #607D8B;
+}
+
+.image-uploader {
+    background-color: #E0F2F1;
+    padding: 1em;
+    color: #607D8B;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.image-uploader i {
+    margin-right: 15px;
+    float: left;
+}
+
+.image-uploader label {
+    line-height: 200%;
+}
+
+.image-uploader:hover {
+    opacity: 0.8;
+}
+
+/* PDF listing */
+.pdf-list {
+  display: inline;
+}
+
+.pdf-list ul {
+    margin: 0;
+    padding: 0;
+}
+
+.pdf-list h6 {
+  width: 100%;
+  background-color: #009688;
+  padding: 1em;
+  box-sizing: border-box;
+  margin: 0;
+  margin-bottom: 6px;
+}
+
+.pdf-list a.mdl-list__item,
+.pdf-list li.mdl-list__item {
+    background-color: #FFFFFF;
+    margin-bottom: 6px;
+    text-decoration: none;
+    color: #455A64;
+}
+
+.pdf-list a.mdl-list__item:hover {
+    background-color: #CFD8DC;
+    cursor: pointer;
+}
+
+.pdf-list .pdf-icon {
+  color: #607D8B;
+  float: left;
+  margin-right: 15px;
+}
+
+.pdf-list .mdl-list__item-sub-title {
+    color: #009688;
+}
+
+.site-creator {
+  background-color: #607D8B;
+  color: #eceff1;
+}
+
+/* Site Edit Mode */
+.site-name-input input::placeholder {
+    color: #B0BEC5;
+}
+
+textarea.site-descript-input::placeholder {
+    color: #B0BEC5;
+}
+
+.pdf-remover {
+  color: #F44336;
+}
+
+/* Admin buttons */
+#admin-buttons {
+  margin: 1em;
+}
+
+/* PDF uploaders */
+.file-uploaders {
+  box-sizing: border-box;
+  display: inline-block;
+  width: 100%;
+}
+
+.uploader-container {
+  float: left;
+  width: 50%;
+}
+
+.uploader {
+    text-align: center;
+    background-color: #E0F2F1;
+    padding: 1em;
+    margin: 1em;
+    color: #607D8B;
+}
+
+.uploader .upload-icon {
+    font-size: 4em;
+    clear: both;
+    width: 100%;
+}
+
+.uploader label {
+    clear: both;
+}
+
+.private-uploader .upload-icon {
+    color: #F44336;
+}
+
+.public-uploader .upload-icon {
+    color: #00BCD4;
+}
+
+.uploader:hover {
+    opacity: 0.8;
+}
+
+.uploader input {
+    cursor: pointer;
+    padding: 2em;
+}

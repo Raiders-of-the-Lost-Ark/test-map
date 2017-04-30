@@ -29,20 +29,36 @@
         <p class="site-paragraph"><%= data.misc %></p>
         <div class="pdf-list">
             <% if (data.pdf && data.pdf.length > 0) { %>
-                <p>Associated files:</p>
-                <ul>
+                <h6>Associated files:</h6>
+                <ul class="mdl-list">
                 <% for (var n = 0; n < data.pdf.length; n++) { %>
                     <% var isPublic = data.pdfview[n] %>
                     <% if ( (isPublic) || (loggedin) ) { %>
-                        <li <% if (!isPublic) { %> class="private" <% } %> >
-                            <a href="pdf/<%= data.pdf[n] %>" target="_blank"><%= data.pdf[n] %></a>
+                        <a href="pdf/<%= data.pdf[n] %>" class="mdl-list__item <% if (!isPublic) { %> private <% } %>" target="_blank">
+                            <span class="mdl-list__item-primary-content">
+                                <i class="material-icons pdf-icon">picture_as_pdf</i>
+                                <%= data.pdf[n] %>
+                            </span>
+                            <span class="mdl-list__item-sub-title">
+                                <% if (!isPublic) { %> 
+                                    (Private) 
+                                <% } %>
+                            </span>
+                        </a>
                         </li>
                     <% } %>
                 <% } %>
                 </ul>
             <% } %>
         </div>
-        <h6 class="site-creator">Created by: <span class="content-creator"><%= data.userFName + " " + data.userLName %></span></h6> 
+        <span class="site-creator mdl-chip">
+            <span class="mdl-chip__text">
+                Created by: 
+                <span class="content-creator">
+                    <%= data.userFName + " " + data.userLName %>
+                </span>
+            </span>
+        </span>
     </div>
 
     <% if (loggedin) { %>
@@ -79,94 +95,124 @@
         <% } %>
     <% } %>
 
-    <!-- Create form -->
-    <% if (newMode) { %>
-    <form id="createForm" onsubmit="submitCreateForm(event); return false;" enctype="multipart/form-data">
-    
-    <!-- Edit form -->
-    <% } else { %>
-    <form id="editForm" onsubmit="submitEditForm(event); return false;">
-    <% } %>
-
-        <!-- Super Ugly Form -->
-        <div class="image-uploader">
-            <label>Upload Pictures : </label>
-            <input type="File" name="customFile" multiple />
-        </div>
-
-        <div class="site-name-input mdl-textfield mdl-js-textfield">
-            <input name="name" placeholder="Battlesite Name" class="mdl-textfield__input" value="<%= data.name %>" style="margin: 10px 25px; font-size:200%" /> 
-        </div>
-
-        <textarea class="site-descript-input mdl-textfield__input" placeholder="Enter a description here..." rows=10 cols=70 name="misc"><%= data.misc %></textarea>
-        <hr />
-
-        <div class="site-loc-input">
-            <label>Use UTM</label>
-            <input type="radio" name="radio" value="utm" checked="true" onclick="toggleCoordFormat('utm','latlong')" />
-            <label>Use Lat/Long</label>
-            <input type="radio" name="radio" value="latlong" onclick="toggleCoordFormat('latlong','utm')" />
-            <hr />
-            <div id="utm">
-                <label>Enter Zone: </label><input type="text" name="zone" /><br />
-                <label>Enter Easting: </label><input type="text" name="easting" /><br />
-                <label>Enter Northing: </label><input type="text" name="northing" /><br />
-            </div>
-            <div id="latlong" style="display:none">
-                <label>Enter Site Latitude: </label><input type="text" name="Latitude" value="<%= data.lat %>" /><br />
-                <label>Enter Site Longitude: </label><input type="text" name="Longitude" value="<%= data.lng %>" /><br />
-            </div>
-            <div id="publicCheck">
-                Check to Make Private:
-                <% if(data.isPublic) { %>
-                <input id="checkBox" type="checkbox" name="pubCheck">
-                <% } else { %>
-                <input id="checkBox" type="checkbox" name="pubCheck" checked="<%= data.isPublic %>">
-                <% } %>
-            </div>
-            <hr />  
-        </div>   
-
-        <div class="pdf-list">
-            <% if (data.pdf && data.pdf.length != "") { %>
-                <p>Associated files:</p>
-                <ul class="pdf-list">
-                <% for(var n = 0; n < data.pdf.length; n++) { %>
-                    <% var isPublic = data.pdfview[n] %>
-                    <% if ( (isPublic) || (loggedin) ) { %>
-                        <li <% if (!isPublic) { %> class="private" <% } %> >
-                            <a href="pdf/<%= data.pdf[n] %>" target="_blank"><%= data.pdf[n] %></a>
-                            <button class="pdf-remover mdl-button mdl-js-button mdl-button--icon mdl-button--colored" value="<%= data.pdf[n] %>">
-                                <i class="material-icons">close</i>
-                            </button>
-                        </li>
-                    <% } %>
-                <% } %>
-                </ul>
-            <% } %>
-        </div>
-
-        <div class="file-uploaders">
-            <label>Add Public PDF Files: </label><input type="File" name="pdfFilespublic" multiple /><br />
-            <label>Add Private PDF Files: </label><input type="File" name="pdfFilesprivate" multiple /><br />
-        </div>
-
-        <% if (!newMode) { %>
-        <input id="currentSite" hidden="true" name="idkey" value="<%= data._id %>" type="text"></input>        
-        <% } %>
+    <div class="sidebar-content">
+        <!-- Create form -->
+        <% if (newMode) { %>
+        <form id="createForm" onsubmit="submitCreateForm(event); return false;" enctype="multipart/form-data">
         
-        <div id="admin-buttons">
-            <div class="mdl-layout-spacer"></div>
+        <!-- Edit form -->
+        <% } else { %>
+        <form id="editForm" onsubmit="submitEditForm(event); return false;">
+        <% } %>
 
-            <% if (newMode) { %>
-            <input type="submit" value="SUBMIT" class="mdl-button mdl-js-button mdl-button--raised createButton" />
-            
-            <% } else { %>
-            <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton" />
-            <div class="mdl-layout-spacer"></div>
-            <button onclick="toggleSiteEdit(false)" type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton">CANCEL</button>
+            <!-- Super Ugly Form -->
+            <div class="image-uploader">
+                <i class="material-icons">add_a_photo</i>
+                <label>Upload Pictures : </label>
+                <input type="File" name="customFile" multiple />
+            </div>
+
+            <div class="site-name-input mdl-textfield mdl-js-textfield">
+                <input name="name" placeholder="Battlesite Name" class="mdl-textfield__input" value="<%= data.name %>" /> 
+            </div>
+
+            <textarea class="site-descript-input site-paragraph mdl-textfield__input" placeholder="Enter a description here..." rows=10 cols=70 name="misc"><%= data.misc %></textarea>
+            <hr />
+
+            <div class="file-uploaders">
+                <div class="uploader-container">
+                    <div class="uploader public-uploader">
+                        <i class="material-icons upload-icon">file_upload</i>
+                        <label>Add Public PDF Files: </label>
+                        <input type="File" name="pdfFilespublic" multiple />
+                    </div>
+                </div>
+                <div class="uploader-container">
+                    <div class="uploader private-uploader">
+                        <i class="material-icons upload-icon">file_upload</i>
+                        <label>Add Private PDF Files: </label>
+                        <input type="File" name="pdfFilesprivate" multiple />
+                    </div>
+                </div>
+            </div>
+
+            <div class="pdf-list">
+                <% if (data.pdf && data.pdf.length != "") { %>
+                    <h6>Associated files:</h6>
+                    <ul class="pdf-list mdl-list mdl-list__item--two-line">
+                    <% for(var n = 0; n < data.pdf.length; n++) { %>
+                        <% var isPublic = data.pdfview[n] %>
+                        <% if ( (isPublic) || (loggedin) ) { %>
+                            <li class="mdl-list__item <% if (!isPublic) { %> private <% } %>" >
+                                <span class="mdl-list__item-primary-content">
+                                    <i class="material-icons pdf-icon">picture_as_pdf</i>
+                                    <a href="pdf/<%= data.pdf[n] %>" target="_blank">
+                                        <%= data.pdf[n] %>
+                                    </a>
+                                    <span class="mdl-list__item-sub-title">
+                                        <% if (isPublic) { %> 
+                                            <span>Public file</span>
+                                        <% } else { %>
+                                            <span>Private file</span>
+                                        <% } %>
+                                    </span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <button class="pdf-remover mdl-button mdl-js-button mdl-button--icon" value="<%= data.pdf[n] %>">
+                                        <i class="material-icons">close</i>
+                                    </button>
+                                </span>
+                            </li>
+                        <% } %>
+                    <% } %>
+                    </ul>
+                <% } %>
+            </div>
+
+            <div class="site-loc-input">
+                <hr />
+                <label>Use UTM</label>
+                <input type="radio" name="radio" value="utm" checked="true" onclick="toggleCoordFormat('utm','latlong')" />
+                <label>Use Lat/Long</label>
+                <input type="radio" name="radio" value="latlong" onclick="toggleCoordFormat('latlong','utm')" />
+                <hr />
+                <div id="utm">
+                    <label>Enter Zone: </label><input type="text" name="zone" /><br />
+                    <label>Enter Easting: </label><input type="text" name="easting" /><br />
+                    <label>Enter Northing: </label><input type="text" name="northing" /><br />
+                </div>
+                <div id="latlong" style="display:none">
+                    <label>Enter Site Latitude: </label><input type="text" name="Latitude" value="<%= data.lat %>" /><br />
+                    <label>Enter Site Longitude: </label><input type="text" name="Longitude" value="<%= data.lng %>" /><br />
+                </div>
+                <div id="publicCheck">
+                    Check to Make Private:
+                    <% if(data.isPublic) { %>
+                    <input id="checkBox" type="checkbox" name="pubCheck">
+                    <% } else { %>
+                    <input id="checkBox" type="checkbox" name="pubCheck" checked="<%= data.isPublic %>">
+                    <% } %>
+                </div>
+                <hr />  
+            </div>   
+
+            <% if (!newMode) { %>
+            <input id="currentSite" hidden="true" name="idkey" value="<%= data._id %>" type="text"></input>        
             <% } %>
-        </div> 
+            
+            <div id="admin-buttons">
+                <div class="mdl-layout-spacer"></div>
 
-    </form>       
+                <% if (newMode) { %>
+                <input type="submit" value="SUBMIT" class="mdl-button mdl-js-button mdl-button--raised createButton" />
+                
+                <% } else { %>
+                <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton" />
+                <div class="mdl-layout-spacer"></div>
+                <button onclick="toggleSiteEdit(false)" type="button" class="mdl-button mdl-js-button mdl-button--raised deleteButton">CANCEL</button>
+                <% } %>
+            </div> 
+
+        </form>   
+    </div>    
 </div>
