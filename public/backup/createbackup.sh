@@ -13,7 +13,7 @@ DATE=$(date +"%Y%m%d%H%M")
 DUMPNAME=mongodump-$DBNAME-$DATE
 
 # Remove old archive
-echo `rm -f $ARCHFILE`
+#echo `rm -f $ARCHFILE`
 
 echo `date '+%Y-%m-%d %H:%M:%S'` Dumping database >> $LOG
 

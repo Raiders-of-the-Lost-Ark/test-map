@@ -160,13 +160,13 @@ router.get('/backup', function(req, res) {
     var file = __dirname + ("/public/backup/" + filename);
 
     execFile(script, [], {}, function(error, stdout, stderr) {
-        if (stdout) {
+        if (stderr) {
             return res.download(file, filename, function(err){
                 if (err) {
                     console.log("Download error: " + err);
                 }
             });
-        } else if (stderr) {
+        } else if (stdout) {
             console.log(stderr);
             return res.send();
         } else if (error) {

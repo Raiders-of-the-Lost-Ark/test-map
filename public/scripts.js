@@ -11,10 +11,6 @@ function initialize() {
     if (createButton != null) 
             createButton.addEventListener("click", openCreatePanel);
 
-    var backupButton = document.getElementById("backupButton");
-    if (backupButton != null) 
-            backupButton.addEventListener("click", requestBackup);
-
     var zoomOutButton = document.getElementById("zoomOutButton");
     if (zoomOutButton != null)
         zoomOutButton.addEventListener("click", zoomToCountryView);
@@ -255,12 +251,4 @@ function zoomToCountryView() {
     var center = new google.maps.LatLng(37.3313563, -92.6104017);
     map.setZoom(5);
     map.panTo(center); 
-}
-
-function requestBackup(event) {
-    event.preventDefault();
-    var backupReq = new XMLHttpRequest();
-    backupReq.open("GET", "backup");
-    backupReq.addEventListener("load", function() {});
-    backupReq.send();
 }

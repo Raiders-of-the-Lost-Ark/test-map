@@ -160,12 +160,11 @@
         <hr />
         <center>
             <h3>Backup / Restore</h3>
-            <p>If you need to save a backup of existing battlefield sites, click <button id="backupButton">here</button></p>
+            <p>If you need to save a backup of existing battlefield sites, <a class="backup-dl" href="/backup">click here</a>.</p>
             <p>If you need to restore a previously-saved backup file, upload a file using the form below.</p>
             <form action="/restore" method="POST" enctype="multipart/form-data" id="input_form">
-                <input type="File" name="backupFile" multiple>
-                <br />
                 <input type="submit" form="input_form">
+                <input type="File" name="backupFile" multiple>
             </form>
             <br />
             <br />
