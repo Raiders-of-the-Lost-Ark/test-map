@@ -54,7 +54,7 @@ function reInitSidebar() {
     for (var i = 0; i < deletePdfBtns.length; i++) {
         deletePdfBtns[i].addEventListener("click", function(event) {
             event.preventDefault();
-            var li = this.parentNode;
+            var li = this.parentNode.parentNode; // Grandparent node
             var siteId = document.getElementById("currentSite").value;
             var pdfName = this.value;
             var confirmed = confirm("Are you sure you want to delete the file \"" + pdfName + "\" ?");

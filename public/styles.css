@@ -466,6 +466,7 @@ dialog:not([open]) {
     box-sizing: border-box;
     padding: 1em;
     background-color: #607D8B;
+    white-space: pre-wrap;
 }
 
 .image-uploader {
