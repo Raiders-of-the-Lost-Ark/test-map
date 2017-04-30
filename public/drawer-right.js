@@ -39,8 +39,7 @@ $('.mdl-layout__obfuscator-right').click(function(){
 
 // Vanilla JS from here on
 
-function openSidePanel(event) {
-    event.preventDefault();
+function openSidePanel() {
     var sidebar = document.querySelector('#sidebar');
     var info_panel = document.querySelector('#info-panel');
 

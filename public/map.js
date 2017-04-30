@@ -410,6 +410,8 @@ function initMap() {
         county_layer.setMap(map);
         // Pan and zoom to clicked state
         var currentPos = new google.maps.LatLng(currentLat, currentLong);
+            
+        resetDisplayList();
         map.setZoom(7);
         map.panTo(currentPos);
     });
@@ -472,18 +474,22 @@ function initMap() {
         var foundSites = [];
 
         for(var i = 0; i < sites.length; i++){
-            var point = new google.maps.LatLng(sites[i].lat, sites[i].lng);
-            //console.log(point);
+            if(sites[i].isPublic || loggedIn){
+                var point = new google.maps.LatLng(sites[i].lat, sites[i].lng);
+                //console.log(point);
 
-            if(google.maps.geometry.poly.containsLocation(point, tempPoly)){
-                console.log("FOUND A SITE: " + sites[i].name);
-                foundSites.push(sites[i]);
-            }            
+                if(google.maps.geometry.poly.containsLocation(point, tempPoly)){
+                    console.log("FOUND A SITE: " + sites[i].name);
+                    foundSites.push(sites[i]);
+                }      
+            }      
         }
-
-        console.log(foundSites);
-
-
+            
+        resetDisplayList();
+        countyListDisplay(foundSites);
+        openSidePanel();
+        // console.log(foundSites);
+        //openCountySearch(foundSites);
         map.setZoom(8);
         map.panTo(currentPos);
     });
@@ -528,8 +534,7 @@ function initMap() {
             siteId: sites[i].id,
             siteInd: i,
             zIndex: 200
-        });
-        
+        });      
 
             circlesArr.push(siteCircle);
 

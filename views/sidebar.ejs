@@ -1,6 +1,3 @@
-<% var countyDisplay = false; %>
-<% var countySiteList = []; %>
-
 <div id="sidebar" class="mdl-layout__drawer-right mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
     <header class="demo-drawer-header">
     </header>
@@ -20,7 +17,6 @@
                 </div>
             </div>
             </form>
-        <% if (countyDisplay == false) { %>
         <ul id="listed-sites"> 
             <% for (var ind in sites) { %>         
                 <% if(sites[ind].isPublic || loggedin) { %>      
@@ -32,17 +28,6 @@
                 <% } %>
             <% } %>
         </ul>
-        <% } else { %><ul id="listed-sites"> 
-            <% for (var ind in sites) { %>         
-                <% if(sites[ind].isPublic || loggedin) { %>      
-                    <li class="listed">
-                        <a href="#" class="listText" onClick="selectMarker(<%- ind -%>)">
-                        </a>
-                    </li>
-                <% } %>
-            <% } %>
-        </ul>
-        <% } %>
 
         <div class="mdl-layout-spacer"></div>
 
@@ -54,7 +39,6 @@
         </button>
     </nav>
 </div>
-
 <script>
 
 var searchBar = document.getElementById("sample6");
@@ -75,15 +59,42 @@ function filterList(input, list) {
     }
 }
 
-
-</script>
-
-
-<script>
-    function openCountySearch(listofsites){
-    //event.preventDefault();
-        for(var i = 0; i < listofsites.length; i++){
-            
+function countyListDisplay(incList){
+    var items = siteList.getElementsByTagName("li");
+    var listOfIndex = [];
+    if(incList.length == 0){
+        for(var i = 0; i < items.length; i++){
+            items[i].style.display = "none";
+        }
+    } else {
+        for (var i = 0; i < items.length; i++){
+            for(var j = 0; j < incList.length; j++){
+                //console.log(items[i].innerText);
+                if(items[i].innerText == incList[j].name){
+                    listOfIndex.push(i);
+                    break;
+                } 
+            }
         }
     }
+    for(var i = 0; i < items.length; i++){
+        items[i].style.display = "none";
+    }
+    //console.log(listOfIndex);
+    for(var i = 0; i < items.length; i++){
+        for(var j = 0; j < listOfIndex.length; j++){
+            if(listOfIndex[j] == i){
+                items[i].style.display = "";
+            }
+        }
+    }
+}
+
+function resetDisplayList(){
+    var items = siteList.getElementsByTagName("li");
+    for(var i = 0; i < items.length; i++){
+        items[i].style.display = "";
+    }
+}
+
 </script>
