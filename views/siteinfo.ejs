@@ -16,11 +16,15 @@
 <div class="view-mode <% if (!edit && !create) { %> active <% } %>">
     <% if (data.images && data.images.length != "") { %>
         <div class="image-container">
-            <% for (var n = 0; n < data.images.length; n++) { %>  
-                <a href="#" onclick="showLightbox('<%= boxId + n %>')">
-                    <img class="sidebar-image" src="<%= data.images[n] %>" style="width:100%" />
-                </a>
-            <% } %> 
+            <ul id="view_slider">
+                <% for (var n = 0; n < data.images.length; n++) { %> 
+                    <li> 
+                        <a href="#" onclick="showLightbox('<%= boxId + n %>')">
+                            <img class="sidebar-image" src="<%= data.images[n] %>" style="width:100%" />
+                        </a>
+                    </li>
+                <% } %> 
+            </ul>
         </div>
     <% } %>
 
