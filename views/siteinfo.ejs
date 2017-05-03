@@ -26,6 +26,8 @@
                 <% } %> 
             </ul>
         </div>
+        <button id="viewPrevButton" onclick="viewPrevImage()" class="mdl-button mdl-js-button mdl-button--raised editButton">PREVIOUS</button>
+        <button id="viewNextButton" onclick="viewNextImage()" class="mdl-button mdl-js-button mdl-button--raised editButton">NEXT</button>
     <% } %>
 
     <div class="sidebar-content">
@@ -84,20 +86,25 @@
 <!-- Editable Mode -->
 
 <div class="edit-mode <% if (edit) { %> active <% } %> ">
-
-    <!-- Images -->
-    <% if (data.images && data.images.length != "") { %> 
-        <% for (var n = 0; n < data.images.length; n++) { %>
-            <div class="image-container">
-                <img src="<%= data.images[n] %>" style="width:100%" />
-                <div class="image-overlay">
-                    <button class="img-remover mdl-button mdl-js-button mdl-button--icon mdl-button--colored" value="<%= data.images[n] %>">
-                        <i class="material-icons">close</i>
-                    </button>
-                </div>
-            </div>
-        <% } %>
+ <% if (data.images && data.images.length != "") { %>
+        <div class="image-container">
+            <ul id="edit_slider">
+                <% for (var n = 0; n < data.images.length; n++) { %> 
+                    <li> 
+                        <img class="sidebar-image" src="<%= data.images[n] %>" style="width:100%" />
+                        <div class="image-overlay">
+                            <button class="img-remover mdl-button mdl-js-button mdl-button--icon mdl-button--colored" value="<%= data.images[n] %>">
+                                <i class="material-icons">close</i>
+                            </button>
+                        </div>
+                    </li>
+                <% } %> 
+            </ul>
+        </div>
+        <button id="editPrevButton" onclick="editPrevImage()" class="mdl-button mdl-js-button mdl-button--raised editButton">PREVIOUS</button>
+        <button id="editNextButton" onclick="editNextImage()" class="mdl-button mdl-js-button mdl-button--raised editButton">NEXT</button>
     <% } %>
+   
 
     <div class="sidebar-content">
         <!-- Create form -->
@@ -220,3 +227,83 @@
         </form>   
     </div>    
 </div>
+
+<script>
+var current_image = 0;
+var numOfImages = 0;
+var viewModeImages = [];
+var editModeImages = [];
+
+function initViewMode(){
+    var imageUl = document.getElementById('view_slider');
+    viewModeImages = imageUl.children;
+
+    numOfImages = viewModeImages.length;
+    current_image = 0;
+
+    for(var i = 1; i < numOfImages; i++){
+        viewModeImages[i].style.display = "none";
+    }
+}
+
+function viewNextImage(){
+    if(current_image == numOfImages-1){
+        viewModeImages[current_image].style.display = "none";
+        viewModeImages[0].style.display = "";
+        current_image = 0;
+    } else {
+        viewModeImages[current_image].style.display = "none";
+        current_image++;
+        viewModeImages[current_image].style.display = "";
+    }
+}
+
+function viewPrevImage(){
+    if(current_image == 0){
+        viewModeImages[current_image].style.display = "none";
+        viewModeImages[numOfImages-1].style.display = "";
+        current_image = numOfImages-1;
+    } else {
+        viewModeImages[current_image].style.display = "none";
+        current_image--;
+        viewModeImages[current_image].style.display = "";
+    }
+}
+
+function initEditMode(){
+    var imageUl = document.getElementById('edit_slider');
+    editModeImages = imageUl.children;
+
+    numOfImages = editModeImages.length;
+    current_image = 0;
+
+    for(var i = 1; i < numOfImages; i++){
+        editModeImages[i].style.display = "none";
+    }
+}
+
+function editNextImage(){
+    if(current_image == numOfImages-1){
+        editModeImages[current_image].style.display = "none";
+        editModeImages[0].style.display = "";
+        current_image = 0;
+    } else {
+        editModeImages[current_image].style.display = "none";
+        current_image++;
+        editModeImages[current_image].style.display = "";
+    }
+}
+
+function editPrevImage(){
+    if(current_image == 0){
+        editModeImages[current_image].style.display = "none";
+        editModeImages[numOfImages-1].style.display = "";
+        current_image = numOfImages-1;
+    } else {
+        editModeImages[current_image].style.display = "none";
+        current_image--;
+        editModeImages[current_image].style.display = "";
+    }
+}
+
+</script>

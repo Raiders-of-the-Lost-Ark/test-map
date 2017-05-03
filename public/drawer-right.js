@@ -50,6 +50,7 @@ function openSidePanel() {
 
 function openInfoPanel(event) {
     event.preventDefault();
+    initViewMode();
     var info_panel = document.querySelector('#info-panel');
     var sidebar = document.querySelector('#sidebar');
 

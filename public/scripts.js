@@ -131,9 +131,11 @@ function hideLightbox(el) {
 function toggleSiteEdit(editOn) {
     // Kill me
     if (editOn) {
+        initEditMode();
         startEditMode();
     }
     else {
+        initViewMode();
         endEditMode();
     }
 }
@@ -180,6 +182,10 @@ function submitEditForm(e) {
     XHR.open("POST", "editSite");
     XHR.send(data);
 
+
+        initViewMode();
+        endEditMode();
+    
     return false;
 }
 
@@ -289,3 +295,4 @@ function postSitesInCounty(foundSites) {
     XHR.send(data);
     return false;
 }
+
