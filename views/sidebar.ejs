@@ -62,6 +62,7 @@ function filterList(input, list) {
 function countyListDisplay(incList){
     var items = siteList.getElementsByTagName("li");
     var listOfIndex = [];
+    console.log(items);
     if(incList.length == 0){
         for(var i = 0; i < items.length; i++){
             items[i].style.display = "none";
@@ -69,14 +70,18 @@ function countyListDisplay(incList){
     } else {
         for (var i = 0; i < items.length; i++){
             for(var j = 0; j < incList.length; j++){
-                //console.log(items[i].innerText);
-                if(items[i].innerText == incList[j].name){
+                
+                var temp = String(items[i].innerText);
+                temp = temp.replace(/(\r\n|\n|\r)/gm,"");
+                if(temp == incList[j].name){
+                    console.log("AM I HERE");
                     listOfIndex.push(i);
                     break;
                 } 
             }
         }
     }
+    console.log(listOfIndex);
     for(var i = 0; i < items.length; i++){
         items[i].style.display = "none";
     }
