@@ -1,4 +1,7 @@
-// server.js
+/*  server.js
+    This file is our main server file wirtted in javascript with the node.js library.
+    It serves all our frontend files and connects to our database and front client.
+    It uses a restful api to do this and also uses express as a middleware. */
 
 // BASE SETUP
 // =============================================================================
@@ -776,8 +779,8 @@ router.route('/sites')
                         if (err)
                             return res.status(500).send(err);
                         });
-                    Site.pdf[x]=publicpdf[x].name; 
-                    Site.pdfview[x]=true;
+                    Site.pdf[x] = publicpdf[x].name; 
+                    Site.pdfview[x] = true;
                 }
                     // loop for the length of the private pdf
                 for(var x = 0; x < prlength; x++){
@@ -787,30 +790,30 @@ router.route('/sites')
                         if (err)
                             return res.status(500).send(err);
                         });
-                    Site.pdf[x+pulength]=privatepdf[x].name; 
-                    Site.pdfview[x+pulength]=false;
+                    Site.pdf[x + pulength] = privatepdf[x].name; 
+                    Site.pdfview[x + pulength] = false;
                 }
               } else {
                 //multi public file, single private
                 for(var x = 0; x < pulength; x++)
                 {
-                    let uploadPath=path.join(fileDir,publicpdf[x].name);
+                    let uploadPath = path.join(fileDir,publicpdf[x].name);
                     publicpdf[x].mv(uploadPath,function(err)
                     {
-                      if (err)
-                     return res.status(500).send(err);
-                      });
-                        Site.pdf[x]=publicpdf[x].name; 
-                        Site.pdfview[x]=true;
+                        if (err)
+                            return res.status(500).send(err);
+                        });
+                        Site.pdf[x] = publicpdf[x].name; 
+                        Site.pdfview[x] = true;
                 }
-                uploadPath=path.join(fileDir,privatepdf.name);
+                uploadPath = path.join(fileDir,privatepdf.name);
                 privatepdf.mv(uploadPath,function(err)
                 {
-                  if (err)
-                 return res.status(500).send(err);
-                  });
-                 Site.pdf[pulength]=privatepdf.name; 
-                 Site.pdfview[pulength]=false;
+                    if (err)
+                        return res.status(500).send(err);
+                    });
+                 Site.pdf[pulength] = privatepdf.name; 
+                 Site.pdfview[pulength] = false;
 
               }
             else
@@ -818,25 +821,25 @@ router.route('/sites')
               {
                 //single public file, multi private
                 console.log("single public files, multiple private");
-                let uploadPath=path.join(fileDir,publicpdf.name);
+                let uploadPath = path.join(fileDir,publicpdf.name);
                 publicpdf.mv(uploadPath,function(err)
                 {
                   if (err)
                  return res.status(500).send(err);
                   });
-                 Site.pdf=publicpdf.name; 
-                 Site.pdfview=true;
+                 Site.pdf = publicpdf.name; 
+                 Site.pdfview = true;
 
-                for(var x=0; x<prlength;x++)
+                for(var x = 0; x < prlength; x++)
                 {
-                    uploadPath=path.join(fileDir,privatepdf[x].name);
+                    uploadPath = path.join(fileDir,privatepdf[x].name);
                     privatepdf[x].mv(uploadPath,function(err)
                     {
-                      if (err)
-                     return res.status(500).send(err);
-                      });
-                    Site.pdf[x+1]=privatepdf[x].name; 
-                    Site.pdfview[x+1]=false;
+                        if (err)
+                            return res.status(500).send(err);
+                        });
+                    Site.pdf[x + 1] = privatepdf[x].name; 
+                    Site.pdfview[x + 1] = false;
                 }
 
               }

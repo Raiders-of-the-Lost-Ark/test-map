@@ -1,4 +1,7 @@
-// blah blah map shit will tackle later
+/*  map.js
+    This javascript file initializes google maps and displays our information on the map.
+    it also runs the functions that involve clicking states, counties, and sites.
+     */
 
 
 // create "The Map""
