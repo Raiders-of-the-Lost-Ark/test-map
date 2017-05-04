@@ -1,4 +1,7 @@
-// The Map
+// blah blah map shit will tackle later
+
+
+// create "The Map""
 var map;
 
 // Create needed globals
