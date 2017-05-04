@@ -1,5 +1,7 @@
 var crypto = require('crypto');
 
+//  Generate a random string to use as a salt for
+//  password hashing.
 var genRandomString = function(length){
     return crypto.randomBytes(Math.ceil(length/2))
         .toString('hex')

@@ -1,14 +1,15 @@
 // The Map
 var map;
+
+// Create needed globals
 var siteArray = [];
 var circlesArr = [];
 var countyPoly;
-
-
 var infoWindow = null;
 var sites = null;
 var loggedIn = null;
 
+// Create layer variables
 var state_layer = null;
 var county_layer = null;
 var circle_layer = null;
@@ -17,16 +18,30 @@ var current_state =  null;
 
 var stateInfo = new Map;     // Used to look up state data objects by ID
 
+// Small function that gets incoming site information
 function initSites(incomingSites){
     sites = incomingSites;
 }
 
+// Small function that gets incoming logged in status
 function initLogged(incLogged){
     loggedIn = incLogged;
 }
 
-// Init
+/*  This is an enourmous function that initilizes google maps
+    This function is called from our front end html through a google api to 
+    initialize the map.  Within this function there are some custom made functions
+    and custom code that draws counties, states, and sites on the map based on data
+    we have inputed or found. 
+    
+    It must be noted that this is a required function for google maps but we also built
+    upon it. */
+
 function initMap() {
+    /*  the following code initializes the "map" object of google maps
+        it sets up the basic map styling, initial zoom level and camera
+        focus, and other properties such as rivers and roads. */
+
     map = new google.maps.Map(document.getElementById('map'), {
         zoom: 7,
         center: {lat: 38.4956029, lng: -92.4205979},
@@ -382,14 +397,19 @@ function initMap() {
 
     // Define state listeners
     // ----------------------
+    
+        // Listener to fill state when mousing over
     state_layer.addListener('mouseover', function(event) {
         state_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
     });
 
+        // Listener to un-fill state when mouse leaves state
     state_layer.addListener('mouseout', function(event) {
         state_layer.overrideStyle(event.feature, {fillOpacity: 0.005});
     });
 
+        // Listener that zooms to state and displays counties when
+        // clicked on
     state_layer.addListener('click', function(event) {
         current_state = event.feature.getProperty('STATEFP');
         state_layer.revertStyle();
@@ -418,14 +438,17 @@ function initMap() {
 
     // Define county listeners
     // -----------------------
+        // Listener that fills county when mouse is inside it
     county_layer.addListener('mouseover', function(event) {
         county_layer.overrideStyle(event.feature, {fillOpacity: 0.5});
     });
 
+        // Listener that un-fills county when mouse leaves it
     county_layer.addListener('mouseout', function(event) {
         county_layer.revertStyle();
     });
 
+        // Listener that
     county_layer.addListener('click', function(event) {
         // Get info for clicked county
         var currentLat = event.feature.getProperty('INTPTLAT10');
@@ -444,42 +467,41 @@ function initMap() {
             }
         }
 
+
+            // Loop through counties we found in the state and find the one
+            // that we have clicked on.  Keep track of that index.
         var county_index;
         for(var i = 0; i < found_counties.features.length; i++){
             if(found_counties.features[i].properties.NAMELSAD10 == event.feature.getProperty('NAMELSAD10')){
-                console.log("FOUND COUNTY:  " + found_counties.features[i].properties.NAMELSAD10);
                 county_index = i;
             }
         }
 
-        //console.log(found_counties.features[county_index].geometry.coordinates);
-
+            // Construct an array of points based off the found counties polygon points
         var polyPath = [];
         for(var i = 0; i < found_counties.features[county_index].geometry.coordinates[0].length; i++){
-            //console.log(found_counties.features[county_index].geometry.coordinates[i]);
             var tempPoint = new google.maps.LatLng(
                 found_counties.features[county_index].geometry.coordinates[0][i][1],
                 found_counties.features[county_index].geometry.coordinates[0][i][0]);
 
-            //console.log(tempPoint);
             polyPath.push(tempPoint);
         }
 
-        //console.log(polyPath);
-        console.log(sites.length);
+            // create a temporary polygon based off the array of points
         var tempPoly = new google.maps.Polygon({
                 paths: polyPath
             });
 
+            /*  In the county we found that was clicked on go through all the sites in the
+                database and check if that point falls in the county polygon
+                If it does store that site. */
         var foundSites = [];
-
         for(var i = 0; i < sites.length; i++){
             if(sites[i].isPublic || loggedIn){
                 var point = new google.maps.LatLng(sites[i].lat, sites[i].lng);
-                //console.log(point);
 
                 if(google.maps.geometry.poly.containsLocation(point, tempPoly)){
-                    console.log("FOUND A SITE: " + sites[i].name);
+                   
                     foundSites.push(sites[i]);
                 }      
             }      
@@ -488,8 +510,7 @@ function initMap() {
         resetDisplayList();
         countyListDisplay(foundSites);
         openSidePanel();
-        // console.log(foundSites);
-        //openCountySearch(foundSites);
+
         map.setZoom(8);
         map.panTo(currentPos);
     });
@@ -510,9 +531,9 @@ function initMap() {
         maxWidth: 300   
     });
 
-    // this section does an async get request and puts circles on the map based off data from
-    // the mongodb database, right now it just has a couple cities with small circles
-    // console.log(loggedIn);
+    /*  this section does an async get request and puts circles on the map based off data from
+        the mongodb database, right now it just has a couple cities with small circles
+        console.log(loggedIn); */
     for(var i = 0; i < sites.length; i++)
     {                        
         if(sites[i].isPublic == true || loggedIn == true){
@@ -563,6 +584,7 @@ function initMap() {
 		minLat : allowedBounds.getSouthWest().lat(),
 		minLng : allowedBounds.getSouthWest().lng()
 	};
+
 
 	var lastValidCenter = map.getCenter();
 	var newLat, newLng;
@@ -656,6 +678,8 @@ function selectMarker(index) {
 
 }
 
+// This function slightly chnages the center of the points to be displayed
+// on the map.  This is for security purposes
 function obscureSite(point){
         var newPoint = parseFloat(point);
         var min = -0.04;
@@ -665,7 +689,7 @@ function obscureSite(point){
         return newPoint;
 }   
 
-
+//  This function sets up counties to be added when a state is clicked on
 function setUpCounties(stateData, countyData) {
     var stateId;
     var stateFeatures = [];
