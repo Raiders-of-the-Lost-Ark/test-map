@@ -236,13 +236,15 @@ var editModeImages = [];
 
 function initViewMode(){
     var imageUl = document.getElementById('view_slider');
-    viewModeImages = imageUl.children;
+    if (imageUl != null) {
+        viewModeImages = imageUl.children;
 
-    numOfImages = viewModeImages.length;
-    current_image = 0;
+        numOfImages = viewModeImages.length;
+        current_image = 0;
 
-    for(var i = 1; i < numOfImages; i++){
-        viewModeImages[i].style.display = "none";
+        for(var i = 1; i < numOfImages; i++){
+            viewModeImages[i].style.display = "none";
+        }
     }
 }
 
@@ -272,13 +274,15 @@ function viewPrevImage(){
 
 function initEditMode(){
     var imageUl = document.getElementById('edit_slider');
-    editModeImages = imageUl.children;
+    if (imageUl != null) {
+        editModeImages = imageUl.children;
 
-    numOfImages = editModeImages.length;
-    current_image = 0;
+        numOfImages = editModeImages.length;
+        current_image = 0;
 
-    for(var i = 1; i < numOfImages; i++){
-        editModeImages[i].style.display = "none";
+        for(var i = 1; i < numOfImages; i++){
+            editModeImages[i].style.display = "none";
+        }
     }
 }
 

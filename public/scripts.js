@@ -145,9 +145,12 @@ function startEditMode() {
     var edit = document.getElementsByClassName("edit-mode")[0];
     var create = document.getElementsByClassName("create-mode")[0];
 
-    view.classList.remove("active");
-    edit.classList.add("active");
-    create.classList.remove("active");
+    if (view != null)
+        view.classList.remove("active");
+    if (edit != null)
+        edit.classList.add("active");
+    if (create != null)
+        create.classList.remove("active");
 }
 
 function endEditMode() {
@@ -155,9 +158,12 @@ function endEditMode() {
     var edit = document.getElementsByClassName("edit-mode")[0];
     var create = document.getElementsByClassName("create-mode")[0];
 
-    view.classList.add("active");
-    edit.classList.remove("active");
-    create.classList.remove("active");
+    if (view != null)
+        view.classList.add("active");
+    if (edit != null)
+        edit.classList.remove("active");
+    if (create != null)
+        create.classList.remove("active");
 }
 
 function submitEditForm(e) {
