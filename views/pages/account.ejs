@@ -16,6 +16,9 @@
         a.mdl-navigation__link.mdl-button.mdl-js-button.mdl-js-ripple-effect{
             padding: 35px 25px;
         }
+        #right-bar-btn {
+            display: none;
+        }
     </style>
 </head>
 
@@ -25,9 +28,6 @@
             <main class="mdl-layout__content mdl-color--grey-100 map-container">
                 
                 <!-- Page content -->
-                <div style="float:right">
-                    click to <a href="/logout">logout</a>
-				</div> 
                 
                 <div style="width: 80%; margin:auto;">
 				<div style="width:400px; margin:auto; padding: 25px 0px;">
@@ -47,6 +47,10 @@
                     </form>     
                 </div>
                 </div>
+
+                <div class="logout-link">
+                    <a href="/logout">Logout</a>
+				</div> 
                 
             </main>
         <% include ../footer %>

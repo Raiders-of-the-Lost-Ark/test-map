@@ -432,7 +432,7 @@ function initMap() {
         county_layer.addGeoJson(countyObj);
         county_layer.setMap(map);
         // Pan and zoom to clicked state
-        var currentPos = new google.maps.LatLng(currentLat, currentLong);
+        var currentPos = new google.maps.LatLng(currentLat, currentLong-50);
             
         resetDisplayList();
         map.setZoom(7);
@@ -660,6 +660,7 @@ function selectMarker(index) {
         document.querySelector('.bubbleContent').innerHTML = bubbleRequest.responseText;
     };
     bubbleRequest.send(); 
+    document.querySelector('.bubbleContent').innerHTML = "Loading...";
 
     // Send request for sidebar info
     var infoRequest = new XMLHttpRequest();
@@ -670,6 +671,7 @@ function selectMarker(index) {
         reInitSidebar();
     };  
     infoRequest.send(); 
+    document.querySelector('#siteInfo_div').innerHTML = "Loading...";
 
     var lightboxRequest = new XMLHttpRequest();
     lightboxRequest.open("GET", "/lightbox?site=" + marker.name, true);
@@ -678,6 +680,8 @@ function selectMarker(index) {
         document.querySelector('#lightboxes').innerHTML = lightboxRequest.responseText;
     };  
     lightboxRequest.send(); 
+    document.querySelector('#lightboxes').innerHTML = "Lightboxes are still loading...";
+    
 
 }
 

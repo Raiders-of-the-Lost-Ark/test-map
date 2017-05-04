@@ -28,6 +28,16 @@ $('#right-bar-btn').click(function(e){
  }
 });
 
+$('.right-bar-closer').click(function(e){
+ e.preventDefault();
+ if($('#sidebar').hasClass('active')){   
+    $('#sidebar').removeClass('active'); 
+ }
+ else{
+    $('#sidebar').addClass('active'); 
+ }
+});
+
 $('.mdl-layout__obfuscator-right').click(function(){
  if($('.mdl-layout__drawer-right').hasClass('active')){       
     $('.mdl-layout__drawer-right').removeClass('active'); 
@@ -101,5 +111,6 @@ function openCreatePanel(event) {
         reInitSidebar();
     });
     newFormReq.send();
+    document.querySelector('#siteInfo_div').innerHTML = "Loading...";
 }
 

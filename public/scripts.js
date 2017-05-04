@@ -164,15 +164,18 @@ function submitEditForm(e) {
     e.preventDefault();
 
     var form = e.target;
+    var infoContainer = document.querySelector('#siteInfo_div');
     var XHR = new XMLHttpRequest();
     var data = new FormData(form);
 
     XHR.addEventListener("load", function(e) {
         // Update sidebar
         console.log(XHR.responseText);
-        document.querySelector('#siteInfo_div').innerHTML = XHR.responseText;
+        infoContainer.innerHTML = XHR.responseText;
         reInitSidebar();
         google.maps.event.trigger(map,'resize');
+        initViewMode();
+        endEditMode();
     });
 
     XHR.addEventListener("error", function(e) {
@@ -181,11 +184,9 @@ function submitEditForm(e) {
 
     XHR.open("POST", "editSite");
     XHR.send(data);
-
-
-        initViewMode();
-        endEditMode();
     
+    infoContainer.innerHTML = "Loading...";
+
     return false;
 }
 

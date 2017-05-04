@@ -25,9 +25,9 @@
                     </li>
                 <% } %> 
             </ul>
+            <button id="viewPrevButton" onclick="viewPrevImage()" class="image-nav-button img-nav-left mdl-button mdl-js-button mdl-button--raised"><i class="material-icons">keyboard_arrow_left</i></button>
+            <button id="viewNextButton" onclick="viewNextImage()" class="image-nav-button img-nav-right mdl-button mdl-js-button mdl-button--raised"><i class="material-icons">keyboard_arrow_right</i></button>
         </div>
-        <button id="viewPrevButton" onclick="viewPrevImage()" class="mdl-button mdl-js-button mdl-button--raised editButton">PREVIOUS</button>
-        <button id="viewNextButton" onclick="viewNextImage()" class="mdl-button mdl-js-button mdl-button--raised editButton">NEXT</button>
     <% } %>
 
     <div class="sidebar-content">
@@ -94,15 +94,15 @@
                         <img class="sidebar-image" src="<%= data.images[n] %>" style="width:100%" />
                         <div class="image-overlay">
                             <button class="img-remover mdl-button mdl-js-button mdl-button--icon mdl-button--colored" value="<%= data.images[n] %>">
-                                <i class="material-icons">close</i>
+                                <i class="img-remover-icon material-icons">close</i>
                             </button>
                         </div>
                     </li>
                 <% } %> 
             </ul>
+            <button id="editPrevButton" onclick="editPrevImage()" class="image-nav-button img-nav-left mdl-button mdl-js-button mdl-button--raised"><i class="material-icons">keyboard_arrow_left</i></button>
+            <button id="editNextButton" onclick="editNextImage()" class="image-nav-button img-nav-right mdl-button mdl-js-button mdl-button--raised"><i class="material-icons">keyboard_arrow_right</i></button>
         </div>
-        <button id="editPrevButton" onclick="editPrevImage()" class="mdl-button mdl-js-button mdl-button--raised editButton">PREVIOUS</button>
-        <button id="editNextButton" onclick="editNextImage()" class="mdl-button mdl-js-button mdl-button--raised editButton">NEXT</button>
     <% } %>
    
 
@@ -215,7 +215,7 @@
                 <div class="mdl-layout-spacer"></div>
 
                 <% if (newMode) { %>
-                <input type="submit" value="SUBMIT" class="mdl-button mdl-js-button mdl-button--raised createButton" />
+                <input type="submit" value="SUBMIT" class="submit-create-button mdl-button mdl-js-button mdl-button--raised createButton" />
                 
                 <% } else { %>
                 <input type="submit" value="SAVE" class="mdl-button mdl-js-button mdl-button--raised editButton" />
