@@ -194,50 +194,51 @@ function submitCreateForm(event) {
 
     var form = event.target;
      var valid=false;
-     if((form.elements[1].value!="")&&(form.elements[2].value!=""))
+     if((form.elements.name.value!=""))
      {
 
-        if(form.elements[3].checked)
+        if(form.elements.radio[0].checked) // radio[0] is the UTM radio button
         {
-            if((form.elements[5].value!="")&&(form.elements[6].value!="")&&(form.elements[7].value!=""))
+            if((form.elements.zone.value!="")&&(form.elements.easting.value!="")&&(form.elements.north.value!=""))
             {
                 valid=true;
             }
-            else
-            alert("you must input all three parts of UTM to submit");
+            else {
+            alert("Please include all three parts of UTM location (or select \"Use Lat/Long\").");
+            }
         }
         else
         {
-            if((form.elements[8].value!="")&&(form.elements[9].value!=""))
+            if((form.elements.Latitude.value!="")&&(form.elements.Longitude.value!=""))
             {
                 valid=true;
             }
-            else
-            alert("you must input both a latitude and a longitude to submit");
+            else {
+            alert("Please include both a latitude and a longitude.");
+            }
 
         }
      }
      else
      {
-        alert("You must have a site name and description");
+        alert("Please input a site name.");
      }
-     if(valid)
-    {
-    // [ ... ]
-    var XHR = new XMLHttpRequest();
-    var data = new FormData(form);
+     if(valid) {
+        // [ ... ]
+        var XHR = new XMLHttpRequest();
+        var data = new FormData(form);
 
-    XHR.addEventListener("load", function(e) {
-        // Update sidebar
-        location.reload();
-    });
+        XHR.addEventListener("load", function(e) {
+            // Update sidebar
+            location.reload();
+        });
 
-    XHR.addEventListener("error", function(e) {
-        alert('A great problem has occurred.');
-    });
+        XHR.addEventListener("error", function(e) {
+            alert('Error!');
+        });
 
-    XHR.open("POST", "sites");
-    XHR.send(data);
+        XHR.open("POST", "sites");
+        XHR.send(data);
     }
     return false;
 }
