@@ -503,6 +503,7 @@ router.get('/bubble', function(req, res) {
     });
 });
 
+// setting up sessioning to work
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
   resave: false, // don't save session if unmodified
@@ -511,7 +512,6 @@ app.use(session({
 }));
 
 // Session-persisted message middleware
-
 app.use(function(req, res, next){
   var err = req.session.error;
   var msg = req.session.success;
@@ -607,13 +607,7 @@ router.post('/testpass', function(req, res){
 });
 // temporary create site and create account pages
 
-router.get('/create', function(req, res){ // to create an account
-    res.render('pages/create');
-});
 
-router.get('/input', function(req, res){ // to create a site
-    res.render('pages/inputtest');
-});
 
 router.post('/countySites', function(req, res){
     var temp = req.body.siteList;
@@ -1027,6 +1021,8 @@ router.route('/deleteimg')
         });
     });
 
+
+// Route to delete a pdf
 router.route('/deletepdf')
     .post(function(req,res){
         var siteId = req.body.siteId;
