@@ -2,32 +2,49 @@
 
 // BASE SETUP
 // =============================================================================
-var Site = require('./models/sites');
-var User = require('./models/users');
-
-var Hasher = require('./modules/generate-pass.js');
-var TestPass = require('./modules/test-pass.js');
-var UTMconvert = require('./modules/UTMconverter.js');
-
-var mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
-
-var sites = mongoose.createConnection('mongodb://138.197.28.83:27017/testsites');
-var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
-
-var SiteModel = sites.model('Site', Site);
-var UserModel = users.model('Users', User);
 
 // call the packages we need
-var express    = require('express');        // call express
-var session    = require('express-session');
+var express = require('express');        // call express
+var session = require('express-session');
 
+// Imort more packages used for serving files and uploading files
 const fileUpload = require('express-fileupload');
-var app        = express();                 // define our app using express
+var app = express();                 // define our app using express
 var bodyParser = require('body-parser');
 var http = require('http'),
       fs = require('fs');
 const path = require('path');
+
+// DATABASE INFORMATION
+// =============================================================================
+
+    //  Import schemas for mongoose/mongodb
+var Site = require('./models/sites');
+var User = require('./models/users');
+
+    //  import mongoose and set up a promise (forever and ever)
+var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
+
+    // Create connections to the mongodb collecctions
+var sites = mongoose.createConnection('mongodb://138.197.28.83:27017/testsites');
+var users = mongoose.createConnection('mongodb://138.197.28.83:27017/testusers')
+
+    // Using the connection and the schema set up a model that we can use
+    // to write to the database
+var SiteModel = sites.model('Site', Site);
+var UserModel = users.model('Users', User);
+
+// END DATABASE INFORMATION
+// =============================================================================
+
+
+    //  Import javascript functions from other files needed for processing
+var Hasher = require('./modules/generate-pass.js');
+var TestPass = require('./modules/test-pass.js');
+var UTMconvert = require('./modules/UTMconverter.js');
+
+
 
 // configure app to use bodyParser()
 // this will let us get the data from a POST
@@ -39,7 +56,6 @@ app.use(express.static('public/images'));
 // view engine setup
 app.set('view engine', 'ejs');
 var ejsLayouts = require("express-ejs-layouts");
-//app.use(ejsLayouts);
 
 // Public folder
 app.use(express.static(__dirname + '/public'));
@@ -47,10 +63,10 @@ app.use(express.static(__dirname + '/public'));
 var port = process.env.PORT || 8080;        // set our port
 var router = express.Router();              // get an instance of the express Router
 
-// TESTING THIS AS A GLOBAL
+// Create a logged in state that is used in our view layer
 app.locals.loggedin = false;
-// TESTING THIS AS A GLOBAL
 
+// Lists of sites and views for generating the map
 app.locals.countySites = null;
 app.locals.countyView = false;
 
@@ -60,18 +76,20 @@ app.locals.countyView = false;
 // MAIN ROUTE FOR INDEX/Main Page
 router.get('/', function(req, res) {
     app.locals.countyView = false;
+
+        // check if the user is logged in or not every time the main page is opened
     if (req.session.user) {
-    app.locals.loggedin = true;
+        app.locals.loggedin = true;
     } else {
         app.locals.loggedin = false;
     }
+        // Get a list of sites everytime the main page is opened
     var sites = {};
     SiteModel.find(function(err, sites) {
         if (err) {
             res.send(err);
         }
         if (sites) {
-            //console.log(sites);
             res.locals.sites = sites;
             res.render('pages/index'); // Render index template
         }
@@ -135,7 +153,7 @@ router.get('/logout', function(req, res){
 });
 
 // Restrict function that checks if someone is logged in
-
+// continues if someone is logged in, otherwise redirects to login
 function restrict(req, res, next) {
   if (req.session.user) {
     next();
@@ -147,6 +165,7 @@ function restrict(req, res, next) {
 
 
 // Second restrict function, used to check if a logged in user is an admin or not
+// If you are not logged in as an admin it redirects you to the main page
 function adminRestrict(req, res, next) {
     if(req.session.user.isAdmin){
         next();
@@ -157,12 +176,17 @@ function adminRestrict(req, res, next) {
 }
 
 
+// Route for backup feature
 router.get('/backup', function(req, res) {
+
+        // create a child process that runs the backup bash script
+        // (the only way to backup mongo is a bash script)
     var execFile = require('child_process').execFile;
     var script = __dirname + ("/public/backup/createbackup.sh");
     var filename = "cwbattlefields.archive";
     var file = __dirname + ("/public/backup/" + filename);
 
+        // execute the script
     execFile(script, [], {}, function(error, stdout, stderr) {
         if (stdout) {
             return res.download(file, filename, function(err){
@@ -170,6 +194,7 @@ router.get('/backup', function(req, res) {
                     console.log("Download error: " + err);
                 }
             });
+            // check for errors and log them
         } else if (stderr) {
             console.log(stderr);
             return res.send();
@@ -180,7 +205,9 @@ router.get('/backup', function(req, res) {
     });
 });
 
+// Route for restore feature
 router.post('/restore', function(req, res) {
+        // create a child process and get the filepath
     var execFile = require('child_process').execFile;
     var refreshScript = __dirname + ("/public/backup/refresh.sh");
     var restoreScript = __dirname + ("/public/backup/restore.sh");
@@ -205,7 +232,6 @@ router.post('/restore', function(req, res) {
                         execFile(restoreScript, [], {}, function(error, stdout, stderr) {
                             if (stdout) {
                                 // When finished, display success message
-                                console.log("IT WORKED AAAAA");
                                 return res.send("Restore complete!");
                             } else if (stderr) {
                                 console.log(stderr);
@@ -233,6 +259,7 @@ router.post('/restore', function(req, res) {
 // Right sidebar routes
 // ----------------------------------
 
+//  route for viewsite
 router.get('/viewSite', function(req, res) {
     var reqSite = req.query.site;
 
@@ -249,6 +276,8 @@ router.get('/viewSite', function(req, res) {
     });
 });
 
+
+// Route for create mode
 router.get('/createSiteMode', function(req, res) {
     // Render sidebar html from template
     res.render('siteinfo', { layout: false, data: {} , newMode: true }, function(err, html) {
@@ -257,11 +286,16 @@ router.get('/createSiteMode', function(req, res) {
     });
 });
 
+
+// Route for edit mode
 router.post('/editSite', function(req, res) {
     var reqSite = req.body.idkey;
 
     // Get lat and long
     var newLat, newLng;
+
+        //  determine if we are inputting with lat/long or utm
+        //  if it is utm convert to lat long
     if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
         var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
         newLat = latLngArray[0];
@@ -271,6 +305,8 @@ router.post('/editSite', function(req, res) {
         newLat = req.body.Latitude;    
         newLng = req.body.Longitude;   
     };
+
+        // Check if the site is public or not
     if(req.body.pubCheck == "on"){
       var newIsPublic = false;
         } else {
@@ -489,6 +525,7 @@ router.post('/editSite', function(req, res) {
 router.get('/bubble', function(req, res) {
     var reqSite = req.query.site;
 
+        // try and find the site that we are searching for
     SiteModel.find({ name: reqSite }, function(err, Site) {
         if (err) 
             res.send(err);
@@ -523,20 +560,24 @@ app.use(function(req, res, next){
   next();
 });
 
-
+// route to changing a password
 router.post('/changepass', function(req, res){
-    console.log("Received Password " + req.body.currPass);
-    console.log("Received New Pass 1 " + req.body.newPass1);
-    console.log("Received New Pass 2 " + req.body.newPass2);
 
+        //  Get incoming passwords from form
     var currentPass = req.body.currPass;
     var newPass1 = req.body.newPass1;
     var newPass2 = req.body.newPass2;
 
+        //  test the current password and make sure it is valid
     if(TestPass(currentPass, req.session.user.passwordSalt.toString(), req.session.user.passwordHash.toString()))
     {
+            //  after verifying the current password make sure the two new passwords
+            //  are the same.
         if(newPass1 == newPass2){
-            var temp = Hasher(newPass1);
+                // get a new hash and salt
+             var temp = Hasher(newPass1);
+
+                // update the users database info
              UserModel.findOneAndUpdate(
                 {
                     _id: req.session.user._id
@@ -572,18 +613,18 @@ router.post('/changepass', function(req, res){
         console.log("This password is incorrect.");
     }
 
-    //console.log(req.session.user.passwordSalt);
-
     res.redirect('/account');
 });
 
-// loginPage partial router
+// Login route
 router.post('/testpass', function(req, res){
-    console.log("Received User " + req.body.email);
+
+        // search for the username inputed
     UserModel.find({email: req.body.email}, function(err, user) {
         if (err){
             res.redirect('back');
         }
+            // if we found the user test the password
         if(user[0]) {
             console.log(user[0].passwordSalt);
             console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
@@ -608,14 +649,12 @@ router.post('/testpass', function(req, res){
 // temporary create site and create account pages
 
 
-
+//  Route for countySites
 router.post('/countySites', function(req, res){
     var temp = req.body.siteList;
     var objs = JSON.parse(temp);
-    for(var i = 0; i < objs.length; i++){
-        console.log(objs[i].name);
-    }
 
+        // put all the sites in an object
     app.locals.countySites = objs;
     app.locals.countyView = true;
     res.render('sidebar')
@@ -627,6 +666,7 @@ router.use(function(req, res, next){
     console.log('Something is happening.');
     next();
 })
+
 //Check UTM fields for empty data
 function isUTM(zone,easting,northing){
 	if (zone == "" || easting == ""|| northing =="" ||
@@ -668,6 +708,7 @@ router.route('/sites')
         Site.userFName = req.session.user.firstName;
         Site.userLName = req.session.user.lastName;
 
+        // check if the site is public or not
         if(req.body.pubCheck == "on"){
             Site.isPublic = false;
         } else {
@@ -906,8 +947,8 @@ router.route('/sites')
         res.redirect('back');
     });
 
-
-router.route('/register') // post function to actually register account
+// Route for registering a user
+router.route('/register') 
 
     .post(function(req, res){
         var user = new UserModel();
@@ -932,14 +973,6 @@ router.route('/register') // post function to actually register account
         res.redirect('back');
 
     })
-    .get(function(req, res) {
-        UserModel.find(function(err, users) {
-            if (err)
-                res.send(err);
-            res.json(users);
-        });
-        //res.redirect('/');
-    });
 
 router.route('/deletesite')
     .post(function(req,res){
