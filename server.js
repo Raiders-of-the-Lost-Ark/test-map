@@ -1,4 +1,7 @@
-// server.js
+/*  server.js
+    This file is our main server file wirtted in javascript with the node.js library.
+    It serves all our frontend files and connects to our database and front client.
+    It uses a restful api to do this and also uses express as a middleware. */
 
 // BASE SETUP
 // =============================================================================
@@ -89,6 +92,7 @@ router.get('/', function(req, res) {
         if (err) {
             res.send(err);
         }
+            // send teh sites to the index page
         if (sites) {
             res.locals.sites = sites;
             res.render('pages/index'); // Render index template
@@ -98,10 +102,13 @@ router.get('/', function(req, res) {
 
 // ROUTE FOR ADMIN PAGE, RESTRICTED TO LOGGED IN ADMINS
 router.get('/admin', restrict, adminRestrict, function(req, res) {
+
+        // Query the database with incoming user info
     UserModel.find(function(err, users){
         if(err){
             res.send(err);
         }
+            // if you found the user render the page
         if (users){
             res.locals.users = users;
             res.render('pages/admin');
@@ -130,6 +137,7 @@ router.get('/testlogin', function(req, res){
 router.get('/lightbox', function(req, res) {
     var reqSite = req.query.site;
 
+        //  Query the database with incoming site data
     SiteModel.find({ name: reqSite }, function(err, Site) {
         if (err)
             res.send(err);
@@ -301,6 +309,7 @@ router.post('/editSite', function(req, res) {
         newLat = latLngArray[0];
         newLng = latLngArray[1];
     }
+        // otherwise jut use lat long
     else if (isLatLong(req.body.Latitude, req.body.Longitude)){
         newLat = req.body.Latitude;    
         newLng = req.body.Longitude;   
@@ -606,13 +615,14 @@ router.post('/changepass', function(req, res){
                 }
             );
         } else {
+                // if the passwords did not math redirect
             console.log("New Passwords Did Not Match");
             res.redirect('/account');
         }
     } else {
         console.log("This password is incorrect.");
     }
-
+        // redirect on failure
     res.redirect('/account');
 });
 
@@ -692,13 +702,13 @@ router.route('/sites')
         
         var Site = new SiteModel();      // create a new instance of the Site model (schema)
         Site.name = req.body.name;  // set the Site's name (from request)
+
 		//if the utm field was used run the converter...else enter data like normal
         if (isUTM(req.body.zone, req.body.easting, req.body.northing)){
 			var latLngArray = UTMconvert(req.body.zone, req.body.easting, req.body.northing);
 			Site.lat = latLngArray[0];
 			Site.lng = latLngArray[1];
-		}
-        else if (isLatLong(req.body.Latitude, req.body.Longitude)){
+		} else if (isLatLong(req.body.Latitude, req.body.Longitude)){
 			Site.lat = req.body.Latitude;    // set the Site's lat (from request)
 			Site.lng = req.body.Longitude;    // set the Site's long (from request)s
 		};
@@ -719,99 +729,91 @@ router.route('/sites')
 
         let image =req.files.customFile;
         //checks if a image was uploaded
-        if (typeof(image) != "undefined")
-        {
-        var fileDir=__dirname+("/public/images");
-        var size = image.length;
+        if (typeof(image) != "undefined"){
+            var fileDir=__dirname+("/public/images");
+            var size = image.length;
+
         //checks if multiple images have been uploaded or only a single image
-        if(typeof(size) != "undefined")
-        for(var x=0; x<size;x++)
-        {
-        let uploadPath=path.join(fileDir,image[x].name);
-        image[x].mv(uploadPath,function(err)
-        {
-            if (err)
-                return res.status(500).send(err);
-           // res.send('file uploaded to' +uploadPath);
-        });
+            if(typeof(size) != "undefined")
+                for(var x = 0; x < size; x++){
+                let uploadPath=path.join(fileDir,image[x].name);
+                image[x].mv(uploadPath,function(err)
+                {
+                    if (err)
+                        return res.status(500).send(err);
+                });
         
-        Site.images[x]=image[x].name;
-        }
-        else
-        {
-        let uploadPath=path.join(fileDir,image.name);
-        image.mv(uploadPath,function(err)
-        {
-            if (err)
-                return res.status(500).send(err);
-           // res.send('file uploaded to' +uploadPath);
-        });
-        
-        Site.images=image.name;
-        }
+                Site.images[x] = image[x].name;
+            } else {
+                let uploadPath=path.join(fileDir,image.name);
+                image.mv(uploadPath,function(err)
+                {
+                    if (err)
+                        return res.status(500).send(err);
+                // res.send('file uploaded to' +uploadPath);
+                });
+                
+                Site.images=image.name;
+            }
         }
 
-        let publicpdf =req.files.pdfFilespublic;
-        let privatepdf=req.files.pdfFilesprivate;
+        let publicpdf = req.files.pdfFilespublic;
+        let privatepdf = req.files.pdfFilesprivate;
 
         var fileDir=__dirname+("/public/pdf");
         if ((typeof(publicpdf) != "undefined")&&(typeof(privatepdf) != "undefined"))
         {
-            var pulength=publicpdf.length;
-            var prlength=privatepdf.length;
+                // Get the length of the pdfs
+            var pulength = publicpdf.length;
+            var prlength = privatepdf.length;
             if(typeof(pulength) != "undefined")
               if(typeof(prlength) != "undefined")
               {
                 //multi file for both
                 //public file first
-                console.log("multiple public files, multiple private");
-                
-                for(var x=0; x<pulength;x++)
+                for(var x = 0; x < pulength; x++)
                 {
-                    let uploadPath=path.join(fileDir,publicpdf[x].name);
+                    let uploadPath = path.join(fileDir,publicpdf[x].name);
                     publicpdf[x].mv(uploadPath,function(err)
                     {
-                      if (err)
-                     return res.status(500).send(err);
-                      });
-                        Site.pdf[x]=publicpdf[x].name; 
-                        Site.pdfview[x]=true;
+                        if (err)
+                            return res.status(500).send(err);
+                        });
+                    Site.pdf[x] = publicpdf[x].name; 
+                    Site.pdfview[x] = true;
                 }
-                for(var x=0; x<prlength;x++)
-                {
-                    uploadPath=path.join(fileDir,privatepdf[x].name);
+                    // loop for the length of the private pdf
+                for(var x = 0; x < prlength; x++){
+                    uploadPath = path.join(fileDir,privatepdf[x].name);
                     privatepdf[x].mv(uploadPath,function(err)
                     {
-                      if (err)
-                     return res.status(500).send(err);
-                      });
-                    Site.pdf[x+pulength]=privatepdf[x].name; 
-                    Site.pdfview[x+pulength]=false;
+                        if (err)
+                            return res.status(500).send(err);
+                        });
+                    Site.pdf[x + pulength] = privatepdf[x].name; 
+                    Site.pdfview[x + pulength] = false;
                 }
-              }
-              else
-              {
+              } else {
                 //multi public file, single private
-                console.log("multiple public files, single private");
-                for(var x=0; x<pulength;x++)
+                for(var x = 0; x < pulength; x++)
                 {
-                    let uploadPath=path.join(fileDir,publicpdf[x].name);
+                    let uploadPath = path.join(fileDir,publicpdf[x].name);
                     publicpdf[x].mv(uploadPath,function(err)
                     {
-                      if (err)
-                     return res.status(500).send(err);
-                      });
-                        Site.pdf[x]=publicpdf[x].name; 
-                        Site.pdfview[x]=true;
+                        if (err)
+                            return res.status(500).send(err);
+                        });
+                        Site.pdf[x] = publicpdf[x].name; 
+                        Site.pdfview[x] = true;
                 }
-                uploadPath=path.join(fileDir,privatepdf.name);
+                uploadPath = path.join(fileDir,privatepdf.name);
                 privatepdf.mv(uploadPath,function(err)
                 {
-                  if (err)
-                 return res.status(500).send(err);
-                  });
-                 Site.pdf[pulength]=privatepdf.name; 
-                 Site.pdfview[pulength]=false;
+                    if (err)
+                        return res.status(500).send(err);
+                    });
+                 Site.pdf[pulength] = privatepdf.name; 
+                 Site.pdfview[pulength] = false;
 
               }
             else
@@ -819,25 +821,25 @@ router.route('/sites')
               {
                 //single public file, multi private
                 console.log("single public files, multiple private");
-                let uploadPath=path.join(fileDir,publicpdf.name);
+                let uploadPath = path.join(fileDir,publicpdf.name);
                 publicpdf.mv(uploadPath,function(err)
                 {
                   if (err)
                  return res.status(500).send(err);
                   });
-                 Site.pdf=publicpdf.name; 
-                 Site.pdfview=true;
+                 Site.pdf = publicpdf.name; 
+                 Site.pdfview = true;
 
-                for(var x=0; x<prlength;x++)
+                for(var x = 0; x < prlength; x++)
                 {
-                    uploadPath=path.join(fileDir,privatepdf[x].name);
+                    uploadPath = path.join(fileDir,privatepdf[x].name);
                     privatepdf[x].mv(uploadPath,function(err)
                     {
-                      if (err)
-                     return res.status(500).send(err);
-                      });
-                    Site.pdf[x+1]=privatepdf[x].name; 
-                    Site.pdfview[x+1]=false;
+                        if (err)
+                            return res.status(500).send(err);
+                        });
+                    Site.pdf[x + 1] = privatepdf[x].name; 
+                    Site.pdfview[x + 1] = false;
                 }
 
               }
@@ -845,23 +847,23 @@ router.route('/sites')
               {
                 //single public, single private
                 console.log("single public files, single private");
-                let uploadPath=path.join(fileDir,publicpdf.name);
+                let uploadPath = path.join(fileDir,publicpdf.name);
                 publicpdf.mv(uploadPath,function(err)
                 {
                   if (err)
                  return res.status(500).send(err);
                   });
-                 Site.pdf=publicpdf.name; 
-                 Site.pdfview=true;
+                 Site.pdf = publicpdf.name; 
+                 Site.pdfview = true;
 
-                uploadPath=path.join(fileDir,privatepdf.name);
+                uploadPath = path.join(fileDir,privatepdf.name);
                 privatepdf.mv(uploadPath,function(err)
                 {
                   if (err)
                  return res.status(500).send(err);
                   });
-                 Site.pdf[1]=privatepdf.name; 
-                 Site.pdfview[1]=false;
+                 Site.pdf[1] = privatepdf.name; 
+                 Site.pdfview[1] = false;
               }
                 
 
@@ -871,20 +873,20 @@ router.route('/sites')
             if(typeof(publicpdf) != "undefined")
             {
             console.log("we are here");
-            var pulength=publicpdf.length;
+            var pulength = publicpdf.length;
             if(typeof(pulength) != "undefined")
             {
                 console.log("this should be for an array of public pdf")
-                for(var x=0; x<pulength;x++)
+                for(var x = 0; x < pulength; x++)
                 {
-                let uploadPath=path.join(fileDir,publicpdf[x].name);
+                let uploadPath = path.join(fileDir,publicpdf[x].name);
                 publicpdf[x].mv(uploadPath,function(err)
                 {
                   if (err)
                  return res.status(500).send(err);
                   });
-                 Site.pdf[x]=publicpdf[x].name; 
-                 Site.pdf[x].isviewable=true;
+                 Site.pdf[x] = publicpdf[x].name; 
+                 Site.pdf[x].isviewable = true;
              }
             }
             
@@ -950,6 +952,8 @@ router.route('/sites')
 // Route for registering a user
 router.route('/register') 
 
+        // get information from form and hash teh password
+        // then stoere it all
     .post(function(req, res){
         var user = new UserModel();
         var temp = Hasher(req.body.password);
@@ -959,54 +963,78 @@ router.route('/register')
         user.passwordHash = temp.passwordHash;
         user.passwordSalt = temp.salt;
 
-        console.log(req.body.role);
+            // check the role of the user
         if(req.body.role == 1){
             user.isAdmin = false;
         } else {
             user.isAdmin = true;
         }
 
+            // save the user
         user.save(function(err){
             if(err)
                 res.send(err);
         });
+            // redirect back
         res.redirect('back');
 
     })
 
+
+    // Route to deleting sites
 router.route('/deletesite')
+
     .post(function(req,res){
+
+            // get site from form
         var siteId= req.body.idkey;
         console.log("Deleting site:" + siteId);
+
+            //  search for site by the object ID and remove it
         SiteModel.remove({_id:siteId}, function(err){
             if(!err){
                 console.log("...Successful!");
             } else {
+                    // if you didn't find it log an error
                 console.log(err);
             }
         });
         res.redirect('back');
     });
 
+
+    // Route for deleting users
 router.route('/deleteuser')
+
     .post(function(req,res){
+            
+            // get user from form
         var userId= req.body.userId;
         console.log("Deleting user: " + userId);
+
+            // search for user by ID and remove it
         UserModel.remove({_id:userId}, function(err){
             if(!err){
                 console.log("...Successful!");
             } else {
+                    // if you didn't find the user log an error
                 console.log(err);
             }
         });
         res.redirect('back');
     });
 
+
+    // Route to deleting an image
 router.route('/deleteimg')
+
     .post(function(req,res){
+
+            // get the site ID and imagename
         var siteId = req.body.siteId;
         var imgName = req.body.imgName;
 
+            // search for the image name in that site
         SiteModel.find({ "_id": siteId, "images": imgName }, function(err, result) {
             if (err) {
                 console.log("Error deleting image: " + err);
@@ -1022,9 +1050,8 @@ router.route('/deleteimg')
                 if (itemInd >= 0) { // Bad things happen if this is < 0
                     // Remove the item
                     newImgList.splice(itemInd,1);
-                }
-                else {
-                    console.log("Item isn't in the pdf list... Nothing changed.");
+                } else {
+                    console.log("Item isn't in the image list... Nothing changed.");
                 }
 
                 // Update site data
@@ -1058,9 +1085,12 @@ router.route('/deleteimg')
 // Route to delete a pdf
 router.route('/deletepdf')
     .post(function(req,res){
+
+            //  get the site ID and name of pdf to be deleted
         var siteId = req.body.siteId;
         var pdfName = req.body.pdfName;
 
+            // search for the pdf in the site
         SiteModel.find({ "_id": siteId, "pdf": pdfName }, function(err, result) {
             if (err) {
                 console.log("Error deleting pdf: " + err);
