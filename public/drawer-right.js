@@ -59,40 +59,57 @@ $('.mdl-layout__obfuscator-right').click(function(){
 
 // Opens the right sidebar containing search features
 function openSidePanel() {
+        // get the information from the document
     var sidebar = document.querySelector('#sidebar');
     var info_panel = document.querySelector('#info-panel');
 
+        // make the info panel hidden
     if (info_panel.classList.contains('active')) 
         info_panel.classList.remove('active');
+
+        // activate the sidebar
     sidebar.classList.add('active');
 }
 
 // Opens the site info panel on the side
 function openInfoPanel(event) {
     event.preventDefault();
+
+        // Initialize the view mode
     initViewMode();
+
+        // obtain info panel and side bar from document
     var info_panel = document.querySelector('#info-panel');
     var sidebar = document.querySelector('#sidebar');
 
+        // deactivate the side bar
     if (sidebar.classList.contains('active')) 
         sidebar.classList.remove('active');
+
+        //activate the info panel
     info_panel.classList.add('active');
 }
 
 // Closes the site info panel on the side
 function closeInfoPanel(event) {
     event.preventDefault();
+
+        // get the info panel from the document
     var info_panel = document.querySelector('#info-panel');
     
+        // if it is active, deactivate it
     if (info_panel.classList.contains('active')) 
         info_panel.classList.remove('active');
 }
 
 // Handle delete button on info form
 function deleteItem(deleteform) {
-    var x=confirm("Are you sure you want to delete this battle site? All information will be lost. All of it. You cannot get it back. \n Are you sure?");
-	if(x==true)
+
+        // prompt the user if they are positive
+    var x = confirm("Are you sure you want to delete this battle site? All information will be lost. All of it. You cannot get it back. \n Are you sure?");
+	if(x == true)
 	{
+            // if they wanted to then delete the site
 	    deleteform.submit();
 	}
 	

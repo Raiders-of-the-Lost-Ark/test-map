@@ -1,12 +1,14 @@
-/**
- * admin.js
- * JavaScript functions used in admin page UI
- */
+/*  admin.js
+    This file contains the javascript for the admin panel.  The fuctions allow
+    the adding, removal, and display of users.*/
 
 // Handle add/remove buttons
 document.querySelector("#add-row").addEventListener("click", function() {
+
+    // get information from the document
   var editMode = document.getElementById("unsaved");
-  // Toggle add mode
+
+    // Toggle add mode
   if (editMode.classList.contains("active")) {
     this.innerHTML = "ADD";
     document.getElementById("remove-row").disabled=false;
@@ -18,9 +20,12 @@ document.querySelector("#add-row").addEventListener("click", function() {
   }
 })
 document.querySelector("#remove-row").addEventListener("click", function() {
+
+    // get mode from the document
   var removeMode = document.getElementById("user-remove-mode");
   var removers = document.getElementsByClassName("user-remover");
-  // Toggle remove mode
+
+    // Toggle remove mode
   if (removeMode.classList.contains("active")) {
     this.innerHTML = "DELETE";
     document.getElementById("add-row").disabled=false;
@@ -42,6 +47,9 @@ for (var i = 0; i < deleteButtons.length; i++) {
   if (deleteButtons[i].tagName == "BUTTON") {
     deleteButtons[i].addEventListener("click", function(event) {
       var userId = this.value;
+
+
+        // show confirmation to delete a user
       showDialog({
           title: 'Remove User',
           text: 'Are you sure you want to remove this user?',
@@ -50,6 +58,7 @@ for (var i = 0; i < deleteButtons.length; i++) {
           },
           positive: {
               title: 'Yes',
+                // onClick send user to be deleted to the server
               onClick: function (e) {
                 var deleteReq = new XMLHttpRequest();
                 var data = "userId=" + userId;
@@ -67,14 +76,16 @@ for (var i = 0; i < deleteButtons.length; i++) {
   }
 }
 
-// Validate user input
+// Function that makes sure user input is valid
 function validateNewUser(event) {
+
+    // get the form data
   var form = event.target;
   var firstName = form.elements['firstName'].value;
   var lastName = form.elements['lastName'].value;
   var email = form.elements['email'].value;
 
-  // Make sure all info is input correctly before allowing form submit
+    // Making sure an email, first and last name are entered
   if (firstName == "") {
     alert("Please enter a first name");
     return false;
@@ -92,7 +103,7 @@ function validateNewUser(event) {
   }
 }
 
-// Run regExp to validate input email address
+  // makes sure the email entered is of valid format
 function validateEmail(email) {
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
