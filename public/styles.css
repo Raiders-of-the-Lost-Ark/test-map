@@ -1,6 +1,7 @@
-/**
- * Custom css built upon our MDL library
- */
+/*
+    styles.css
+    Main custom stylesheet for UI
+*/
 
 html, body {
   font-family: 'Roboto', 'Helvetica', sans-serif;
@@ -325,7 +326,6 @@ _:-ms-input-placeholder, :root .demo-graph {
           align-items: center;
 }
 
-/*Sorry Google, removes copyright*/
 .gmnoprint a, .gmnoprint span {
     display:none;
 }
@@ -680,4 +680,17 @@ textarea.site-descript-input::placeholder {
 .logout-link {
   width: 100%;
   text-align: center;
+}
+
+/* Infowindow */
+
+#iw-container  .iw-title {
+   font-family: 'Open Sans Condensed', sans-serif;
+   font-size: 22px;
+   font-weight: 400;
+   padding: 10px;
+   background-color: #48b5e9;
+   color: white;
+   margin: 1px;
+   border-radius: 2px 2px 0 0; /* In accordance with the rounding of the default infowindow corners. */
 }

@@ -305,3 +305,11 @@ function postSitesInCounty(foundSites) {
     return false;
 }
 
+/**
+ * Login
+ */
+$('.avatar').click(function(e) {
+  $('.card').toggleClass('active');
+  $(this).toggleClass('zmdi-close');
+  $(this).toggleClass('zmdi-account');
+});
