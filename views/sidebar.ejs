@@ -1,10 +1,10 @@
+<!-- This file is our template for the sidebar.  It allows us to create sidebars and choose what is in them. -->
+
 <div id="sidebar" class="mdl-layout__drawer-right mdl-color--blue-grey-900 mdl-color-text--blue-grey-50">
     <header class="demo-drawer-header">
     </header>
     <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
 
-        <!--<input type="text" id="siteSearch" placeholder="Search battlesites..." title="Type Query Here">
-        -->
         <!-- Expandable Textfield -->
             <form action="#" class="sidebar-form" onkeypress="return event.keyCode != 13;">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
@@ -17,6 +17,7 @@
                 </div>
             </div>
             </form>
+        <!-- List all the sites that should be showing up (based on viewer logged in state) -->
         <ul id="listed-sites"> 
             <% for (var ind in sites) { %>         
                 <% if(sites[ind].isPublic || loggedin) { %>      
@@ -41,15 +42,19 @@
 </div>
 <script>
 
+    // access search bar and site list
 var searchBar = document.getElementById("sample6");
 var siteList = document.getElementById("listed-sites");
 
+    // add a listener that takes place whenever someone types a letter
 searchBar.addEventListener("keyup", function() {filterList(this, siteList)} );
 
+    // Function that activates when the listener is called
 function filterList(input, list) {
     var filter = input.value.toUpperCase();
     var items = list.getElementsByTagName("li");
 
+        // search function
     for (var i = 0; i < items.length; i++) {
         if (items[i].innerHTML.toUpperCase().indexOf(filter) > -1) {
             items[i].style.display = "";
@@ -59,33 +64,38 @@ function filterList(input, list) {
     }
 }
 
+    // Function to display the list of states in a county
 function countyListDisplay(incList){
+    
+        // get the list of sites in the sidebar
     var items = siteList.getElementsByTagName("li");
     var listOfIndex = [];
-    console.log(items);
+
+        // if we didn't find any items just keep displaying them all
     if(incList.length == 0){
         for(var i = 0; i < items.length; i++){
             items[i].style.display = "none";
         }
     } else {
+            // search for items that are in the county and the side bar
         for (var i = 0; i < items.length; i++){
             for(var j = 0; j < incList.length; j++){
                 
                 var temp = String(items[i].innerText);
                 temp = temp.replace(/(\r\n|\n|\r)/gm,"");
                 if(temp == incList[j].name){
-                    console.log("AM I HERE");
                     listOfIndex.push(i);
                     break;
                 } 
             }
         }
     }
-    console.log(listOfIndex);
+
     for(var i = 0; i < items.length; i++){
         items[i].style.display = "none";
     }
-    //console.log(listOfIndex);
+
+        // display only ones we found
     for(var i = 0; i < items.length; i++){
         for(var j = 0; j < listOfIndex.length; j++){
             if(listOfIndex[j] == i){
@@ -95,6 +105,7 @@ function countyListDisplay(incList){
     }
 }
 
+    // This functiopn resets the sidebar to display all of the items
 function resetDisplayList(){
     var items = siteList.getElementsByTagName("li");
     for(var i = 0; i < items.length; i++){
