@@ -1,3 +1,8 @@
+/*
+    drawer-right.css
+    Stylesheet to go with our modification of MDL's drawer-left
+*/
+
 #left-bar-btn, #right-bar-btn {
     cursor: pointer;
 }

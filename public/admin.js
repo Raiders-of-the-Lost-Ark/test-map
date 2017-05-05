@@ -1,3 +1,8 @@
+/**
+ * admin.js
+ * JavaScript functions used in admin page UI
+ */
+
 // Handle add/remove buttons
 document.querySelector("#add-row").addEventListener("click", function() {
   var editMode = document.getElementById("unsaved");
@@ -69,6 +74,7 @@ function validateNewUser(event) {
   var lastName = form.elements['lastName'].value;
   var email = form.elements['email'].value;
 
+  // Make sure all info is input correctly before allowing form submit
   if (firstName == "") {
     alert("Please enter a first name");
     return false;
@@ -86,6 +92,7 @@ function validateNewUser(event) {
   }
 }
 
+// Run regExp to validate input email address
 function validateEmail(email) {
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
