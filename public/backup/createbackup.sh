@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# createbackup.sh
+# Creates backup of database and stores it in current folder
+
 BASEDIR=$(dirname "$0")
 DBNAME=testsites
 COLLECTION=sites

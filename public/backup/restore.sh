@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Restores MongoDB database from archive in current folder
+
 BASEDIR=$(dirname "$0")
 DBNAME=testsites
 COLLECTION=sites
