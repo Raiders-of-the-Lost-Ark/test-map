@@ -1,3 +1,7 @@
+/*  admin.js
+    This file contains the javascript for the admin panel.  The fuctions allow
+    the adding, removal, and display of users.*/
+
 // Handle add/remove buttons
 document.querySelector("#add-row").addEventListener("click", function() {
   var editMode = document.getElementById("unsaved");
@@ -37,6 +41,9 @@ for (var i = 0; i < deleteButtons.length; i++) {
   if (deleteButtons[i].tagName == "BUTTON") {
     deleteButtons[i].addEventListener("click", function(event) {
       var userId = this.value;
+
+
+        // show confirmation to delete a user
       showDialog({
           title: 'Remove User',
           text: 'Are you sure you want to remove this user?',
@@ -45,6 +52,7 @@ for (var i = 0; i < deleteButtons.length; i++) {
           },
           positive: {
               title: 'Yes',
+                // onClick send user to be deleted to the server
               onClick: function (e) {
                 var deleteReq = new XMLHttpRequest();
                 var data = "userId=" + userId;
@@ -62,13 +70,16 @@ for (var i = 0; i < deleteButtons.length; i++) {
   }
 }
 
-// Validate user input
+// Function that makes sure user input is valid
 function validateNewUser(event) {
+
+    // get the form data
   var form = event.target;
   var firstName = form.elements['firstName'].value;
   var lastName = form.elements['lastName'].value;
   var email = form.elements['email'].value;
 
+    // Making sure an email, first and last name are entered
   if (firstName == "") {
     alert("Please enter a first name");
     return false;
@@ -86,6 +97,7 @@ function validateNewUser(event) {
   }
 }
 
+  // makes sure the email entered is of valid format
 function validateEmail(email) {
   var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email);
