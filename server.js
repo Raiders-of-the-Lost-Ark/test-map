@@ -360,7 +360,6 @@ router.post('/editSite', function(req, res) {
             if (typeof(prlength) != "undefined") {
                 //multi file for both
                 //public file first
-                console.log("multiple public files, multiple private");
                 for (var x = 0; x < pulength; x++) {
                     let uploadPath = path.join(fileDir, publicpdf[x].name);
                     publicpdf[x].mv(uploadPath, function(err) {
@@ -379,7 +378,6 @@ router.post('/editSite', function(req, res) {
                 }
             } else {
                 //multi public file, single private
-                console.log("multiple public files, single private");
                 for (var x = 0; x < pulength; x++) {
                     let uploadPath = path.join(fileDir, publicpdf[x].name);
                     publicpdf[x].mv(uploadPath, function(err) {
@@ -398,7 +396,6 @@ router.post('/editSite', function(req, res) {
         else
         if (typeof(prlength) != "undefined") {
             //single public file, multi private
-            console.log("single public files, multiple private");
             let uploadPath = path.join(fileDir, publicpdf.name);
             publicpdf.mv(uploadPath, function(err) {
                 if (err) return res.status(500).send(err);
@@ -415,7 +412,6 @@ router.post('/editSite', function(req, res) {
             }
         } else {
             //single public, single private
-            console.log("single public files, single private");
             let uploadPath = path.join(fileDir, publicpdf.name);
             publicpdf.mv(uploadPath, function(err) {
                 if (err) return res.status(500).send(err);
@@ -431,10 +427,8 @@ router.post('/editSite', function(req, res) {
         }
     } else {
         if (typeof(publicpdf) != "undefined") {
-            console.log("we are here");
             var pulength = publicpdf.length;
             if (typeof(pulength) != "undefined") {
-                console.log("this should be for an array of public pdf")
                 for (var x = 0; x < pulength; x++) {
                     let uploadPath = path.join(fileDir, publicpdf[x].name);
                     publicpdf[x].mv(uploadPath, function(err) {
@@ -444,7 +438,6 @@ router.post('/editSite', function(req, res) {
                     sitePDF[x].isviewable = true;
                 }
             } else {
-                console.log("only public file")
                 let uploadPath = path.join(fileDir, publicpdf.name);
                 publicpdf.mv(uploadPath, function(err) {
                     if (err) return res.status(500).send(err);
@@ -454,10 +447,8 @@ router.post('/editSite', function(req, res) {
             }
         }
         if (typeof(privatepdf) != "undefined") {
-            console.log("we are in this area here");
             var prlength = privatepdf.length;
             if (typeof(prlength) != "undefined") {
-                console.log("this should be for an array of private")
                 for (var x = 0; x < prlength; x++) {
                     let uploadPath = path.join(fileDir, privatepdf[x].name);
                     privatepdf[x].mv(uploadPath, function(err) {
@@ -467,7 +458,6 @@ router.post('/editSite', function(req, res) {
                     sitePDF[x].isviewable = false;
                 }
             } else {
-                console.log("only 1 private file")
                 let uploadPath = path.join(fileDir, privatepdf.name);
                 privatepdf.mv(uploadPath, function(err) {
                     if (err) return res.status(500).send(err);
@@ -636,8 +626,6 @@ router.post('/testpass', function(req, res){
         }
             // if we found the user test the password
         if(user[0]) {
-            console.log(user[0].passwordSalt);
-            console.log(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash));
             if(TestPass(req.body.password, user[0].passwordSalt, user[0].passwordHash) == true){
                 req.session.regenerate(function(){
                 // Store the user's primary key
@@ -646,7 +634,6 @@ router.post('/testpass', function(req, res){
                 req.session.user = user[0];
                 req.session.success = 'Authenticated as ' + user[0].email;
                 app.locals.loggedin = true;
-                console.log(app.locals.loggedin);
                 res.redirect('/admin');
                 });
             }
@@ -872,11 +859,9 @@ router.route('/sites')
         {
             if(typeof(publicpdf) != "undefined")
             {
-            console.log("we are here");
             var pulength = publicpdf.length;
             if(typeof(pulength) != "undefined")
             {
-                console.log("this should be for an array of public pdf")
                 for(var x = 0; x < pulength; x++)
                 {
                 let uploadPath = path.join(fileDir,publicpdf[x].name);
@@ -892,7 +877,6 @@ router.route('/sites')
             
             else
             {
-                console.log("only public file")
                 let uploadPath=path.join(fileDir,publicpdf.name);
                 publicpdf.mv(uploadPath,function(err)
                 {
@@ -906,11 +890,9 @@ router.route('/sites')
             }
             if(typeof(privatepdf) != "undefined")
             {
-                console.log("we are in this area here");
             var prlength=privatepdf.length;
             if(typeof(prlength) != "undefined")
             {
-                console.log("this should be for an array of private")
                 for(var x=0; x<prlength;x++)
                 {
                 let uploadPath=path.join(fileDir,privatepdf[x].name);
@@ -924,7 +906,6 @@ router.route('/sites')
             }
             else
             {
-                console.log("only 1 private file")
                 let uploadPath=path.join(fileDir,privatepdf.name);
                 privatepdf.mv(uploadPath,function(err)
                 {
