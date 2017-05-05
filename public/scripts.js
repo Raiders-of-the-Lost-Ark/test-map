@@ -1,9 +1,7 @@
 /*  scripts.js
-    This file is a collection of functions used at various locations through 
-    out our application.
-    */
-
-
+    This file is a collection of functions used at various locations throughout our application.
+    The bulk of our UI JavaScript is located here.
+*/
 
 /*  This function initializes the main page with functioning buttons.
     It adds listeners and adds the buttons to the site. */

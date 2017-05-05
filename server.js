@@ -1,5 +1,5 @@
 /*  server.js
-    This file is our main server file wirtted in javascript with the node.js library.
+    This file is our main server file written in javascript with the node.js library.
     It serves all our frontend files and connects to our database and front client.
     It uses a restful api to do this and also uses express as a middleware. */
 
