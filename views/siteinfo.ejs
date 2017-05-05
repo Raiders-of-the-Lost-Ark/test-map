@@ -234,54 +234,73 @@ var numOfImages = 0;
 var viewModeImages = [];
 var editModeImages = [];
 
+
+// Function to Initialize View Mode
 function initViewMode(){
+
+        // Get the images
     var imageUl = document.getElementById('view_slider');
     viewModeImages = imageUl.children;
 
+        // Find the image length
     numOfImages = viewModeImages.length;
     current_image = 0;
 
+        // hide all pictures but the first one
     for(var i = 1; i < numOfImages; i++){
         viewModeImages[i].style.display = "none";
     }
 }
 
+    // Function to go to next image
 function viewNextImage(){
+        
+        // If we are at the last image loop around
     if(current_image == numOfImages-1){
         viewModeImages[current_image].style.display = "none";
         viewModeImages[0].style.display = "";
         current_image = 0;
     } else {
+            // Otherwise change active image to next one in array
         viewModeImages[current_image].style.display = "none";
         current_image++;
         viewModeImages[current_image].style.display = "";
     }
 }
 
+    // Function to go to last image
 function viewPrevImage(){
+
+        // If we are at the first image loop to last one
     if(current_image == 0){
         viewModeImages[current_image].style.display = "none";
         viewModeImages[numOfImages-1].style.display = "";
         current_image = numOfImages-1;
     } else {
+            // Otherwise just go to the one before it in the arary
         viewModeImages[current_image].style.display = "none";
         current_image--;
         viewModeImages[current_image].style.display = "";
     }
 }
 
+    // Function start up edit mode
 function initEditMode(){
+        
+        // Get the edit slider
     var imageUl = document.getElementById('edit_slider');
     editModeImages = imageUl.children;
 
     numOfImages = editModeImages.length;
     current_image = 0;
 
+        // Hide all but the first image
     for(var i = 1; i < numOfImages; i++){
         editModeImages[i].style.display = "none";
     }
 }
 
+    // Function, same as view next image but for edit mode
 function editNextImage(){
     if(current_image == numOfImages-1){
         editModeImages[current_image].style.display = "none";
@@ -294,6 +313,7 @@ function editNextImage(){
     }
 }
 
+    // Function, same as view prev image but for edit mode
 function editPrevImage(){
     if(current_image == 0){
         editModeImages[current_image].style.display = "none";
