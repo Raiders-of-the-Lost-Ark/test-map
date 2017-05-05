@@ -1,4 +1,7 @@
-// blah blah map shit will tackle later
+/*  map.js
+    This javascript file initializes google maps and displays our information on the map.
+    it also runs the functions that involve clicking states, counties, and sites.
+     */
 
 
 // create "The Map""
@@ -685,8 +688,8 @@ function selectMarker(index) {
 
 }
 
-// This function slightly chnages the center of the points to be displayed
-// on the map.  This is for security purposes
+//  This function slightly chnages the center of the points to be displayed
+//  on the map.  This is for security purposes
 function obscureSite(point){
         var newPoint = parseFloat(point);
         var min = -0.04;
