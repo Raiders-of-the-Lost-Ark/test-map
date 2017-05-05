@@ -1,6 +1,12 @@
+/*  sites.js
+    This is our schema file for mongoose.  It is
+    Specifically the schema for sites, It allows us to have
+    a dedicated format to our sites. */
+
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+    // set up the schema for a site
 var SiteSchema = new Schema({
     name: String,
     lat: String,
