@@ -1,6 +1,10 @@
-
-//export a function that takes utm zone, easting and northing as parameters.
-// Use a series of equations on UTM numbers until they become latitude and longitude. Return the lat and long in an array.
+/*  UTMconverter.js
+    This is a series of equations used to convert a UTM coordinate to 
+    latitude and longitude points.  We found these equations online and
+    adapted to suit our needs.  There is no possible way we could have come
+    up with these equations because look at them.*/
+    
+// export a function that takes utm zone, easting and northing as parameters.
 module.exports = function utmToLatLng(zone, easting, northing) {
 	//make sure these are actually numbers coming in
     northing=parseFloat( northing.replace(/[^\d\.]/g,'') );
