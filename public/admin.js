@@ -4,8 +4,11 @@
 
 // Handle add/remove buttons
 document.querySelector("#add-row").addEventListener("click", function() {
+
+    // get information from the document
   var editMode = document.getElementById("unsaved");
-  // Toggle add mode
+
+    // Toggle add mode
   if (editMode.classList.contains("active")) {
     this.innerHTML = "ADD";
     document.getElementById("remove-row").disabled=false;
@@ -17,9 +20,12 @@ document.querySelector("#add-row").addEventListener("click", function() {
   }
 })
 document.querySelector("#remove-row").addEventListener("click", function() {
+
+    // get mode from the document
   var removeMode = document.getElementById("user-remove-mode");
   var removers = document.getElementsByClassName("user-remover");
-  // Toggle remove mode
+
+    // Toggle remove mode
   if (removeMode.classList.contains("active")) {
     this.innerHTML = "DELETE";
     document.getElementById("add-row").disabled=false;
