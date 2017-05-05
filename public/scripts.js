@@ -41,6 +41,7 @@ function reInitSidebar() {
                 data.append("imgName", imgName);
                 deleteReq.open("POST", "deleteimg");
                 deleteReq.addEventListener("load", function() {
+                    viewPrevImage();
                     // Remove image container from screen
                     container.parentNode.removeChild(container);
                 });
